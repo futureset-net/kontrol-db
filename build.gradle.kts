@@ -1,43 +1,95 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    `java`
-    `jacoco`
+    kotlin("jvm") version libs.versions.kotlin.get()
     alias(libs.plugins.spotless)
-    alias(libs.plugins.spring.boot)
-}
-
-extensions.configure<JacocoPluginExtension> {
-    toolVersion = libs.versions.jacoco.get()
 }
 
 group = "net.futureset"
 version = "local-SNAPSHOT"
 
-repositories {
-    mavenCentral()
+extensions.configure<SpotlessExtension> {
+    format("misc") {
+        // define the files to apply `misc` to
+        target("*.md", ".gitignore", "**/*.feature")
+
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    kotlin {
+        // version, userData and editorConfigOverride are all optional
+        ktlint(libs.versions.ktlint.get())
+        target("**/src/*/kotlin/**/*.kt", "**/*.gradle.kts")
+    }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_19
-    targetCompatibility = JavaVersion.VERSION_19
-}
+subprojects {
+    apply(plugin = "jacoco")
+    apply(plugin = "kotlin")
 
-val allTestImplementation: Configuration by configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = false
-    isVisible = false
-}
+    extensions.configure<JacocoPluginExtension> {
+        toolVersion = rootProject.libs.versions.jacoco.get()
+    }
 
-dependencies {
+    java {
+        sourceCompatibility = JavaVersion.VERSION_20
+        targetCompatibility = JavaVersion.VERSION_20
+    }
+    testing {
+        suites {
+            val test by getting(JvmTestSuite::class) {
+                useJUnitJupiter(rootProject.libs.versions.junit)
+                dependencies {
+                    implementation(rootProject.libs.junit.mockito)
+                    implementation(rootProject.libs.assertj)
+                }
+                targets {
+                    all {
+                        testTask.configure {
+                            finalizedBy("jacocoTestReport")
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-    allTestImplementation(enforcedPlatform(libs.mockito.bom))
-    allTestImplementation(enforcedPlatform(libs.junit.bom))
-    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
-    implementation(libs.spring.boot.starter)
-    allTestImplementation(libs.bundles.junit5) {
-        exclude(group = "org.hamcrest")
+    val unitTestCoverageLimit: String by project
+
+    tasks.existing(JacocoCoverageVerification::class) {
+        executionData(tasks.test.get())
+        dependsOn(tasks.test)
+        violationRules {
+            rule {
+                limit {
+                    minimum = BigDecimal(unitTestCoverageLimit).divide(BigDecimal.valueOf(100)).setScale(2)
+                }
+            }
+        }
+    }
+
+    tasks.named("check") {
+        dependsOn("jacocoTestCoverageVerification")
+    }
+
+    tasks.processResources {
+        dependsOn(rootProject.tasks.named("spotlessApply"))
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        enabled = false
+    }
+
+    dependencies {
+
+        testImplementation(enforcedPlatform(rootProject.libs.mockito.bom))
+        testImplementation(enforcedPlatform(rootProject.libs.junit.bom))
+
+        project(":core")
+        testImplementation(rootProject.libs.bundles.junit5) {
+            exclude(group = "org.hamcrest")
+        }
     }
 }
 
@@ -45,120 +97,4 @@ val verGradle: String by project
 
 tasks.wrapper {
     gradleVersion = verGradle
-}
-
-testing {
-    suites {
-        val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter(libs.versions.junit)
-            dependencies {
-                implementation(libs.junit.mockito)
-                implementation(libs.assertj)
-            }
-            targets {
-                all {
-                    testTask.configure {
-                        finalizedBy("jacocoTestReport")
-                    }
-                }
-            }
-        }
-
-        register<JvmTestSuite>("integrationTest") {
-            testType.set(TestSuiteType.INTEGRATION_TEST)
-            useJUnitJupiter(libs.versions.junit)
-            dependencies {
-                implementation(project())
-                implementation.bundle(libs.bundles.cucumber) {
-                    exclude(group = "junit", module = "junit")
-                    exclude(group = "org.hamcrest")
-                }
-                implementation(libs.spring.boot.starter.test) {
-                    exclude(group = "org.hamcrest")
-                    exclude(group = "junit", module = "junit")
-                }
-                implementation(libs.junit.vintage)
-            }
-
-            targets {
-                all {
-                    testTask.configure {
-                        shouldRunAfter(test)
-                        finalizedBy("jacocoIntegrationTestReport")
-                    }
-                }
-            }
-        }
-    }
-}
-
-val unitTestCoverageLimit: String by project
-
-val jacocoTestCoverageVerification by tasks.existing(JacocoCoverageVerification::class) {
-    executionData(tasks.test.get())
-    dependsOn(tasks.test)
-    violationRules {
-        rule {
-            limit {
-                minimum = BigDecimal(unitTestCoverageLimit).divide(BigDecimal.valueOf(100)).setScale(2)
-            }
-        }
-    }
-}
-val integrationTest by tasks.existing
-
-val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    executionData(integrationTest.get())
-    sourceSets(project.sourceSets["main"])
-    reports {
-        html.outputLocation.set(jacoco.reportsDirectory.map { it.dir("integration/html") })
-    }
-}
-
-val integrationTestCoverageLimit: String by project
-
-val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
-    group = LifecycleBasePlugin.VERIFICATION_GROUP
-    executionData(integrationTest.get())
-    dependsOn(integrationTest)
-    violationRules {
-        rule {
-            limit {
-                minimum = BigDecimal(integrationTestCoverageLimit).divide(BigDecimal.valueOf(100)).setScale(2)
-            }
-        }
-    }
-}
-
-configurations.matching { name.lowercase().endsWith("testimplementation") }.configureEach {
-    extendsFrom(allTestImplementation)
-}
-
-tasks.named("check") {
-    dependsOn("jacocoTestCoverageVerification")
-    dependsOn("jacocoIntegrationTestCoverageVerification")
-}
-
-extensions.configure<SpotlessExtension> {
-    format("misc") {
-        // define the files to apply `misc` to
-        target("*.gradle", "*.md", ".gitignore", "**/*.feature")
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
-    kotlinGradle {
-        target("*.gradle.kts")
-        ktlint()
-    }
-    java {
-        palantirJavaFormat()
-        target("src/**/*.java")
-    }
-}
-
-tasks.processResources {
-    dependsOn("spotlessApply")
 }
