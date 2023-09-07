@@ -11,7 +11,7 @@ dependencies {
 
     implementation(project(":core"))
     api(libs.hsqldb)
-    testImplementation(libs.bundles.spek)
+    testImplementation(libs.bundles.junit5)
     ksp(libs.koin.compiler)
 }
 

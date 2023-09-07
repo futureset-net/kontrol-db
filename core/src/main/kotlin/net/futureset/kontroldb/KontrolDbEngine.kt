@@ -111,7 +111,7 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
         return when (refactoring.executeMode) {
             ExecuteMode.ALWAYS -> { logger.info("Always run ${refactoring.id()}"); true }
             ExecuteMode.ONCE -> {
-                require(previousExecution.checksum == refactoring.checkSum()) {
+                check(previousExecution.checksum == refactoring.checkSum()) {
                     "Checksum mismatch for ${refactoring.id()} checksum ${refactoring.checkSum()}!=${previousExecution.checksum}"
                 }; false
             }

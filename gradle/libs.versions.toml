@@ -4,7 +4,6 @@ jacoco = "0.8.10"
 mockito = "5.3.1"
 junit = "5.9.1"
 assertj = "3.24.2"
-spek = "2.0.19"
 hsqldb = "2.7.2"
 ksp-plugin = "1.9.10-1.0.13"
 koin = "3.4.3"
@@ -21,8 +20,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
 [libraries]
 snakeyaml = {group = "org.yaml", name="snakeyaml", version.ref="snakeyaml"}
 logback-classic = {group = "ch.qos.logback", name ="logback-classic", version.ref="logback"}
-spek-jvm = { group = "org.spekframework.spek2", name = "spek-dsl-jvm", version.ref = "spek" }
-spek-junit5 = { group = "org.spekframework.spek2", name = "spek-runner-junit5", version.ref = "spek" }
 mockito-bom = { group = "org.mockito", name = "mockito-bom", version.ref = "mockito" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter" }
@@ -38,5 +35,4 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", vers
 
 [bundles]
 junit5 = ["junit-jupiter", "junit-mockito"]
-spek = ["spek-jvm", "spek-junit5"]
 koin = ["koin-core", "koin-annotations","koin-slf4j"]
