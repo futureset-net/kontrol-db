@@ -11,7 +11,7 @@ version = "local-SNAPSHOT"
 extensions.configure<SpotlessExtension> {
     format("misc") {
         // define the files to apply `misc` to
-        target("*.md", ".gitignore", "**/*.feature")
+        target("*.md", ".gitignore")
 
         trimTrailingWhitespace()
         indentWithSpaces()
@@ -63,7 +63,7 @@ subprojects {
         violationRules {
             rule {
                 limit {
-                    minimum = BigDecimal(unitTestCoverageLimit).divide(BigDecimal.valueOf(100)).setScale(2)
+                    minimum = "1.0".toBigDecimal()
                 }
             }
         }

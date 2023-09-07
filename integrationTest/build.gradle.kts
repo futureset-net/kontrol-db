@@ -15,6 +15,14 @@ dependencies {
     ksp(libs.koin.compiler)
 }
 
+tasks.test {
+    finalizedBy("jacocoTestReport")
+}
 tasks.jacocoTestReport {
     sourceSets(project(":core").sourceSets.getByName("main"))
+}
+
+tasks.jacocoTestCoverageVerification {
+    sourceSets(project(":core").sourceSets.getByName("main"))
+    mustRunAfter("jacocoTestReport")
 }
