@@ -1,11 +1,10 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.LiteralValue
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.TableBuilder
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -16,16 +15,10 @@ data class InsertRow(
 ) : ModelChange
 
 data class InsertRowBuilder(
-    private var table: SchemaObject? = null,
-    private var columnValues: MutableMap<DbIdentifier, LiteralValue> = mutableMapOf<DbIdentifier, LiteralValue>(),
-) : Builder<InsertRow> {
+    override var table: SchemaObject? = null,
+    private var columnValues: MutableMap<DbIdentifier, LiteralValue> = mutableMapOf(),
+) : TableBuilder<InsertRow> {
 
-    fun table(block: SchemaObjectBuilder.() -> Unit) {
-        table = SchemaObjectBuilder().apply(block).build()
-    }
-    fun table(schemaObject: SchemaObject) = apply {
-        table = schemaObject
-    }
     fun value(colName: String, v: String) = apply {
         columnValues[DbIdentifier(colName)] = LiteralValue.value(v)
     }

@@ -1,33 +1,24 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.LiteralValue
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.TableBuilder
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-data class UpdateRow(
+data class Update(
     val table: SchemaObject,
     val columnValues: Map<DbIdentifier, LiteralValue>,
     val whereColumnsValues: Map<DbIdentifier, LiteralValue>,
 ) : ModelChange
 
-data class UpdateRowBuilder(
-    private var table: SchemaObject? = null,
+data class UpdateBuilder(
+    override var table: SchemaObject? = null,
     private var columnValues: MutableMap<DbIdentifier, LiteralValue> = mutableMapOf(),
     private var whereValues: MutableMap<DbIdentifier, LiteralValue> = mutableMapOf(),
-) : Builder<UpdateRow> {
-
-    fun table(block: SchemaObjectBuilder.() -> Unit) {
-        table = SchemaObjectBuilder().apply(block).build()
-    }
-
-    fun table(table: SchemaObject) = apply {
-        this.table = table
-    }
+) : TableBuilder<Update> {
 
     fun whereValue(colName: String, v: String) = apply {
         whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
@@ -69,8 +60,8 @@ data class UpdateRowBuilder(
         columnValues[DbIdentifier(colName)] = LiteralValue.value(v)
     }
 
-    override fun build(): UpdateRow {
-        return UpdateRow(
+    override fun build(): Update {
+        return Update(
             requireNotNull(table),
             columnValues = columnValues.toMap(),
             whereColumnsValues = whereValues.toMap(),
@@ -78,8 +69,8 @@ data class UpdateRowBuilder(
     }
 
     companion object {
-        fun updateRow(block: UpdateRowBuilder.() -> Unit): UpdateRow {
-            return UpdateRowBuilder().apply(block).build()
+        fun updateRow(block: UpdateBuilder.() -> Unit): Update {
+            return UpdateBuilder().apply(block).build()
         }
     }
 }

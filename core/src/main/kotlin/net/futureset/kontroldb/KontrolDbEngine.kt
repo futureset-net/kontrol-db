@@ -2,7 +2,7 @@ package net.futureset.kontroldb
 
 import net.futureset.kontroldb.modelchange.Comment
 import net.futureset.kontroldb.modelchange.InsertRowBuilder.Companion.insertRow
-import net.futureset.kontroldb.modelchange.UpdateRowBuilder.Companion.updateRow
+import net.futureset.kontroldb.modelchange.UpdateBuilder.Companion.updateRow
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.settings.DbDialect

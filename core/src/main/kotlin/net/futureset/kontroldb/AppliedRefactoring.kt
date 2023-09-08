@@ -7,6 +7,7 @@ data class AppliedRefactoring(
     val executionSequence: Int,
 ) : Comparable<AppliedRefactoring> {
     override fun compareTo(other: AppliedRefactoring): Int =
-        Comparator.comparing(AppliedRefactoring::executionOrder).thenComparing(AppliedRefactoring::id)
+        Comparator.comparing(AppliedRefactoring::executionOrder)
+            .thenComparing(AppliedRefactoring::id)
             .compare(this, other)
 }

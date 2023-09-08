@@ -15,7 +15,7 @@ class DropMistakeTable : Refactoring(
     },
     forward = changes {
         dropTable {
-            table { name("MISTAKE") }
+            table("MISTAKE")
         }
     },
     rollback = emptyList(),

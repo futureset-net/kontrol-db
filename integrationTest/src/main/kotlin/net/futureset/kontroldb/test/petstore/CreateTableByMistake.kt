@@ -16,13 +16,13 @@ class CreateTableByMistake : Refactoring(
     },
     forward = changes {
         createTable {
-            table { name("MISTAKE") }
+            table("MISTAKE")
             column("ID", INT_32)
         }
     },
     rollback = changes {
         dropTable {
-            table { name("MISTAKE") }
+            table("MISTAKE")
         }
     },
 )

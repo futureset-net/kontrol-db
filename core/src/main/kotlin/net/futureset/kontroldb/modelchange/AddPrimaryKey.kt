@@ -1,10 +1,9 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.ConstraintModelChange
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.TableBuilder
 import net.futureset.kontroldb.Tablespace
 
 data class AddPrimaryKey(
@@ -15,19 +14,11 @@ data class AddPrimaryKey(
 ) : ConstraintModelChange
 
 data class AddPrimaryKeyBuilder(
-    private var table: SchemaObject? = null,
+    override var table: SchemaObject? = null,
     private var constraintName: DbIdentifier? = null,
     private var tablespace: String? = null,
     private val columns: MutableList<DbIdentifier> = mutableListOf(),
-) : Builder<AddPrimaryKey> {
-
-    fun table(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
-        table = SchemaObjectBuilder().apply { name?.run(::name) }.apply(block).build()
-    }
-
-    fun table(table: SchemaObject) = apply {
-        this.table = table
-    }
+) : TableBuilder<AddPrimaryKey> {
 
     fun constraintName(constraintName: String) = apply {
         this.constraintName = DbIdentifier(constraintName)

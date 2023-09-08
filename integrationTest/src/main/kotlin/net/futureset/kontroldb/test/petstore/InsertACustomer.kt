@@ -13,7 +13,7 @@ class InsertACustomer : Refactoring(
     },
     forward = changes {
         insertRow {
-            table { name("CUSTOMER") }
+            table("CUSTOMER")
             value("CUST_ID", 1)
             value("FIRSTNAME", "Ben")
             value("LASTNAME", "Riley")

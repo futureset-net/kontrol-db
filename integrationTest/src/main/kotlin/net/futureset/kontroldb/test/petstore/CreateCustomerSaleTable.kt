@@ -27,14 +27,13 @@ class CreateCustomerSaleTable : Refactoring(
         }
         addPrimaryKey {
             table("CUSTOMER_SALE")
-
             column("SALES_ID")
             constraintName("CUSTOMER_SALE_PK")
         }
     },
     rollback = changes {
         dropTable {
-            table { name("CUSTOMER_SALE") }
+            table("CUSTOMER_SALE")
         }
     },
 )

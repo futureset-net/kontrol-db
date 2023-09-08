@@ -15,7 +15,7 @@ class CreateCustomerTable : Refactoring(
     },
     forward = changes {
         createTable {
-            table { name("CUSTOMER") }
+            table("CUSTOMER")
             column("CUST_ID", INT_32)
             column("FIRSTNAME", Varchar(20))
             column("LASTNAME", Varchar(25))
@@ -34,7 +34,7 @@ class CreateCustomerTable : Refactoring(
     },
     rollback = changes {
         dropTable {
-            table { name("CUSTOMER") }
+            table("CUSTOMER")
         }
     },
 )

@@ -15,15 +15,15 @@ class IncrementCustomerId : Refactoring(
     },
     executeMode = ExecuteMode.ON_CHANGE,
     forward = changes {
-        updateRow {
-            table { name("CUSTOMER") }
+        update {
+            table("CUSTOMER")
             setValueFunction("CUST_ID", "CUST_ID+1")
             whereValue("FIRSTNAME", "ben")
         }
     },
     rollback = changes {
-        updateRow {
-            table { name("CUSTOMER") }
+        update {
+            table("CUSTOMER")
             setValueFunction("CUST_ID", "CUST_ID-1")
             whereValue("FIRSTNAME", "ben")
         }

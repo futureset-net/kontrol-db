@@ -22,7 +22,7 @@ class CreateProductTable : Refactoring(
     },
     forward = changes {
         createTable {
-            table { name("PRODUCT") }
+            table("PRODUCT")
             column("ID", INT_32)
             column("PRODUCT_NAME", Varchar(30))
             column("PACKAGE_ID", INT_64)
@@ -34,16 +34,14 @@ class CreateProductTable : Refactoring(
             column("PET_FLAG", BOOLEAN)
         }
         addPrimaryKey {
-            table {
-                name("PRODUCT")
-            }
+            table("PRODUCT")
             column("ID")
             constraintName("PRODUCT_PK")
         }
     },
     rollback = changes {
         dropTable {
-            table { name("PRODUCT") }
+            table("PRODUCT")
         }
     },
 )
