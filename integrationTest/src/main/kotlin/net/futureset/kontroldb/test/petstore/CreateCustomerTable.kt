@@ -24,6 +24,13 @@ class CreateCustomerTable : Refactoring(
             column("STATE", Varchar(2))
             column("ZIP", Varchar(9))
         }
+        addPrimaryKey {
+            table {
+                name("CUSTOMER")
+            }
+            column("CUST_ID")
+            constraintName("CUSTOMER_PK")
+        }
     },
     rollback = changes {
         dropTable {

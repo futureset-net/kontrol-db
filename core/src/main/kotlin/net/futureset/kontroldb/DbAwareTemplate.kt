@@ -8,8 +8,8 @@ abstract class DbAwareTemplate<T : ModelChange>(
 ) :
     SqlTemplate<T> {
 
-    fun SqlString.toSql(): String {
-        return toSql(effectiveSettings)
+    fun SqlString?.toSql(): String {
+        return this?.toSql(effectiveSettings) ?: ""
     }
 
     fun <T : SqlString> forEach(

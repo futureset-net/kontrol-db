@@ -28,6 +28,11 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
             column("EXECUTION_COUNT", INT_16)
             column("CHECK_SUM", Varchar(23))
         }
+        addPrimaryKey {
+            table(effectiveSettings.versionControlTable)
+            constraintName(effectiveSettings.versionControlTable.name.name + "_PK")
+            column("ID")
+        }
     },
     rollback = changes {
         dropTable {

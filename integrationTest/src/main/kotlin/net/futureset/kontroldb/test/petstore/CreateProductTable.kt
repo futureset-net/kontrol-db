@@ -33,6 +33,13 @@ class CreateProductTable : Refactoring(
             column("UPDATED_BY_USER", Varchar(30))
             column("PET_FLAG", BOOLEAN)
         }
+        addPrimaryKey {
+            table {
+                name("PRODUCT")
+            }
+            column("ID")
+            constraintName("PRODUCT_PK")
+        }
     },
     rollback = changes {
         dropTable {

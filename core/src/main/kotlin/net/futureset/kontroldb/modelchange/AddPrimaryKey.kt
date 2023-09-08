@@ -1,25 +1,25 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ColumnDefinition
-import net.futureset.kontroldb.ColumnDefinitionBuilder
-import net.futureset.kontroldb.DbColumnType
-import net.futureset.kontroldb.ModelChange
+import net.futureset.kontroldb.ConstraintModelChange
+import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
 import net.futureset.kontroldb.Tablespace
 
-data class CreateTable(
+data class AddPrimaryKey(
     val table: SchemaObject,
-    val columnDefinitions: List<ColumnDefinition>,
+    val columnReferences: List<DbIdentifier>,
+    override var constraintName: DbIdentifier? = null,
     val tablespace: Tablespace? = null,
-) : ModelChange
+) : ConstraintModelChange
 
-data class CreateTableBuilder(
+data class AddPrimaryKeyBuilder(
     private var table: SchemaObject? = null,
+    private var constraintName: DbIdentifier? = null,
     private var tablespace: String? = null,
-    private val columns: MutableList<ColumnDefinition> = mutableListOf(),
-) : Builder<CreateTable> {
+    private val columns: MutableList<DbIdentifier> = mutableListOf(),
+) : Builder<AddPrimaryKey> {
 
     fun table(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
         table = SchemaObjectBuilder().apply { name?.run(::name) }.apply(block).build()
@@ -29,19 +29,24 @@ data class CreateTableBuilder(
         this.table = table
     }
 
+    fun constraintName(constraintName: String) = apply {
+        this.constraintName = DbIdentifier(constraintName)
+    }
+
     fun tablespace(tablespace: String) = apply {
         this.tablespace = tablespace
     }
 
-    fun column(name: String, type: DbColumnType, block: ColumnDefinitionBuilder.() -> Unit = { }) {
-        columns.add(ColumnDefinitionBuilder(name, type).apply(block).build())
+    fun column(name: String) {
+        columns.add(DbIdentifier(name))
     }
 
-    override fun build(): CreateTable {
-        return CreateTable(
+    override fun build(): AddPrimaryKey {
+        return AddPrimaryKey(
             table = requireNotNull(table),
+            constraintName = constraintName,
             tablespace = tablespace?.let(::Tablespace),
-            columnDefinitions = columns,
+            columnReferences = columns,
         )
     }
 }

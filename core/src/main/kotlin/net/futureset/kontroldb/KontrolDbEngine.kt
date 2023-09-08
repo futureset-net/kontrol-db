@@ -89,7 +89,8 @@ data class KontrolDbEngine(
 kontrol-db
 
 Contains ${changes.size} refactorings
-${changes.map{it::class.qualifiedName}.joinToString(separator = "\n")}
+${changes.map{it::class.qualifiedName + " " + it.id()}.joinToString(separator = "\n")}
+
 
 Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}    
                         """.trimIndent(),

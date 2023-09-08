@@ -22,7 +22,7 @@ class CreateTableByMistake : Refactoring(
     },
     rollback = changes {
         dropTable {
-            table { name("PRODUCT") }
+            table { name("MISTAKE") }
         }
     },
 )

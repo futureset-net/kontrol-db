@@ -13,8 +13,8 @@ data class DropTableBuilder(
     private var table: SchemaObject? = null,
 ) : Builder<DropTable> {
 
-    fun table(block: SchemaObjectBuilder.() -> Unit) = apply {
-        table = SchemaObjectBuilder().apply(block).build()
+    fun table(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
+        table = SchemaObjectBuilder().apply { name?.run(::name) }.apply(block).build()
     }
 
     fun table(table: SchemaObject) = apply {

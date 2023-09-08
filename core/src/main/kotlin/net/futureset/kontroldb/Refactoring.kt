@@ -18,7 +18,7 @@ abstract class Refactoring(
 
     override fun equals(other: Any?): Boolean {
         if (other is Refactoring) {
-            Objects.equals(id(), other.id()) && Objects.equals(this::class, other::class)
+            return Objects.equals(id(), other.id()) && Objects.equals(this::class, other::class)
         }
         return false
     }

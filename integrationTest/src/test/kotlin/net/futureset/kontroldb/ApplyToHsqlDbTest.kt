@@ -39,6 +39,7 @@ internal class ApplyToHsqlDbTest {
                 .describedAs("At least two SQLs were executed").isGreaterThan(2)
             assertThat(getCurrentState())
                 .describedAs("Changes are reported as applied").hasSizeGreaterThan(2)
+            println(getCurrentState().toList().joinToString(separator = "\n"))
             assertThat(applySql())
                 .describedAs("Re-running will apply no changes because its up to date").isZero()
         }

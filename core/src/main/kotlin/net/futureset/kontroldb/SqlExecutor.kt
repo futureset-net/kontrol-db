@@ -1,6 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.settings.EffectiveSettings
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.DriverManager
@@ -8,7 +9,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.SortedSet
 
-val sqlLogger = LoggerFactory.getLogger("SQL")
+val sqlLogger: Logger = LoggerFactory.getLogger("SQL")
 fun Connection.executeSql(sql: String) {
     createStatement().use {
         sqlLogger.info(sql)
@@ -66,7 +67,7 @@ class SqlExecutor(private val effectiveSettings: EffectiveSettings) {
                         checksum = rs.getString(3),
                         executionSequence = rs.getInt(4),
                     )
-                }.toSortedSet(Comparator.comparing(AppliedRefactoring::executionOrder)::compare)
+                }.toSortedSet()
             }
         } catch (e: SQLException) {
             sqlLogger.warn("Cannot retrieve current state", e)

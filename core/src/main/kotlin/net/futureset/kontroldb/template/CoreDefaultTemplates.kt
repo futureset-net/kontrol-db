@@ -12,4 +12,5 @@ val coreTemplateModule = module {
     singleOf(::UpdateRowTemplate).bind(SqlTemplate::class)
     singleOf(::DropTableTemplate).bind(SqlTemplate::class)
     singleOf(::CommentTemplate).bind(SqlTemplate::class)
+    singleOf(::AddPrimaryKeyTemplate).bind(SqlTemplate::class)
 }

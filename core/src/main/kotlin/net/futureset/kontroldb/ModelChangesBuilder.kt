@@ -1,5 +1,7 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.modelchange.AddPrimaryKey
+import net.futureset.kontroldb.modelchange.AddPrimaryKeyBuilder
 import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.modelchange.CreateTableBuilder
 import net.futureset.kontroldb.modelchange.DropTable
@@ -12,6 +14,12 @@ import net.futureset.kontroldb.modelchange.UpdateRowBuilder
 data class ModelChangesBuilder(
     private val changes: MutableList<ModelChange> = mutableListOf(),
 ) : Builder<List<ModelChange>> {
+
+    fun addPrimaryKey(lambda: AddPrimaryKeyBuilder.() -> Unit): AddPrimaryKey {
+        val build = AddPrimaryKeyBuilder().apply(lambda).build()
+        changes.add(build)
+        return build
+    }
 
     fun createTable(lambda: CreateTableBuilder.() -> Unit): CreateTable {
         val build = CreateTableBuilder().apply(lambda).build()
