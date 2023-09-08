@@ -57,18 +57,6 @@ subprojects {
 
     val unitTestCoverageLimit: String by project
 
-    tasks.existing(JacocoCoverageVerification::class) {
-        executionData(tasks.test.get())
-        dependsOn(tasks.test)
-        violationRules {
-            rule {
-                limit {
-                    minimum = "1.0".toBigDecimal()
-                }
-            }
-        }
-    }
-
     tasks.named("check") {
         dependsOn("jacocoTestCoverageVerification")
     }

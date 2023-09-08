@@ -4,7 +4,7 @@ plugins {
 
 sourceSets {
     getByName("main") {
-        kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
+        kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
     }
 }
 dependencies {
@@ -18,11 +18,29 @@ dependencies {
 tasks.test {
     finalizedBy("jacocoTestReport")
 }
+
 tasks.jacocoTestReport {
-    sourceSets(project(":core").sourceSets.getByName("main"))
+    additionalSourceDirs(project(":core").sourceSets.getByName("main").kotlin.sourceDirectories)
+    additionalClassDirs(project(":core").sourceSets.getByName("main").output.classesDirs)
 }
 
 tasks.jacocoTestCoverageVerification {
-    sourceSets(project(":core").sourceSets.getByName("main"))
+    additionalSourceDirs(project(":core").sourceSets.getByName("main").kotlin.sourceDirectories)
+    additionalClassDirs(project(":core").sourceSets.getByName("main").output.classesDirs)
+
     mustRunAfter("jacocoTestReport")
+}
+
+val integrationTestCoverageLimit: String by project
+
+tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    executionData(tasks.test.get())
+    dependsOn(tasks.test)
+    violationRules {
+        rule {
+            limit {
+                minimum = integrationTestCoverageLimit.toBigDecimal().divide(BigDecimal.valueOf(100)).setScale(2)
+            }
+        }
+    }
 }
