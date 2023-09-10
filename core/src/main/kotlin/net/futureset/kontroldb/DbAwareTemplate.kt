@@ -8,6 +8,7 @@ abstract class DbAwareTemplate<T : ModelChange>(
 ) :
     SqlTemplate<T> {
 
+    override var templateResolver: TemplateResolver? = null
     fun SqlString?.toSql(block: (String) -> String = { it }): String {
         return this?.toSql(effectiveSettings)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
     }

@@ -16,7 +16,7 @@ class CreateTableTemplate(private val db: EffectiveSettings, private val primary
         return """
 CREATE TABLE ${change.table.toSql()}${(change.tablespace ?: db.defaultTablespace).toSql { " TABLESPACE $it" }} (
     ${forEach(change.columnDefinitions, separateBy = ",\n    ")}
-    ${change.primaryKey?.let{ "," + primaryKeyTemplate.convertToSingleStatement(it) }.orEmpty()}
+    ${change.primaryKey?.let{ "," + template(it)?.convert(it)?.first() }.orEmpty()}
 )
         """.trimIndent()
     }

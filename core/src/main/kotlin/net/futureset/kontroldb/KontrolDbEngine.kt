@@ -112,7 +112,7 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                     ),
                 )
             }
-            .flatMap { templateResolver.findTemplateForSettings(it)?.convert(it).orEmpty() }
+            .flatMap { templateResolver.findTemplate(it)?.convert(it).orEmpty() }
             .mapNotNull { "$it${effectiveSettings.statementSeparator}" }
     }
 
@@ -189,7 +189,12 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                 single {
                     EffectiveSettings(get<DbDialect>(), get<ExecutionSettings>(), get<TargetSettings>())
                 }
-                single { TemplateResolver(getAll()) }
+                single {
+                    val templates = getAll<SqlTemplate<ModelChange>>()
+                    val result = TemplateResolver(templates)
+                    templates.forEach { it.templateResolver = result }
+                    result
+                }
                 single<TargetSettings> { targetSettings }
                 single { executionSettings }
                 includes(coreTemplateModule)

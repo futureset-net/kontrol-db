@@ -4,6 +4,7 @@ import kotlin.reflect.KClass
 
 interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
 
+    var templateResolver: TemplateResolver?
     val priority: TemplatePriority
 
     fun type(): KClass<T>
@@ -11,6 +12,9 @@ interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
         return priority.compareTo(other.priority)
     }
 
+    fun <U : ModelChange> template(t: U): SqlTemplate<U>? {
+        return requireNotNull(templateResolver).findTemplate(t)
+    }
     fun canApply() = true
 
     fun convert(change: T): List<String?>
