@@ -11,14 +11,14 @@ class InsertRowTemplate(private val db: EffectiveSettings) : DbAwareTemplate<Ins
         return InsertRow::class
     }
 
-    override fun convert(change: InsertRow): String {
+    override fun convertToSingleStatement(change: InsertRow): String {
         return """
 INSERT INTO ${change.table.toSql()}(
-${forEach(change.columnValues.keys, separateBy = ", ")}
+${forEach(change.columnValues.keys)}
 )            
 VALUES (
-${forEach(change.columnValues.values, separateBy = ", ")}
-)${db.statementSeparator}
+${forEach(change.columnValues.values)}
+)
         """.trimIndent()
     }
 }

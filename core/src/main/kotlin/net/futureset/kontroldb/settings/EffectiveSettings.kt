@@ -12,6 +12,7 @@ class EffectiveSettings(
     private val targetSettings: TargetSettings,
 ) {
 
+    val dbName = dbDialect.name
     val outputTablespace = (dbDialect.supportsTablespace && executionSettings.outputTablespace)
     val outputSchema = executionSettings.outputSchema
     val outputCatalog = executionSettings.outputCatalog && dbDialect.supportsCatalogs
@@ -20,7 +21,7 @@ class EffectiveSettings(
         targetSettings.defaultCatalog?.takeIf { executionSettings.outputCatalog && dbDialect.supportsCatalogs && executionSettings.outputSchema }?.let(::DbIdentifier)
     val versionControlTable = targetSettings.versionControlTable
     val defaultTablespace = targetSettings.defaultTablespace?.takeIf { outputTablespace }?.let(::DbIdentifier)
-    val defaultIndexTablespace = targetSettings.defaultIndexTablespace?.takeIf { outputTablespace }?.let(::DbIdentifier)
+    val defaultIndexTablespace = (targetSettings.defaultIndexTablespace ?: targetSettings.defaultTablespace)?.takeIf { outputTablespace }?.let(::DbIdentifier)
     val jdbcUrl = targetSettings.jdbcUrl
     val username = targetSettings.username
     val password = targetSettings.password

@@ -11,9 +11,9 @@ class DropTableTemplate(private val db: EffectiveSettings) : DbAwareTemplate<Dro
         return DropTable::class
     }
 
-    override fun convert(change: DropTable): String {
+    override fun convertToSingleStatement(change: DropTable): String {
         return """
-DROP TABLE ${change.table.toSql()}${db.statementSeparator}
+DROP TABLE ${change.table.toSql()}
         """.trimIndent()
     }
 }

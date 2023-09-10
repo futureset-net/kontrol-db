@@ -1,3 +1,6 @@
+plugins {
+    `application`
+}
 dependencies {
     api(libs.bundles.koin)
     api(libs.kotlin.reflect)

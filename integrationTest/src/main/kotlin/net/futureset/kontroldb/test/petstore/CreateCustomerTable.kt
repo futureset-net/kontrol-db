@@ -31,6 +31,12 @@ class CreateCustomerTable : Refactoring(
             column("CUST_ID")
             constraintName("CUSTOMER_PK")
         }
+        addNotNull {
+            table {
+                name("CUSTOMER")
+            }
+            column("LASTNAME", Varchar(25))
+        }
     },
     rollback = changes {
         dropTable {

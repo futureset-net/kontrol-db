@@ -6,16 +6,18 @@ import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.settings.EffectiveSettings
 import kotlin.reflect.KClass
 
-class CreateTableTemplate(private val db: EffectiveSettings) : DbAwareTemplate<CreateTable>(db, TemplatePriority.DEFAULT) {
+class CreateTableTemplate(private val db: EffectiveSettings, private val primaryKeyTemplate: AddPrimaryKeyTemplate) :
+    DbAwareTemplate<CreateTable>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<CreateTable> {
         return CreateTable::class
     }
 
-    override fun convert(change: CreateTable): String {
+    override fun convertToSingleStatement(change: CreateTable): String {
         return """
-CREATE TABLE ${change.table.toSql()}${(change.tablespace ?: db.defaultTablespace)?.let{" TABLESPACE ${it.toSql()} "}.orEmpty()} (
+CREATE TABLE ${change.table.toSql()}${(change.tablespace ?: db.defaultTablespace).toSql { " TABLESPACE $it" }} (
     ${forEach(change.columnDefinitions, separateBy = ",\n    ")}
-)${db.statementSeparator}
+    ${change.primaryKey?.let{ "," + primaryKeyTemplate.convertToSingleStatement(it) }.orEmpty()}
+)
         """.trimIndent()
     }
 }

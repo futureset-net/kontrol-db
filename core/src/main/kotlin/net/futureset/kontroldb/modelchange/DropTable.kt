@@ -6,15 +6,16 @@ import net.futureset.kontroldb.TableBuilder
 
 data class DropTable(
     val table: SchemaObject,
-) : ModelChange
+) : ModelChange {
 
-data class DropTableBuilder(
-    override var table: SchemaObject? = null,
-) : TableBuilder<DropTable> {
+    data class DropTableBuilder(
+        override var table: SchemaObject? = null,
+    ) : TableBuilder<DropTable> {
 
-    override fun build(): DropTable {
-        return DropTable(
-            table = requireNotNull(table),
-        )
+        override fun build(): DropTable {
+            return DropTable(
+                table = requireNotNull(table),
+            )
+        }
     }
 }

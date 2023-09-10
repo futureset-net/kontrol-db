@@ -2,12 +2,13 @@ package net.futureset.kontroldb
 
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.settings.DbDialect
+import net.futureset.kontroldb.settings.ExecutionSettings
 import net.futureset.kontroldb.settings.TargetSettingsBuilder
 import org.koin.core.module.Module
 
 class KontrolDbDsl {
 
-    private var kontrolDbEngineBuilder = KontrolDbEngineBuilder()
+    private var kontrolDbEngineBuilder = KontrolDbEngine.KontrolDbEngineBuilder()
     private var targetSettingsBuilder: TargetSettingsBuilder = TargetSettingsBuilder(
         jdbcUrl = "jdbc:hsqldb:mem:testdb",
         versionControlTable = SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE)),
@@ -15,6 +16,10 @@ class KontrolDbDsl {
 
     fun dbSettings(block: TargetSettingsBuilder.() -> Unit) {
         targetSettingsBuilder.apply(block)
+    }
+
+    fun executionSettings(block: ExecutionSettings.() -> Unit) {
+        kontrolDbEngineBuilder.executionSettings.apply(block)
     }
 
     fun dbDialect(dbDialect: DbDialect) {
@@ -35,8 +40,8 @@ class KontrolDbDsl {
             return changes.asList() + ModelChangesBuilder().apply(lambda).build()
         }
 
-        fun executionOrder(lambda: ExecutionOrderBuilder.() -> Unit): ExecutionOrder {
-            return ExecutionOrderBuilder().executionOrder(lambda)
+        fun executionOrder(lambda: ExecutionOrder.ExecutionOrderBuilder.() -> Unit): ExecutionOrder {
+            return ExecutionOrder.ExecutionOrderBuilder().executionOrder(lambda)
         }
 
         fun kontrolDb(lambda: KontrolDbDsl.() -> Unit): KontrolDbEngine {

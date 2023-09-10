@@ -16,9 +16,16 @@ internal class GenerateSqlServerScriptTest {
     fun `Can generate a sql server script`(@TempDir tempDir: Path) {
         val result =
             kontrolDb {
+                executionSettings {
+                    outputTablespace = true
+                    outputCatalog = true
+                    outputSchema = true
+                }
                 dbSettings {
                     defaultSchema("dbo")
                     jdbcUrl("jdbc:hsqldb:mem:testdb;sql.syntax_mss=true")
+                    defaultTablespace("MY_TABLESPACE")
+                    defaultIndexTablespace("MY_INDEX_TABLESPACE")
                 }
                 dbDialect(SqlServerDialect())
                 changeModules(PetStore().module)
@@ -31,5 +38,7 @@ internal class GenerateSqlServerScriptTest {
         val scriptContent = generatedFile.readText()
         println(scriptContent)
         assertThat(scriptContent).contains("CREATE TABLE [KONTROL_DB_VERSIONING]")
+        assertThat(scriptContent).describedAs("SQL SERVER has different syntax for adding not null constraint")
+            .contains("ALTER TABLE [CUSTOMER] ALTER COLUMN [LASTNAME] VARCHAR(25) NOT NULL")
     }
 }

@@ -15,7 +15,7 @@ class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<Comment>(db, Temp
         return effectiveSettings.isScripting
     }
 
-    override fun convert(change: Comment): String {
+    override fun convertToSingleStatement(change: Comment): String {
         if (change.text.contains("\n")) {
             return change.text.split("\n")
                 .joinToString(prefix = "/*******************************\n* ", separator = "\n* ", postfix = "\n*******************************/")

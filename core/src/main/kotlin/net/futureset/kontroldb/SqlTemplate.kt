@@ -13,5 +13,5 @@ interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
 
     fun canApply() = true
 
-    fun convert(change: T): String
+    fun convert(change: T): List<String?>
 }

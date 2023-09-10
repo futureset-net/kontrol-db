@@ -20,6 +20,7 @@ class HsqlDbDialect : AnsiDialect {
     override val statementSeparator = ";"
     override val nullableByDefault = true
     override val ddlInTransactions = false
+    override val name = "hsqldb"
 
     override fun closeHook(): (Connection) -> Unit {
         return { connection -> connection.executeSql("SHUTDOWN") }

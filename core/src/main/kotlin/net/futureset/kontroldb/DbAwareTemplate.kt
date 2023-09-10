@@ -8,8 +8,8 @@ abstract class DbAwareTemplate<T : ModelChange>(
 ) :
     SqlTemplate<T> {
 
-    fun SqlString?.toSql(): String {
-        return this?.toSql(effectiveSettings) ?: ""
+    fun SqlString?.toSql(block: (String) -> String = { it }): String {
+        return this?.toSql(effectiveSettings)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
     }
 
     fun <T : SqlString> forEach(
@@ -20,6 +20,12 @@ abstract class DbAwareTemplate<T : ModelChange>(
         },
     ): String {
         return items.joinToString(separator = separateBy, transform = block)
+    }
+
+    abstract fun convertToSingleStatement(change: T): String?
+
+    override fun convert(change: T): List<String?> {
+        return listOf(convertToSingleStatement(change))
     }
 
     final override fun canApply(): Boolean {

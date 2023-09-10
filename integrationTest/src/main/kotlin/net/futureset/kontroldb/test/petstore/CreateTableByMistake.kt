@@ -18,6 +18,7 @@ class CreateTableByMistake : Refactoring(
         createTable {
             table("MISTAKE")
             column("ID", INT_32)
+            tablespace("ANOTHER_TS")
         }
     },
     rollback = changes {

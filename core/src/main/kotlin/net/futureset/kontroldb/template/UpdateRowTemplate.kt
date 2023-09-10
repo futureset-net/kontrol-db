@@ -11,14 +11,14 @@ class UpdateRowTemplate(private val db: EffectiveSettings) : DbAwareTemplate<Upd
         return Update::class
     }
 
-    override fun convert(change: Update): String {
+    override fun convertToSingleStatement(change: Update): String {
         return """
 UPDATE ${change.table.toSql()}
 ${change.columnValues.entries.joinToString(prefix = "SET ", separator = ", ")
             {it.key.toSql() + " = " + it.value.toSql() }}            
 WHERE 
 ${change.whereColumnsValues.entries.joinToString(separator = " AND ")
-            {it.key.toSql() + " = " + it.value.toSql() }}${db.statementSeparator}            
+            {it.key.toSql() + " = " + it.value.toSql() }}          
         """.trimIndent()
     }
 }

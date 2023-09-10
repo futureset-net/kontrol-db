@@ -1,5 +1,7 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.KontrolDbDsl.Companion.changes
+import net.futureset.kontroldb.KontrolDbDsl.Companion.executionOrder
 import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.test.petstore.CreateProductTable
@@ -8,7 +10,11 @@ import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 import org.koin.ksp.generated.module
+import java.time.LocalDateTime
 
 internal class VariousCheckSumScenariosTest {
 
@@ -56,5 +62,57 @@ internal class VariousCheckSumScenariosTest {
 
         assertThatThrownBy(result::applySql).isInstanceOf(IllegalStateException::class.java)
             .hasMessageContaining("Checksum mismatch for net.futureset.kontroldb.test.petstore.CreateProductTable ")
+    }
+
+    class InsertIntoProduct : Refactoring(
+        executionOrder { ymd(2023, 9, 10) author("ben") },
+        forward = changes {
+            insertRow {
+                table("PRODUCT")
+                value("ID", 1)
+                value("PRODUCT_NAME", "PRODUCT NAME")
+                value("PACKAGE_ID", System.currentTimeMillis() % 1000)
+                value("CURRENT_INVENTORY_COUNT", 1)
+                value("STORE_COST", 1.50f)
+                value("SALE_PRICE", 1.30f)
+                value("LAST_UPDATE_DATE", LocalDateTime.now())
+                value("UPDATED_BY_USER", "me")
+                value("PET_FLAG", true)
+            }
+        },
+        rollback = listOf(),
+    )
+
+    class IncrementInventory : Refactoring(
+        executionOrder { ymd(2023, 9, 10) author("ben") sequence(2) },
+        executeMode = ExecuteMode.ALWAYS,
+        forward = changes {
+            update {
+                table("PRODUCT")
+                setValueFunction("CURRENT_INVENTORY_COUNT", "CURRENT_INVENTORY_COUNT+1")
+                whereValue("ID", 1)
+            }
+        },
+        rollback = listOf(),
+    )
+
+    @Test
+    fun `A run always changeSet always runs!`() {
+        val result = kontrolDb {
+            changeModules(
+                module {
+                    singleOf(::CreateProductTable).bind(Refactoring::class)
+                    singleOf(::InsertIntoProduct).bind(Refactoring::class)
+                    singleOf(::IncrementInventory).bind(Refactoring::class)
+                },
+            )
+        }
+        assertThat(result.refactorings.last()).isInstanceOf(IncrementInventory::class.java)
+        assertThat(result.applySql()).isGreaterThan(2)
+
+        assertThat(result.getNextRefactorings()).hasSize(1)
+        assertThat(result.applySql()).isEqualTo(2)
+        assertThat(result.getNextRefactorings()).hasSize(1)
+        assertThat(result.applySql()).isEqualTo(2)
     }
 }

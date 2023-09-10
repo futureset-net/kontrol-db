@@ -1,6 +1,5 @@
 package net.futureset.kontroldb
 
-import java.util.Objects
 import kotlin.math.absoluteValue
 
 abstract class Refactoring(
@@ -16,13 +15,6 @@ abstract class Refactoring(
         }
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (other is Refactoring) {
-            return Objects.equals(id(), other.id()) && Objects.equals(this::class, other::class)
-        }
-        return false
-    }
-
     override fun compareTo(other: Refactoring): Int {
         return Comparator.comparing(Refactoring::executionOrder).thenComparing(Refactoring::id).compare(this, other)
     }
@@ -35,7 +27,7 @@ abstract class Refactoring(
         return (forward.hashCode()).absoluteValue.toString(16)
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(id())
+    override fun toString(): String {
+        return javaClass.canonicalName + " " + forward.map { it.getName() }
     }
 }
