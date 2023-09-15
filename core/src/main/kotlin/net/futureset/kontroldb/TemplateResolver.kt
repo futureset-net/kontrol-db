@@ -16,7 +16,7 @@ class TemplateResolver(templates: List<SqlTemplate<ModelChange>>) {
 
     fun <U : ModelChange> findTemplate(modelChange: U): SqlTemplate<U>? {
         @Suppress("UNCHECKED_CAST")
-        return requireNotNull(templatesByType[modelChange::class] as SortedSet<SqlTemplate<U>>) {
+        return requireNotNull(templatesByType[modelChange::class] as SortedSet<SqlTemplate<U>>?) {
             "No template found for ${modelChange.getName()}"
         }.firstOrNull(SqlTemplate<U>::canApply)
     }

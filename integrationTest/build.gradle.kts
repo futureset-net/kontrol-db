@@ -20,14 +20,11 @@ tasks.test {
 }
 
 tasks.jacocoTestReport {
-    additionalSourceDirs(project(":core").sourceSets.getByName("main").kotlin.sourceDirectories)
-    additionalClassDirs(project(":core").sourceSets.getByName("main").output.classesDirs)
+    sourceSets(project(":core").sourceSets.getByName("main"))
 }
 
 tasks.jacocoTestCoverageVerification {
-    additionalSourceDirs(project(":core").sourceSets.getByName("main").kotlin.sourceDirectories)
-    additionalClassDirs(project(":core").sourceSets.getByName("main").output.classesDirs)
-
+    sourceSets(project(":core").sourceSets.getByName("main"))
     mustRunAfter("jacocoTestReport")
 }
 

@@ -18,23 +18,22 @@ data class ColumnDefinition(
             },
         ).joinToString(separator = " ")
     }
-}
+    data class ColumnDefinitionBuilder(
+        val name: String,
+        private val type: DbColumnType,
+        private var nullable: Boolean = false,
+    ) : Builder<ColumnDefinition> {
 
-data class ColumnDefinitionBuilder(
-    val name: String,
-    private val type: DbColumnType,
-    private var nullable: Boolean = false,
-) : Builder<ColumnDefinition> {
+        fun notNull() = apply {
+            nullable = false
+        }
 
-    fun notNull() = apply {
-        nullable = false
-    }
+        fun nullable() = apply {
+            nullable = true
+        }
 
-    fun nullable() = apply {
-        nullable = true
-    }
-
-    override fun build(): ColumnDefinition {
-        return ColumnDefinition(DbIdentifier(name), type, nullable)
+        override fun build(): ColumnDefinition {
+            return ColumnDefinition(DbIdentifier(name), type, nullable)
+        }
     }
 }

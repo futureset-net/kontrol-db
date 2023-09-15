@@ -33,6 +33,7 @@ class CreateCustomerSaleTable : Refactoring(
             table("CUSTOMER_SALE")
             column("CUST_ID")
             indexName("IX_CS_CUST_ID")
+            tablespace("MY_INDEX_TS")
         }
         addForeignKey {
             table("CUSTOMER_SALE")

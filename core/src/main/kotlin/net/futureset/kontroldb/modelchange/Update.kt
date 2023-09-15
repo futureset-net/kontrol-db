@@ -24,19 +24,7 @@ data class Update(
             whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
         }
 
-        fun whereExpression(colName: String, v: String) = apply {
-            whereValues[DbIdentifier(colName)] = LiteralValue(v, false)
-        }
-
         fun whereValue(colName: String, v: Number) = apply {
-            whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
-        }
-
-        fun whereValue(colName: String, v: LocalDate) = apply {
-            whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
-        }
-
-        fun whereValue(colName: String, v: LocalDateTime) = apply {
             whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
         }
 

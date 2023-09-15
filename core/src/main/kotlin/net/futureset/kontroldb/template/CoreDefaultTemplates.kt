@@ -18,4 +18,7 @@ val coreTemplateModule = module {
     singleOf(::CreateIndexTemplate).bind(SqlTemplate::class)
     singleOf(::AddNotNullTemplate).bind(SqlTemplate::class)
     singleOf(::AddNotNullSqlServerTemplate).bind(SqlTemplate::class)
+    singleOf(::CreateRoleTemplate).bind(SqlTemplate::class)
+    singleOf(::DropRoleTemplate).bind(SqlTemplate::class)
+    singleOf(::GrantPermissionsTemplate).bind(SqlTemplate::class)
 }

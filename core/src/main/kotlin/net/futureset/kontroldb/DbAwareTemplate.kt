@@ -23,10 +23,10 @@ abstract class DbAwareTemplate<T : ModelChange>(
         return items.joinToString(separator = separateBy, transform = block)
     }
 
-    abstract fun convertToSingleStatement(change: T): String?
+    open fun convertToSingleStatement(change: T): String? = null
 
-    override fun convert(change: T): List<String?> {
-        return listOf(convertToSingleStatement(change))
+    override fun convert(change: T): List<String> {
+        return listOfNotNull(convertToSingleStatement(change))
     }
 
     final override fun canApply(): Boolean {

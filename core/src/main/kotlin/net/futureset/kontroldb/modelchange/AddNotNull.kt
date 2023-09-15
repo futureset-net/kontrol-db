@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ColumnDefinition
-import net.futureset.kontroldb.ColumnDefinitionBuilder
+import net.futureset.kontroldb.ColumnDefinition.ColumnDefinitionBuilder
 import net.futureset.kontroldb.ConstraintModelChange
 import net.futureset.kontroldb.DbColumnType
 import net.futureset.kontroldb.DbIdentifier
