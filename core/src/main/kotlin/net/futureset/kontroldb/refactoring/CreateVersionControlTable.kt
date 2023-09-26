@@ -1,12 +1,14 @@
 package net.futureset.kontroldb.refactoring
 
 import net.futureset.kontroldb.ExecutionOrder
-import net.futureset.kontroldb.KontrolDbDsl.Companion.changes
 import net.futureset.kontroldb.Refactoring
 import net.futureset.kontroldb.StandardColumnTypes.INT_16
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.modelchange.addPrimaryKey
+import net.futureset.kontroldb.modelchange.createTable
+import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.time.LocalDate
 

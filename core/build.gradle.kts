@@ -6,6 +6,8 @@ dependencies {
     api(libs.kotlin.reflect)
     api(libs.logback.classic)
     api(libs.snakeyaml)
+    api(libs.hsqldb)
+    api(libs.hsqldb.tool)
 }
 
 val unitTestCoverageLimit: String by project

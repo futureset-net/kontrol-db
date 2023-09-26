@@ -36,14 +36,6 @@ class KontrolDbDsl {
 
     companion object {
 
-        fun changes(vararg changes: ModelChange, lambda: ModelChangesBuilder.() -> Unit): List<ModelChange> {
-            return changes.asList() + ModelChangesBuilder().apply(lambda).build()
-        }
-
-        fun executionOrder(lambda: ExecutionOrder.ExecutionOrderBuilder.() -> Unit): ExecutionOrder {
-            return ExecutionOrder.ExecutionOrderBuilder().executionOrder(lambda)
-        }
-
         fun kontrolDb(lambda: KontrolDbDsl.() -> Unit): KontrolDbEngine {
             return KontrolDbDsl().apply(lambda).model()
         }

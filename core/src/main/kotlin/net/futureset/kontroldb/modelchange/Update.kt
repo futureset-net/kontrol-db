@@ -1,58 +1,37 @@
 package net.futureset.kontroldb.modelchange
 
+import net.futureset.kontroldb.ColumnAndValue
+import net.futureset.kontroldb.ColumnValue
 import net.futureset.kontroldb.DbIdentifier
-import net.futureset.kontroldb.LiteralValue
 import net.futureset.kontroldb.ModelChange
+import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.TableBuilder
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 data class Update(
-    val table: SchemaObject,
-    val columnValues: Map<DbIdentifier, LiteralValue>,
-    val whereColumnsValues: Map<DbIdentifier, LiteralValue>,
+    val table: TableAlias,
+    val columnValues: List<ColumnAndValue>,
+    val predicate: SqlPredicate,
 ) : ModelChange {
 
     data class UpdateBuilder(
         override var table: SchemaObject? = null,
-        private var columnValues: MutableMap<DbIdentifier, LiteralValue> = mutableMapOf(),
-        private var whereValues: MutableMap<DbIdentifier, LiteralValue> = mutableMapOf(),
-    ) : TableBuilder<Update> {
+        override var alias: String? = null,
+        private var columnValues: MutableMap<DbIdentifier, ColumnValue> = mutableMapOf(),
+        private var predicate: SqlPredicate = AllOf(emptyList()),
+    ) : TableAliasBuilder<UpdateBuilder, Update> {
 
-        fun whereValue(colName: String, v: String) = apply {
-            whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
+        fun where(lambda: PredicateBuilder.() -> Unit) = apply {
+            predicate = PredicateBuilder().apply(lambda).build()
         }
 
-        fun whereValue(colName: String, v: Number) = apply {
-            whereValues[DbIdentifier(colName)] = LiteralValue.value(v)
+        fun set(value: Pair<String, ColumnValue>) {
+            columnValues[DbIdentifier(value.first)] = value.second
         }
-
-        fun setValue(colName: String, v: String) = apply {
-            columnValues[DbIdentifier(colName)] = LiteralValue.value(v)
-        }
-
-        fun setValueFunction(colName: String, v: String) = apply {
-            columnValues[DbIdentifier(colName)] = LiteralValue(v, false)
-        }
-
-        fun setValue(colName: String, v: Number) = apply {
-            columnValues[DbIdentifier(colName)] = LiteralValue.value(v)
-        }
-
-        fun setValue(colName: String, v: LocalDate) = apply {
-            columnValues[DbIdentifier(colName)] = LiteralValue.value(v)
-        }
-
-        fun setValue(colName: String, v: LocalDateTime) = apply {
-            columnValues[DbIdentifier(colName)] = LiteralValue.value(v)
-        }
-
         override fun build(): Update {
             return Update(
-                requireNotNull(table),
-                columnValues = columnValues.toMap(),
-                whereColumnsValues = whereValues.toMap(),
+                TableAlias(alias, requireNotNull(table)),
+                columnValues = columnValues.map { ColumnAndValue(it.key, it.value, separator = "=") },
+                predicate = predicate,
             )
         }
 
@@ -63,3 +42,6 @@ data class Update(
         }
     }
 }
+
+fun ModelChangesBuilder.update(block: Update.UpdateBuilder.() -> Unit): Update =
+    Update.UpdateBuilder.updateRow(block).apply(changes::add)

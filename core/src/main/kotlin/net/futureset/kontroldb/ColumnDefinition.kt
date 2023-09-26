@@ -4,13 +4,13 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 
 data class ColumnDefinition(
     val columnName: DbIdentifier,
-    val dbColumnType: DbColumnType,
+    val columnType: ColumnType,
     val nullable: Boolean = false,
 ) : SqlString {
     override fun toSql(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(
             columnName.toSql(effectiveSettings),
-            dbColumnType.toSql(effectiveSettings),
+            columnType.toSql(effectiveSettings),
             when (nullable) {
                 effectiveSettings.nullableByDefault -> null
                 true -> "NULL"
@@ -18,11 +18,13 @@ data class ColumnDefinition(
             },
         ).joinToString(separator = " ")
     }
+
+    @KontrolDbDslMarker
     data class ColumnDefinitionBuilder(
-        val name: String,
-        private val type: DbColumnType,
+        private val name: String,
+        private val type: ColumnType,
         private var nullable: Boolean = false,
-    ) : Builder<ColumnDefinition> {
+    ) : Builder<ColumnDefinitionBuilder, ColumnDefinition> {
 
         fun notNull() = apply {
             nullable = false

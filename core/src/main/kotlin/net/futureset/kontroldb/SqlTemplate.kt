@@ -4,7 +4,7 @@ import kotlin.reflect.KClass
 
 interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
 
-    var templateResolver: TemplateResolver?
+    var templateResolver: TemplateResolver
     val priority: TemplatePriority
 
     fun type(): KClass<T>

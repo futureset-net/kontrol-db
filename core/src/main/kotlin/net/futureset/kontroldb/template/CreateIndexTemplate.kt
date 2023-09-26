@@ -13,7 +13,7 @@ class CreateIndexTemplate(private val db: EffectiveSettings) : DbAwareTemplate<C
 
     override fun convertToSingleStatement(change: CreateIndex): String {
         return """
-CREATE INDEX ${change.indexName.toSql() } ON ${change.table.toSql()}(${forEach(change.columnReferences)}) ${(change.tablespace ?: db.defaultIndexTablespace).toSql{" TABLESPACE $it "}}
+CREATE ${"UNIQUE ".takeIf { change.unique }.orEmpty()}INDEX ${change.indexName.toSql() } ON ${change.table.toSql()}(${forEach(change.columnReferences)}) ${(change.tablespace ?: db.defaultIndexTablespace).toSql{" TABLESPACE $it "}}
         """.trimIndent()
     }
 }

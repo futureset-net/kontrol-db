@@ -19,7 +19,7 @@ internal class ApplyToHsqlDbTest {
 
         val outputSqlFile = sqlOutputDir.resolve("output.sql")
 
-        engine.generateSql(outputSqlFile)
+        engine.generateSql(sqlOutputDir)
 
         assertThat(outputSqlFile).exists()
 

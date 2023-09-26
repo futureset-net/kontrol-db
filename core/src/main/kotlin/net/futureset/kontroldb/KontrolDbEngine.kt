@@ -1,7 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.modelchange.Comment
-import net.futureset.kontroldb.modelchange.InsertRow.InsertRowBuilder.Companion.insertRow
+import net.futureset.kontroldb.modelchange.Insert.InsertBuilder.Companion.insertRow
 import net.futureset.kontroldb.modelchange.Update.UpdateBuilder.Companion.updateRow
 import net.futureset.kontroldb.refactoring.CHECK_SUM
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
@@ -29,11 +29,13 @@ import org.koin.dsl.module
 import org.koin.dsl.onClose
 import org.koin.logger.SLF4JLogger
 import org.slf4j.LoggerFactory
-import java.nio.file.Files
 import java.nio.file.Path
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.SortedSet
+import kotlin.io.path.createDirectories
+import kotlin.io.path.isDirectory
+import kotlin.io.path.notExists
 import kotlin.io.path.writeText
 
 data class KontrolDbEngine(
@@ -44,15 +46,22 @@ data class KontrolDbEngine(
 ) : KontrolDbCommands {
 
     val refactorings = allRefactoring.toSortedSet()
+    init {
+        effectiveSettings.templateResolver = templateResolver
+        require(refactorings.size == allRefactoring.size) {
+            "Each refactoring must be unique"
+        }
+    }
 
     private val logger = LoggerFactory.getLogger(KontrolDbEngine::class.java)
 
-    override fun generateSql(output: Path) {
+    override fun generateSql(outputDirectory: Path) {
         effectiveSettings.isScripting = true
-        output.parent?.let(Files::createDirectories)
+        require(outputDirectory.notExists() || outputDirectory.isDirectory())
+        outputDirectory.createDirectories()
 
         val generateSql = generateSql()
-        output.writeText(generateSql.joinToString(separator = "\n\n", postfix = "\n"))
+        outputDirectory.resolve("output.sql").writeText(generateSql.joinToString(separator = effectiveSettings.operatingSystem.lineSeparator.repeat(2), postfix = effectiveSettings.operatingSystem.lineSeparator))
     }
 
     override fun getCurrentState(): SortedSet<AppliedRefactoring> {
@@ -149,22 +158,26 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
         if (appliedRefactoring != null) {
             return updateRow {
                 table(effectiveSettings.versionControlTable)
-                setValueFunction(LAST_APPLIED, effectiveSettings.now())
-                setValueFunction(EXECUTION_COUNT, "$EXECUTION_COUNT+1")
-                setValue(EXECUTED_SEQUENCE, index)
-                whereValue(ID_COLUMN, appliedRefactoring.id)
+                set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.now()))
+                set(EXECUTION_COUNT to ColumnValue.expression("$EXECUTION_COUNT+1"))
+                set(EXECUTED_SEQUENCE to ColumnValue.valueFromNumber(index))
+                where {
+                    DbIdentifier(ID_COLUMN) eq ColumnValue.valueFromString(appliedRefactoring.id)
+                }
             }
         }
         return insertRow {
             table(effectiveSettings.versionControlTable)
-            value(ID_COLUMN, refactoring.id())
-            value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
-            valueExpression(FIRST_APPLIED, effectiveSettings.now())
-            valueExpression(LAST_APPLIED, effectiveSettings.now())
-            value(EXECUTION_ORDER, refactoring.executionOrder.toSingleValue())
-            value(EXECUTED_SEQUENCE, index)
-            value(EXECUTION_COUNT, 1)
-            value(CHECK_SUM, refactoring.checkSum())
+            values {
+                value(ID_COLUMN, refactoring.id())
+                value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
+                valueExpression(FIRST_APPLIED, effectiveSettings.now())
+                valueExpression(LAST_APPLIED, effectiveSettings.now())
+                value(EXECUTION_ORDER, refactoring.executionOrder.toSingleValue())
+                value(EXECUTED_SEQUENCE, index)
+                value(EXECUTION_COUNT, 1)
+                value(CHECK_SUM, refactoring.checkSum())
+            }
         }
     }
 
@@ -180,7 +193,7 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
             outputTablespace = true,
         ),
         var modules: MutableList<Module> = mutableListOf(),
-    ) : Builder<KontrolDbEngine> {
+    ) : Builder<KontrolDbEngineBuilder, KontrolDbEngine> {
 
         override fun build(): KontrolDbEngine {
             val coreModule = module {

@@ -2,6 +2,7 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ConstraintModelChange
 import net.futureset.kontroldb.DbIdentifier
+import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
 import net.futureset.kontroldb.TableBuilder
@@ -10,7 +11,7 @@ data class AddForeignKey(
     val table: SchemaObject?,
     val foreignTable: SchemaObject,
     val columnMap: Map<DbIdentifier, DbIdentifier>,
-    override var constraintName: DbIdentifier? = null,
+    override val constraintName: DbIdentifier?,
 ) : ConstraintModelChange {
 
     data class AddForeignKeyBuilder(
@@ -18,10 +19,10 @@ data class AddForeignKey(
         private var constraintName: DbIdentifier? = null,
         var foreignTable: SchemaObject? = null,
         var columnMap: MutableMap<DbIdentifier, DbIdentifier> = mutableMapOf(),
-    ) : TableBuilder<AddForeignKey> {
+    ) : TableBuilder<AddForeignKeyBuilder, AddForeignKey> {
 
         fun foreignTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
-            foreignTable = SchemaObjectBuilder().apply { name?.let(::name) }.apply(block).build()
+            foreignTable(SchemaObjectBuilder().apply { name?.let(::name) }.apply(block).build())
         }
 
         fun foreignTable(table: SchemaObject) = apply {
@@ -45,3 +46,6 @@ data class AddForeignKey(
         }
     }
 }
+
+fun ModelChangesBuilder.addForeignKey(lambda: AddForeignKey.AddForeignKeyBuilder.() -> Unit): AddForeignKey =
+    AddForeignKey.AddForeignKeyBuilder().apply(lambda).build().apply(changes::add)

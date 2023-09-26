@@ -1,8 +1,11 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.changes
-import net.futureset.kontroldb.KontrolDbDsl.Companion.executionOrder
+import net.futureset.kontroldb.ColumnValue.Companion.column
+import net.futureset.kontroldb.ColumnValue.Companion.expression
+import net.futureset.kontroldb.ColumnValue.Companion.valueFromNumber
 import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
+import net.futureset.kontroldb.modelchange.insert
+import net.futureset.kontroldb.modelchange.update
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.test.petstore.CreateProductTable
 import net.futureset.kontroldb.test.petstore.IncrementCustomerId
@@ -67,17 +70,19 @@ internal class VariousCheckSumScenariosTest {
     class InsertIntoProduct : Refactoring(
         executionOrder { ymd(2023, 9, 10) author("ben") },
         forward = changes {
-            insertRow {
+            insert {
                 table("PRODUCT")
-                value("ID", 1)
-                value("PRODUCT_NAME", "PRODUCT NAME")
-                value("PACKAGE_ID", System.currentTimeMillis() % 1000)
-                value("CURRENT_INVENTORY_COUNT", 1)
-                value("STORE_COST", 1.50f)
-                value("SALE_PRICE", 1.30f)
-                value("LAST_UPDATE_DATE", LocalDateTime.now())
-                value("UPDATED_BY_USER", "me")
-                value("PET_FLAG", true)
+                values {
+                    value("ID", 1)
+                    value("PRODUCT_NAME", "PRODUCT NAME")
+                    value("PACKAGE_ID", System.currentTimeMillis() % 1000)
+                    value("CURRENT_INVENTORY_COUNT", 1)
+                    value("STORE_COST", 1.50f)
+                    value("SALE_PRICE", 1.30f)
+                    value("LAST_UPDATE_DATE", LocalDateTime.now())
+                    value("UPDATED_BY_USER", "me")
+                    value("PET_FLAG", true)
+                }
             }
         },
         rollback = listOf(),
@@ -89,15 +94,17 @@ internal class VariousCheckSumScenariosTest {
         forward = changes {
             update {
                 table("PRODUCT")
-                setValueFunction("CURRENT_INVENTORY_COUNT", "CURRENT_INVENTORY_COUNT+1")
-                whereValue("ID", 1)
+                set("CURRENT_INVENTORY_COUNT" to expression("CURRENT_INVENTORY_COUNT+1"))
+                where {
+                    column("ID") eq valueFromNumber(1)
+                }
             }
         },
         rollback = listOf(),
     )
 
     @Test
-    fun `A run always changeSet always runs!`() {
+    fun `A run always refactoring always runs!`() {
         val result = kontrolDb {
             changeModules(
                 module {

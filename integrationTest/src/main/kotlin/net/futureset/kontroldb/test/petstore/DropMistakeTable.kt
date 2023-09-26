@@ -1,8 +1,7 @@
 package net.futureset.kontroldb.test.petstore
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.changes
-import net.futureset.kontroldb.KontrolDbDsl.Companion.executionOrder
 import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.dropTable
 import org.koin.core.annotation.Single
 
 @Single

@@ -1,7 +1,9 @@
 package net.futureset.kontroldb.settings
 
-import net.futureset.kontroldb.DbColumnType
+import net.futureset.kontroldb.ColumnType
 import net.futureset.kontroldb.DbIdentifier
+import net.futureset.kontroldb.TemplateResolver
+import java.nio.file.Path
 import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -12,6 +14,8 @@ class EffectiveSettings(
     private val targetSettings: TargetSettings,
 ) {
 
+    lateinit var templateResolver: TemplateResolver
+    val outputDirectory: Path = executionSettings.outputDirectory
     val dbName = dbDialect.name
     val outputTablespace = (dbDialect.supportsTablespace && executionSettings.outputTablespace)
     val outputSchema = executionSettings.outputSchema
@@ -32,8 +36,9 @@ class EffectiveSettings(
     val statementSeparator = dbDialect.statementSeparator
     val nullableByDefault = dbDialect.nullableByDefault
     val ddlInTransactions = dbDialect.ddlInTransactions
+    val operatingSystem = executionSettings.operatingSystem
     var isScripting = false
-    fun getNativeType(dbColumnType: DbColumnType): String = dbDialect.getNativeType(dbColumnType)
+    fun getNativeType(columnType: ColumnType): String = dbDialect.getNativeType(columnType)
 
     fun now() = dbDialect.now()
 

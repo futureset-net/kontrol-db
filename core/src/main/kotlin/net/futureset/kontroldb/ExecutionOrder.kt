@@ -25,11 +25,11 @@ data class ExecutionOrder(
         }
     }
 
-    data class ExecutionOrderBuilder(
-        private var dateOfChange: LocalDate? = null,
-        private var author: String? = null,
-        private var sequence: Int = 1,
-    ) : Builder<ExecutionOrder> {
+    @KontrolDbDslMarker
+    class ExecutionOrderBuilder : Builder<ExecutionOrderBuilder, ExecutionOrder> {
+        private lateinit var dateOfChange: LocalDate
+        private lateinit var author: String
+        private var sequence: Int = 1
 
         infix fun author(author: String) = apply {
             this.author = author
@@ -49,9 +49,9 @@ data class ExecutionOrder(
 
         override fun build(): ExecutionOrder {
             return ExecutionOrder(
-                author = requireNotNull(author),
+                author = author,
                 seq = sequence,
-                dateOfChange = requireNotNull(dateOfChange),
+                dateOfChange = dateOfChange,
             )
         }
     }

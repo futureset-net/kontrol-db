@@ -30,4 +30,14 @@ abstract class Refactoring(
     override fun toString(): String {
         return javaClass.canonicalName + " " + forward.map { it.getName() }
     }
+
+    companion object {
+        fun changes(vararg changes: ModelChange, lambda: ModelChangesBuilder.() -> Unit): List<ModelChange> {
+            return changes.asList() + ModelChangesBuilder().apply(lambda).build()
+        }
+
+        fun executionOrder(lambda: ExecutionOrder.ExecutionOrderBuilder.() -> Unit): ExecutionOrder {
+            return ExecutionOrder.ExecutionOrderBuilder().executionOrder(lambda)
+        }
+    }
 }

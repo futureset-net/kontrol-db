@@ -1,6 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ModelChange
+import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.TableBuilder
 
@@ -10,7 +11,7 @@ data class DropTable(
 
     data class DropTableBuilder(
         override var table: SchemaObject? = null,
-    ) : TableBuilder<DropTable> {
+    ) : TableBuilder<DropTableBuilder, DropTable> {
 
         override fun build(): DropTable {
             return DropTable(
@@ -19,3 +20,6 @@ data class DropTable(
         }
     }
 }
+
+fun ModelChangesBuilder.dropTable(lambda: (DropTable.DropTableBuilder.() -> Unit)): DropTable =
+    DropTable.DropTableBuilder().apply(lambda).build().apply(changes::add)

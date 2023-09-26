@@ -6,7 +6,7 @@ import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.settings.EffectiveSettings
 import kotlin.reflect.KClass
 
-class CreateTableTemplate(private val db: EffectiveSettings, private val primaryKeyTemplate: AddPrimaryKeyTemplate) :
+class CreateTableTemplate(private val db: EffectiveSettings) :
     DbAwareTemplate<CreateTable>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<CreateTable> {
         return CreateTable::class
@@ -16,7 +16,7 @@ class CreateTableTemplate(private val db: EffectiveSettings, private val primary
         return """
 CREATE TABLE ${change.table.toSql()}${(change.tablespace ?: db.defaultTablespace).toSql { " TABLESPACE $it" }} (
     ${forEach(change.columnDefinitions, separateBy = ",\n    ")}
-    ${change.primaryKey?.let{ "," + template(it)?.convert(it)?.first() }.orEmpty()}
+    ${change.primaryKey?.let{ "," + otherTemplate(it) }.orEmpty()}
 )
         """.trimIndent()
     }

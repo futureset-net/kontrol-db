@@ -4,9 +4,9 @@ import net.futureset.kontroldb.settings.DbDialect
 
 interface AnsiDialect : DbDialect {
 
-    override fun getNativeType(dbColumnType: DbColumnType): String {
-        return if (dbColumnType is StandardColumnTypes) {
-            when (dbColumnType) {
+    override fun getNativeType(columnType: ColumnType): String {
+        return if (columnType is StandardColumnTypes) {
+            when (columnType) {
                 StandardColumnTypes.INT_16 -> "SMALLINT"
                 StandardColumnTypes.INT_32 -> "INT"
                 StandardColumnTypes.INT_64 -> "BIGINT"
@@ -17,7 +17,7 @@ interface AnsiDialect : DbDialect {
                 StandardColumnTypes.LOCALDATETIME -> "DATETIME"
             }
         } else {
-            dbColumnType.getName().uppercase() + dbColumnType.size()
+            columnType.getName().uppercase() + columnType.size()
         }
     }
 }

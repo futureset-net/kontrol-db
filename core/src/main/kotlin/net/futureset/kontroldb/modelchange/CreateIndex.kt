@@ -1,7 +1,9 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.DbIdentifier
+import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
+import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.TableBuilder
 import net.futureset.kontroldb.Tablespace
@@ -9,16 +11,21 @@ import net.futureset.kontroldb.Tablespace
 data class CreateIndex(
     val table: SchemaObject,
     val columnReferences: List<DbIdentifier>,
+    val clustered: Boolean,
+    val unique: Boolean,
     var indexName: DbIdentifier? = null,
     val tablespace: Tablespace? = null,
 ) : ModelChange {
 
+    @KontrolDbDslMarker
     data class CreateIndexBuilder(
         override var table: SchemaObject? = null,
         private var indexName: DbIdentifier? = null,
         private var tablespace: String? = null,
+        private var clustered: Boolean = false,
+        private var unique: Boolean = false,
         private val columns: MutableList<DbIdentifier> = mutableListOf(),
-    ) : TableBuilder<CreateIndex> {
+    ) : TableBuilder<CreateIndexBuilder, CreateIndex> {
 
         fun indexName(indexName: String) = apply {
             this.indexName = DbIdentifier(indexName)
@@ -26,6 +33,14 @@ data class CreateIndex(
 
         fun tablespace(tablespace: String) = apply {
             this.tablespace = tablespace
+        }
+
+        fun clustered(clustered: Boolean) = apply {
+            this.clustered = clustered
+        }
+
+        fun unique(unique: Boolean) = apply {
+            this.unique = unique
         }
 
         fun column(name: String) {
@@ -37,8 +52,13 @@ data class CreateIndex(
                 table = requireNotNull(table) { "Table not specified for Index" },
                 indexName = indexName,
                 tablespace = tablespace?.let(::Tablespace),
+                clustered = clustered,
+                unique = unique,
                 columnReferences = columns,
             )
         }
     }
 }
+
+fun ModelChangesBuilder.createIndex(lambda: CreateIndex.CreateIndexBuilder.() -> Unit): CreateIndex =
+    CreateIndex.CreateIndexBuilder().apply(lambda).build().apply(changes::add)

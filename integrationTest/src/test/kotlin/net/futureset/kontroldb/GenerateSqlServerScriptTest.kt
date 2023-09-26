@@ -32,7 +32,7 @@ internal class GenerateSqlServerScriptTest {
             }
 
         var generatedFile = tempDir.resolve("output.sql")
-        result.generateSql(generatedFile)
+        result.generateSql(tempDir)
 
         assertThat(generatedFile).describedAs("script was generated").exists()
         val scriptContent = generatedFile.readText()

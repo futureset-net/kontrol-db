@@ -53,7 +53,7 @@ internal class CreateVersionControlTableTest {
             .isEqualTo(customName)
 
         val script = tempDir.resolve("output.sql")
-        result.generateSql(script)
+        result.generateSql(tempDir)
         assertThat(script).exists()
         val scriptText = script.readText()
         println(scriptText)

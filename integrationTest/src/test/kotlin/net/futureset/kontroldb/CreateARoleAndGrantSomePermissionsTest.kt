@@ -1,7 +1,8 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.changes
-import net.futureset.kontroldb.KontrolDbDsl.Companion.executionOrder
+import net.futureset.kontroldb.modelchange.createRole
+import net.futureset.kontroldb.modelchange.dropRole
+import net.futureset.kontroldb.modelchange.grantPermissions
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import org.junit.jupiter.api.Test
 import org.koin.core.module.dsl.singleOf

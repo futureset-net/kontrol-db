@@ -1,9 +1,11 @@
 package net.futureset.kontroldb.test.petstore
 
+import net.futureset.kontroldb.ColumnValue
+import net.futureset.kontroldb.ColumnValue.Companion.expression
+import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ExecuteMode
-import net.futureset.kontroldb.KontrolDbDsl.Companion.changes
-import net.futureset.kontroldb.KontrolDbDsl.Companion.executionOrder
 import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.update
 import org.koin.core.annotation.Single
 
 @Single
@@ -17,15 +19,19 @@ class IncrementCustomerId : Refactoring(
     forward = changes {
         update {
             table("CUSTOMER")
-            setValueFunction("CUST_ID", "CUST_ID+1")
-            whereValue("FIRSTNAME", "ben")
+            set("CUST_ID" to expression("CUST_ID+1"))
+            where {
+                DbIdentifier("FIRSTNAME") eq ColumnValue.valueFromString("ben")
+            }
         }
     },
     rollback = changes {
         update {
             table("CUSTOMER")
-            setValueFunction("CUST_ID", "CUST_ID-1")
-            whereValue("FIRSTNAME", "ben")
+            set("CUST_ID" to expression("CUST_ID-1"))
+            where {
+                DbIdentifier("FIRSTNAME") eq ColumnValue.valueFromString("ben")
+            }
         }
     },
 )

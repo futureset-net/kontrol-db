@@ -27,6 +27,7 @@ junit-mockito = { group = "org.mockito", name = "mockito-junit-jupiter", version
 junit-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine" }
 assertj = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 hsqldb = { group = "org.hsqldb", name = "hsqldb", version.ref = "hsqldb" }
+hsqldb-tool = { group = "org.hsqldb", name = "sqltool", version.ref = "hsqldb" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "ksp" }
 koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref = "koin" }

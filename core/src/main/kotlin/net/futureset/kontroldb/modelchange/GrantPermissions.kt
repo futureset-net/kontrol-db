@@ -3,7 +3,9 @@ package net.futureset.kontroldb.modelchange
 import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.DbObjectType
+import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
+import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
 
@@ -14,12 +16,13 @@ data class GrantPermissions(
     val targetObjectType: String,
 ) : ModelChange {
 
+    @KontrolDbDslMarker
     data class GrantPermissionBuilder(
         private val grantees: MutableSet<DbIdentifier> = mutableSetOf(),
         private val permissions: MutableSet<String> = mutableSetOf(),
         private var targetObject: SchemaObject? = null,
         private var targetObjectType: String = DbObjectType.TABLE.name,
-    ) : Builder<GrantPermissions> {
+    ) : Builder<GrantPermissionBuilder, GrantPermissions> {
 
         fun to(vararg grantees: String) = apply {
             this.grantees.addAll(grantees.map(::DbIdentifier))
@@ -55,3 +58,6 @@ data class GrantPermissions(
         }
     }
 }
+
+fun ModelChangesBuilder.grantPermissions(lambda: GrantPermissions.GrantPermissionBuilder.() -> Unit): GrantPermissions =
+    GrantPermissions.GrantPermissionBuilder().apply(lambda).build().apply(changes::add)

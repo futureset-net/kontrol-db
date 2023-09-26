@@ -5,10 +5,9 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 abstract class DbAwareTemplate<T : ModelChange>(
     private val effectiveSettings: EffectiveSettings,
     override val priority: TemplatePriority = TemplatePriority.CUSTOM,
-) :
-    SqlTemplate<T> {
+) : SqlTemplate<T> {
 
-    override var templateResolver: TemplateResolver? = null
+    override lateinit var templateResolver: TemplateResolver
     fun SqlString?.toSql(block: (String) -> String = { it }): String {
         return this?.toSql(effectiveSettings)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
     }
@@ -23,6 +22,14 @@ abstract class DbAwareTemplate<T : ModelChange>(
         return items.joinToString(separator = separateBy, transform = block)
     }
 
+    fun otherTemplate(change: ModelChange): String {
+        var result = templateResolver.findTemplate(change)?.convert(change) ?: emptyList()
+        require(result.size < 2)
+        return result.firstOrNull() ?: ""
+    }
+    fun otherTemplateOutput(change: ModelChange): List<String> {
+        return templateResolver.findTemplate(change)?.convert(change)?.filterNotNull() ?: emptyList()
+    }
     open fun convertToSingleStatement(change: T): String? = null
 
     override fun convert(change: T): List<String> {

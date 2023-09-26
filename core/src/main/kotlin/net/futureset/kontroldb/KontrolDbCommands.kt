@@ -5,7 +5,7 @@ import java.util.SortedSet
 
 interface KontrolDbCommands {
 
-    fun generateSql(output: Path)
+    fun generateSql(outputDirectory: Path)
     fun applySql(): Int
     fun getCurrentState(): SortedSet<AppliedRefactoring>
     fun getNextRefactorings(): List<Refactoring>

@@ -2,32 +2,37 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ColumnDefinition
 import net.futureset.kontroldb.ColumnDefinition.ColumnDefinitionBuilder
+import net.futureset.kontroldb.ColumnType
 import net.futureset.kontroldb.ConstraintModelChange
-import net.futureset.kontroldb.DbColumnType
 import net.futureset.kontroldb.DbIdentifier
+import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.TableBuilder
 
 data class AddNotNull(
     val table: SchemaObject?,
     val column: ColumnDefinition,
-    override val constraintName: DbIdentifier? = null,
+    override val constraintName: DbIdentifier?,
 ) : ConstraintModelChange {
 
-    data class AddNotNullBuilder(
+    class AddNotNullBuilder(
         override var table: SchemaObject? = null,
-        private var column: ColumnDefinition? = null,
-    ) : TableBuilder<AddNotNull> {
+    ) : TableBuilder<AddNotNullBuilder, AddNotNull> {
 
-        fun column(name: String, type: DbColumnType, block: ColumnDefinitionBuilder.() -> Unit = { }) = apply {
+        private lateinit var column: ColumnDefinition
+        fun column(name: String, type: ColumnType, block: ColumnDefinitionBuilder.() -> Unit = { }) = apply {
             column = ColumnDefinitionBuilder(name, type).apply(block).build()
         }
 
         override fun build(): AddNotNull {
             return AddNotNull(
                 table = table,
-                column = requireNotNull(column),
+                column = column,
+                constraintName = null,
             )
         }
     }
 }
+
+fun ModelChangesBuilder.addNotNull(lambda: AddNotNull.AddNotNullBuilder.() -> Unit): AddNotNull =
+    AddNotNull.AddNotNullBuilder().apply(lambda).build().apply(changes::add)

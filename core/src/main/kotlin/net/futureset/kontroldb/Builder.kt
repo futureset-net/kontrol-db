@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-interface Builder<T> {
+interface Builder<B : Builder<B, T>, T> {
 
     fun build(): T
 }

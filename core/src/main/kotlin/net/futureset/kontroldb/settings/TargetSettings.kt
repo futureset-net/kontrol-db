@@ -28,7 +28,7 @@ data class TargetSettingsBuilder(
     private var defaultSchema: String? = null,
     private var defaultCatalog: String? = null,
     private var versionControlTable: SchemaObject = SchemaObjectBuilder().name(DEFAULT_VERSION_CONTROL_TABLE).build(),
-) : Builder<TargetSettings> {
+) : Builder<TargetSettingsBuilder, TargetSettings> {
     fun versionControlTable(block: SchemaObjectBuilder.() -> Unit) = apply {
         versionControlTable = SchemaObjectBuilder().apply(block).build()
     }
