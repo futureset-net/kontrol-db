@@ -27,4 +27,5 @@ val coreTemplateModule = module {
     singleOf(::DeleteRowTemplate).bind(SqlTemplate::class)
     singleOf(::CreateTemporaryTableTemplate).bind(SqlTemplate::class)
     singleOf(::SelectQueryTemplate).bind(SqlTemplate::class)
+    singleOf(::CreateProcedureTemplate).bind(SqlTemplate::class)
 }
