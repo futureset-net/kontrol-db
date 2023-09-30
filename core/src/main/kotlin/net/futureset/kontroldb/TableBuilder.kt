@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package net.futureset.kontroldb
 
 interface TableBuilder<B : TableBuilder<B, T>, T : ModelChange> : Builder<B, T> {

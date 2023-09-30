@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
+import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.targetsystem.SqlServerDialect
 import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +15,7 @@ internal class GenerateSqlServerScriptTest {
     @Test
     fun `Can generate a sql server script`(@TempDir tempDir: Path) {
         val result =
-            kontrolDb {
+            dsl {
                 executionSettings {
                     outputTablespace = true
                     outputCatalog = true

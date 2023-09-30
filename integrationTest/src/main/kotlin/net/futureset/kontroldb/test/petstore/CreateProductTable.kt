@@ -16,7 +16,7 @@ import org.koin.core.annotation.Single
 @Single
 class CreateProductTable : Refactoring(
 
-    executionOrder = executionOrder {
+    executionOrder {
         ymd(2023, 8, 27)
         author("ben")
         sequence(2)

@@ -51,7 +51,7 @@ internal class CreateARoleAndGrantSomePermissionsTest {
 
     @Test
     fun `can create a role and grant permissions to it`() {
-        val result = KontrolDbDsl.kontrolDb {
+        val result = KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(::CreateARoleCalledFred).bind(Refactoring::class)

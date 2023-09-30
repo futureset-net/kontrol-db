@@ -1,0 +1,234 @@
+= kontrol-db
+:source-highlighter: highlightjs
+
+A database migration tool.
+
+It uses similar patterns to Flyway and Liquibase.
+
+I have used both Flyway and Liquibase. This project is inspired by Liquibase in particular.
+
+Features :
+
+- Changes expressed in an easy to use Kotlin domain specific language (DSL)
+- The Kotlin language is a good fit because it provides static compilation and easy String templating
+- Because database changes are compiled code, it is easily distributed in the same way as any other code
+- Its easy to integrate into automated testing
+- Changes are NOT expressed in raw SQL so it is easy to run the same changes against lightweight in-memory databases such as H2 and HSQLDB as your main RDBMS (Postgres, Oracle, DB2, MySQL etc)
+- Its easy to extend. Adding new SQL support.
+
+== Running a migration
+
+Use the DSL to configure KontrolDb.
+
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples
+
+import net.futureset.kontroldb.KontrolDb
+import net.futureset.kontroldb.targetsystem.HsqlDbDialect
+import org.koin.ksp.generated.module
+
+fun main() {
+    KontrolDb.dsl {
+        changeModules(ExampleModule().module)
+        dbSettings {
+            dbDialect(HsqlDbDialect())
+            jdbcUrl("jdbc:hsqldb:mem:test")
+        }
+    }.run {
+        applySql() <1>
+    }
+}
+----
+<1> Run the changes directly against the database
+
+== Define a module
+
+Define a module such that annotated refactorings get picked up
+
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples
+
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+
+@Module
+@ComponentScan("net.futureset.kontroldb.test.examples.refactoring") <1>
+class ExampleModule
+----
+<1> The package in which the annotated Refactoring subclasses reside
+
+== Reference
+
+=== Add Primary Key
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.addPrimaryKey
+import org.koin.core.annotation.Single
+
+@Single
+class AddPrimaryKey : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+        addPrimaryKey {
+            table("CUSTOMER")
+            column("CUST_ID")
+            constraintName("PK_CUSTOMER")
+        }
+    },
+    rollback = emptyList(),
+)
+
+----
+=== Add Not Null Constraint
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.modelchange.addNotNull
+import org.koin.core.annotation.Single
+
+@Single
+class AddNotNull : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+        addNotNull {
+            table("CUSTOMER")
+            column("LASTNAME", Varchar(25))
+        }
+    },
+    rollback = emptyList(),
+)
+
+----
+=== Create Role
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.createRole
+import net.futureset.kontroldb.modelchange.dropTable
+import org.koin.core.annotation.Single
+
+@Single
+class CreateRole : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+        createRole {
+            roleName("A_NEW_ROLE")
+        }
+    },
+    rollback = emptyList(),
+)
+----
+=== Create Table
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.modelchange.createTable
+import net.futureset.kontroldb.modelchange.dropTable
+import org.koin.core.annotation.Single
+
+@Single
+class CreateTable : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+        createTable {
+            table("CUSTOMER")
+            column("CUST_ID", INT_32)
+            column("FIRSTNAME", Varchar(20))
+            column("LASTNAME", Varchar(25))
+            column("ADDRESS", Varchar(32))
+            column("CITY", Varchar(20))
+            column("STATE", Varchar(2))
+            column("ZIP", Varchar(9))
+            primaryKey {
+                column("CUST_ID")
+                constraintName("CUSTOMER_PK")
+            }
+        }
+    },
+    rollback = changes {
+        dropTable {
+            table("CUSTOMER")
+        }
+    },
+)
+----
+=== Drop Table
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.dropTable
+import org.koin.core.annotation.Single
+
+@Single
+class DropTable : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+        dropTable {
+            table("CUSTOMER")
+        }
+    },
+    rollback = emptyList(),
+)
+----
+=== Grant Permissions
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.DbObjectType
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.createRole
+import net.futureset.kontroldb.modelchange.dropTable
+import net.futureset.kontroldb.modelchange.grantPermissions
+import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
+import org.koin.core.annotation.Single
+
+@Single
+class GrantPermissions : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+        grantPermissions {
+            on("CUSTOMER")
+            objectType(DbObjectType.TABLE)
+            permissions("INSERT", "UPDATE", "DELETE")
+            to("A_NEW_ROLE")
+        }
+    },
+    rollback = emptyList(),
+)
+----
+

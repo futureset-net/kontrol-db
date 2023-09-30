@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
+import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -13,7 +13,7 @@ internal class ApplyToHsqlDbTest {
 
     @Test
     fun `Can generate an sql script that will run on HsqlDb`(@TempDir sqlOutputDir: Path) {
-        val engine = kontrolDb {
+        val engine = dsl {
             changeModules(PetStore().module)
         }
 
@@ -30,7 +30,7 @@ internal class ApplyToHsqlDbTest {
 
     @Test
     fun `Can apply changes directly to the database`() {
-        kontrolDb {
+        dsl {
             changeModules(PetStore().module)
         }.run {
             assertThat(getCurrentState())

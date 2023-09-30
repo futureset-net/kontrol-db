@@ -3,7 +3,7 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.ColumnValue.Companion.column
 import net.futureset.kontroldb.ColumnValue.Companion.expression
 import net.futureset.kontroldb.ColumnValue.Companion.valueFromNumber
-import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
+import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.modelchange.insert
 import net.futureset.kontroldb.modelchange.update
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
@@ -23,7 +23,7 @@ internal class VariousCheckSumScenariosTest {
 
     @Test
     fun `Refactorings can be re-run where indicated when the checksum changes`() {
-        val result = kontrolDb {
+        val result = dsl {
             changeModules(PetStore().module)
         }
 
@@ -49,7 +49,7 @@ internal class VariousCheckSumScenariosTest {
 
     @Test
     fun `If checksum changes on a non re-runnable changeset, this is an error`() {
-        val result = kontrolDb {
+        val result = dsl {
             changeModules(PetStore().module)
         }
 
@@ -105,7 +105,7 @@ internal class VariousCheckSumScenariosTest {
 
     @Test
     fun `A run always refactoring always runs!`() {
-        val result = kontrolDb {
+        val result = dsl {
             changeModules(
                 module {
                     singleOf(::CreateProductTable).bind(Refactoring::class)

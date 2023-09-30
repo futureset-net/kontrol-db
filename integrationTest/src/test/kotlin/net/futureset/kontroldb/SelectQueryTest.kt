@@ -57,7 +57,7 @@ internal class SelectQueryTest {
     @ParameterizedTest
     @MethodSource("fred")
     fun `Check various predicates`(param: Param) {
-        val engine = KontrolDbDsl.kontrolDb {
+        val engine = KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(SelectQueryTest::CreateATable).bind(Refactoring::class)

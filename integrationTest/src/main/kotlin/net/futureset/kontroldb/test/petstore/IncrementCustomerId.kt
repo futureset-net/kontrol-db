@@ -10,7 +10,7 @@ import org.koin.core.annotation.Single
 
 @Single
 class IncrementCustomerId : Refactoring(
-    executionOrder = executionOrder {
+    executionOrder {
         author("ben")
         ymd(2023, 8, 28)
         sequence(2)

@@ -30,7 +30,7 @@ internal class CreateTemporaryTableTest {
     @ParameterizedTest
     @EnumSource(TablePersistence::class)
     fun `Can create a temporary table`(tableType: TablePersistence) {
-        val engine = KontrolDbDsl.kontrolDb {
+        val engine = KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(CreateTemporaryTableTest::CreateATemporaryTable).bind(Refactoring::class)

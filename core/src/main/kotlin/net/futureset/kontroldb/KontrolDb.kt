@@ -6,7 +6,7 @@ import net.futureset.kontroldb.settings.ExecutionSettings
 import net.futureset.kontroldb.settings.TargetSettingsBuilder
 import org.koin.core.module.Module
 
-class KontrolDbDsl {
+class KontrolDb {
 
     private var kontrolDbEngineBuilder = KontrolDbEngine.KontrolDbEngineBuilder()
     private var targetSettingsBuilder: TargetSettingsBuilder = TargetSettingsBuilder(
@@ -36,8 +36,8 @@ class KontrolDbDsl {
 
     companion object {
 
-        fun kontrolDb(lambda: KontrolDbDsl.() -> Unit): KontrolDbEngine {
-            return KontrolDbDsl().apply(lambda).model()
+        fun dsl(lambda: KontrolDb.() -> Unit): KontrolDbEngine {
+            return KontrolDb().apply(lambda).model()
         }
     }
 }

@@ -12,7 +12,7 @@ import org.koin.core.annotation.Single
 @Single
 class CreateSalesItemTable : Refactoring(
 
-    executionOrder = executionOrder {
+    executionOrder {
         ymd(2023, 9, 9)
         author("ben")
         sequence(1)

@@ -6,7 +6,7 @@ import org.koin.core.annotation.Single
 
 @Single
 class InsertACustomer : Refactoring(
-    executionOrder = executionOrder {
+    executionOrder {
         author("ben")
         ymd(2023, 8, 28)
     },

@@ -7,7 +7,20 @@ import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.TableBuilder
+import java.nio.file.Files
 import java.nio.file.Path
+
+fun Path.contentsChecksum(): Int {
+    var hashcode = 0
+    Files.newInputStream(this).buffered(1024).use { data ->
+        var currentByte: Int
+        do {
+            currentByte = data.read()
+            hashcode = (hashcode + currentByte) % (Int.MAX_VALUE - 300)
+        } while (currentByte != -1)
+        return hashcode
+    }
+}
 
 data class ApplyDsvToTable(
     val table: SchemaObject,
@@ -32,6 +45,10 @@ data class ApplyDsvToTable(
                 "Cannot ignore insert violations if insert rows is not set"
             }
         }
+    }
+
+    override fun checksum(): Int {
+        return super.checksum() + file.contentsChecksum()
     }
 
     data class ApplyDsvToTableBuilder(

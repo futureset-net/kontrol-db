@@ -51,7 +51,7 @@ internal class InsertUpdateAndDeleteTest {
     @ParameterizedTest
     @MethodSource("fred")
     fun `Check various predicates`(param: Param) {
-        val engine = KontrolDbDsl.kontrolDb {
+        val engine = KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(InsertUpdateAndDeleteTest::CreateATable).bind(Refactoring::class)

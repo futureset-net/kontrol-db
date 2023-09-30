@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
+import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import net.futureset.kontroldb.test.petstore.CreateProductTable
 import net.futureset.kontroldb.test.petstore.PetStore
@@ -12,7 +12,7 @@ internal class PickupChangesViaModuleTest {
 
     @Test
     fun `Can get migration changes from scan`() {
-        val result = kontrolDb {
+        val result = dsl {
             changeModules(PetStore().module)
         }
 

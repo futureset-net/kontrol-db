@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbDsl.Companion.kontrolDb
+import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
@@ -14,7 +14,7 @@ internal class CreateVersionControlTableTest {
 
     @Test
     fun `Create a version control table`() {
-        val result = kontrolDb {
+        val result = dsl {
         }
         assertThat(result).isNotNull
         assertThat(result.refactorings).hasSize(1)
@@ -30,7 +30,7 @@ internal class CreateVersionControlTableTest {
     @Test
     fun `Check has a version control table with custom name`(@TempDir tempDir: Path) {
         val customName = "HELLO"
-        val result = kontrolDb {
+        val result = dsl {
             dbSettings {
                 versionControlTable {
                     name(customName)

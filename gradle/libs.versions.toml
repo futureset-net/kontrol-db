@@ -12,10 +12,12 @@ ksp="1.2.2"
 ktlint="0.48.2"
 logback="1.4.11"
 snakeyaml = "2.2"
+asciidoc-plugin = "3.3.2"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
+asciidoc = {id ="org.asciidoctor.jvm.convert", version.ref= "asciidoc-plugin"}
 
 [libraries]
 snakeyaml = {group = "org.yaml", name="snakeyaml", version.ref="snakeyaml"}

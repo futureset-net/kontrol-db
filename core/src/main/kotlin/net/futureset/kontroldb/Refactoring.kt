@@ -24,7 +24,7 @@ abstract class Refactoring(
     }
 
     fun checkSum(): String {
-        return (forward.hashCode()).absoluteValue.toString(16)
+        return forward.map(ModelChange::checksum).sum().absoluteValue.toString(16)
     }
 
     override fun toString(): String {
