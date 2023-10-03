@@ -51,24 +51,25 @@ internal class InsertUpdateAndDeleteTest {
     @ParameterizedTest
     @MethodSource("fred")
     fun `Check various predicates`(param: Param) {
-        val engine = KontrolDb.dsl {
+        KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(InsertUpdateAndDeleteTest::CreateATable).bind(Refactoring::class)
                     single { param.selectQuery }
                 },
             )
+        }.use { engine ->
+
+            engine.applySql()
+
+            assertThat(
+                engine.sqlExecutor.withConnection {
+                    it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
+                        rs.getInt(1)
+                    }.first()
+                },
+            ).isEqualTo(param.expectedResultCount)
         }
-
-        engine.applySql()
-
-        assertThat(
-            engine.sqlExecutor.withConnection {
-                it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
-                    rs.getInt(1)
-                }.first()
-            },
-        ).isEqualTo(param.expectedResultCount)
     }
 
     companion object {

@@ -23,7 +23,6 @@ import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.modelchange.ValuesBuilder
 import net.futureset.kontroldb.settings.EffectiveSettings
-import java.nio.file.Files
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -35,8 +34,7 @@ class ApplyDsvToTableTemplate(private val db: EffectiveSettings) :
 
     override fun convert(change: ApplyDsvToTable): List<String> {
         require(!change.useDbLoadingTool)
-        val inputStream = Files.newInputStream(change.file)
-        return inputStream.bufferedReader().use { reader ->
+        return change.file.reader().use { reader ->
             val headerNames = reader.readLine()
                 .split(change.separator)
                 .map(String::uppercase)
@@ -44,7 +42,6 @@ class ApplyDsvToTableTemplate(private val db: EffectiveSettings) :
             require(invalidHeaderNames.isEmpty()) { "No such headers '$invalidHeaderNames' CSV has $headerNames" }
             val values = reader.lineSequence()
                 .mapIndexed { _, row ->
-
                     val v = ValuesBuilder()
                     row.split(change.separator).mapIndexed { columNumber, value ->
                         requireNotNull(change.headerMappings[headerNames[columNumber]]).let {

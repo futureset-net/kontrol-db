@@ -94,7 +94,7 @@ internal class CanLoadCsvIntoTableTest {
         forward = changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
-                file(csvFile)
+                file(Resource.resource(csvFile.toString()))
                 insertRows(insertRows)
                 deleteRows(deleteRows)
                 updateRows(updateRows)
@@ -133,7 +133,7 @@ internal class CanLoadCsvIntoTableTest {
         forward = changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
-                file(csvFile)
+                file(Resource.resource(csvFile.toString()))
                 insertRows(insertRows)
                 deleteRows(deleteRows)
                 updateRows(updateRows)
@@ -171,7 +171,7 @@ internal class CanLoadCsvIntoTableTest {
                 },
         )
 
-        val result = KontrolDb.dsl {
+        KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -179,21 +179,22 @@ internal class CanLoadCsvIntoTableTest {
                     single { dsvFile }
                 },
             )
-        }
-        result.applySql()
-        val customerCount = result.sqlExecutor.withConnection {
-            it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
-                rs.getInt(1)
-            }.first()
-        }
-        assertThat(customerCount).isEqualTo(createCount)
-        assertThat(
-            result.sqlExecutor.withConnection {
-                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE IS_AN_IDIOT=true") { rs ->
+        }.use { result ->
+            result.applySql()
+            val customerCount = result.sqlExecutor.withConnection {
+                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
                     rs.getInt(1)
                 }.first()
-            },
-        ).isEqualTo(customerCount / 2)
+            }
+            assertThat(customerCount).isEqualTo(createCount)
+            assertThat(
+                result.sqlExecutor.withConnection {
+                    it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE IS_AN_IDIOT=true") { rs ->
+                        rs.getInt(1)
+                    }.first()
+                },
+            ).isEqualTo(customerCount / 2)
+        }
     }
 
     data class DoUpdates(
@@ -238,7 +239,7 @@ internal class CanLoadCsvIntoTableTest {
         assertThat(lineDeletedText).isNotEqualTo(text)
         val dsvFile2 = tempDir.resolve("customers2.dsv")
         dsvFile2.writeText(lineDeletedText)
-        val result = KontrolDb.dsl {
+        KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -255,24 +256,25 @@ internal class CanLoadCsvIntoTableTest {
                     }.bind(Refactoring::class)
                 },
             )
-        }
-        result.applySql()
-        val customerCount = result.sqlExecutor.withConnection {
-            it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
-                rs.getInt(1)
-            }.first()
-        }
-        val updateRecordCount = result.sqlExecutor.withConnection {
-            it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE LASTNAME='RileyChanged'") { rs ->
-                rs.getInt(1)
-            }.first()
-        }
-        assertThat(updateRecordCount).isEqualTo(if (arg.updates) 1 else 0)
+        }.use { result ->
+            result.applySql()
+            val customerCount = result.sqlExecutor.withConnection {
+                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
+                    rs.getInt(1)
+                }.first()
+            }
+            val updateRecordCount = result.sqlExecutor.withConnection {
+                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE LASTNAME='RileyChanged'") { rs ->
+                    rs.getInt(1)
+                }.first()
+            }
+            assertThat(updateRecordCount).isEqualTo(if (arg.updates) 1 else 0)
 
-        if (arg.deletes) {
-            assertThat(customerCount).describedAs("A line has been deleted").isEqualTo(createCount - 1)
-        } else {
-            assertThat(customerCount).describedAs("No lines deleted").isEqualTo(createCount)
+            if (arg.deletes) {
+                assertThat(customerCount).describedAs("A line has been deleted").isEqualTo(createCount - 1)
+            } else {
+                assertThat(customerCount).describedAs("No lines deleted").isEqualTo(createCount)
+            }
         }
     }
 }

@@ -14,31 +14,31 @@ internal class GenerateSqlServerScriptTest {
 
     @Test
     fun `Can generate a sql server script`(@TempDir tempDir: Path) {
-        val result =
-            dsl {
-                executionSettings {
-                    outputTablespace = true
-                    outputCatalog = true
-                    outputSchema = true
-                }
-                dbSettings {
-                    defaultSchema("dbo")
-                    jdbcUrl("jdbc:hsqldb:mem:testdb;sql.syntax_mss=true")
-                    defaultTablespace("MY_TABLESPACE")
-                    defaultIndexTablespace("MY_INDEX_TABLESPACE")
-                }
-                dbDialect(SqlServerDialect())
-                changeModules(PetStore().module)
+        dsl {
+            executionSettings {
+                outputTablespace = true
+                outputCatalog = true
+                outputSchema = true
             }
+            dbSettings {
+                defaultSchema("dbo")
+                jdbcUrl("jdbc:hsqldb:mem:testdb;sql.syntax_mss=true")
+                defaultTablespace("MY_TABLESPACE")
+                defaultIndexTablespace("MY_INDEX_TABLESPACE")
+            }
+            dbDialect(SqlServerDialect())
+            changeModules(PetStore().module)
+        }.use { result ->
 
-        var generatedFile = tempDir.resolve("output.sql")
-        result.generateSql(tempDir)
+            var generatedFile = tempDir.resolve("output.sql")
+            result.generateSql(tempDir)
 
-        assertThat(generatedFile).describedAs("script was generated").exists()
-        val scriptContent = generatedFile.readText()
-        println(scriptContent)
-        assertThat(scriptContent).contains("CREATE TABLE [KONTROL_DB_VERSIONING]")
-        assertThat(scriptContent).describedAs("SQL SERVER has different syntax for adding not null constraint")
-            .contains("ALTER TABLE [CUSTOMER] ALTER COLUMN [LASTNAME] VARCHAR(25) NOT NULL")
+            assertThat(generatedFile).describedAs("script was generated").exists()
+            val scriptContent = generatedFile.readText()
+            println(scriptContent)
+            assertThat(scriptContent).contains("CREATE TABLE [KONTROL_DB_VERSIONING]")
+            assertThat(scriptContent).describedAs("SQL SERVER has different syntax for adding not null constraint")
+                .contains("ALTER TABLE [CUSTOMER] ALTER COLUMN [LASTNAME] VARCHAR(25) NOT NULL")
+        }
     }
 }

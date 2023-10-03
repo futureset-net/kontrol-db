@@ -5,26 +5,13 @@ import net.futureset.kontroldb.ColumnType
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.Resource
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.TableBuilder
-import java.nio.file.Files
-import java.nio.file.Path
-
-fun Path.contentsChecksum(): Int {
-    var hashcode = 0
-    Files.newInputStream(this).buffered(1024).use { data ->
-        var currentByte: Int
-        do {
-            currentByte = data.read()
-            hashcode = (hashcode + currentByte) % (Int.MAX_VALUE - 300)
-        } while (currentByte != -1)
-        return hashcode
-    }
-}
 
 data class ApplyDsvToTable(
     val table: SchemaObject,
-    val file: Path,
+    val file: Resource,
     val useDbLoadingTool: Boolean,
     val headerMappings: Map<String, ColumnDefinition>,
     val primaryKeys: Set<DbIdentifier>,
@@ -47,10 +34,6 @@ data class ApplyDsvToTable(
         }
     }
 
-    override fun checksum(): Int {
-        return super.checksum() + file.contentsChecksum()
-    }
-
     data class ApplyDsvToTableBuilder(
         override var table: SchemaObject? = null,
     ) : TableBuilder<ApplyDsvToTableBuilder, ApplyDsvToTable> {
@@ -63,9 +46,9 @@ data class ApplyDsvToTable(
         private var updateRows = true
         private var insertRows = true
         private var ignoreInsertViolations = true
-        private var file: Path? = null
+        private lateinit var file: Resource
 
-        fun file(file: Path) = apply {
+        fun file(file: Resource) = apply {
             this.file = file
         }
 

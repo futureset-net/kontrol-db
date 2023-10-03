@@ -59,6 +59,6 @@ internal class CreateARoleAndGrantSomePermissionsTest {
                 },
             )
         }
-        result.applySql()
+        result.use { it.applySql() }
     }
 }

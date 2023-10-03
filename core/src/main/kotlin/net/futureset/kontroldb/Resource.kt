@@ -1,17 +1,31 @@
 package net.futureset.kontroldb
 
+import java.io.BufferedReader
+import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.Objects
+import kotlin.io.path.inputStream
 
 data class Resource(val path: String) {
 
     val lazyHashCode: Int by lazy {
-        text().hashCode()
+        inputStream()?.use {
+            var c: Int
+            var result = 0
+            while (true) {
+                c = it.read()
+                if (c == -1) break
+                result = 31 * result + c
+            }
+            result
+        } ?: 0
     }
+
     companion object {
         fun resource(input: String) =
             Resource(
-                input.trim('/', '\\')
-                    .split(Regex("/")).joinToString(separator = "/"),
+                input.replace("\\", "/"),
             )
     }
 
@@ -25,7 +39,17 @@ data class Resource(val path: String) {
 
     override fun hashCode() = Objects.hash(this.path, lazyHashCode)
 
+    private fun inputStream(): InputStream? {
+        return Paths.get(this.path).takeIf(Files::exists)?.inputStream()
+            ?: this::class.java.getResource("/" + path.trimStart('/'))
+                ?.openStream()
+    }
+
+    fun reader(): BufferedReader {
+        return requireNotNull(inputStream()).bufferedReader()
+    }
+
     fun text(): String {
-        return requireNotNull(this::class.java.getResource("/$path")?.readText())
+        return reader().readText()
     }
 }

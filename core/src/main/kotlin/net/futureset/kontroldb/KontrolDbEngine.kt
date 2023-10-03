@@ -43,9 +43,10 @@ data class KontrolDbEngine(
     val effectiveSettings: EffectiveSettings,
     val templateResolver: TemplateResolver,
     val sqlExecutor: SqlExecutor,
-) : KontrolDbCommands {
+) : KontrolDbCommands, AutoCloseable {
 
     val refactorings = allRefactoring.toSortedSet()
+
     init {
         effectiveSettings.templateResolver = templateResolver
         require(refactorings.size == allRefactoring.size) {
@@ -61,7 +62,12 @@ data class KontrolDbEngine(
         outputDirectory.createDirectories()
 
         val generateSql = generateSql()
-        outputDirectory.resolve("output.sql").writeText(generateSql.joinToString(separator = effectiveSettings.operatingSystem.lineSeparator.repeat(2), postfix = effectiveSettings.operatingSystem.lineSeparator))
+        outputDirectory.resolve("output.sql").writeText(
+            generateSql.joinToString(
+                separator = effectiveSettings.operatingSystem.lineSeparator.repeat(2),
+                postfix = effectiveSettings.operatingSystem.lineSeparator,
+            ),
+        )
     }
 
     override fun getCurrentState(): SortedSet<AppliedRefactoring> {
@@ -181,6 +187,10 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
         }
     }
 
+    override fun close() {
+        stopKoin()
+    }
+
     data class KontrolDbEngineBuilder(
         var dbDialect: DbDialect = HsqlDbDialect(),
         var targetSettings: TargetSettings = TargetSettings(
@@ -214,16 +224,13 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                 singleOf(::SqlExecutor).onClose { it?.close() }
                 single { KontrolDbEngine(getAll(), get(), get(), get()) }
             }
-            try {
-                val buildEngine = startKoin {
-                    logger(SLF4JLogger(level = Level.INFO))
-                    modules(coreModule)
-                    modules(modules)
-                }
-                return buildEngine.koin.get<KontrolDbEngine>()
-            } finally {
-                stopKoin()
+
+            val buildEngine = startKoin {
+                logger(SLF4JLogger(level = Level.INFO))
+                modules(coreModule)
+                modules(modules)
             }
+            return buildEngine.koin.get<KontrolDbEngine>()
         }
     }
 }

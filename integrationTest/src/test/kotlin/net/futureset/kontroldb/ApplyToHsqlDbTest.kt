@@ -13,34 +13,35 @@ internal class ApplyToHsqlDbTest {
 
     @Test
     fun `Can generate an sql script that will run on HsqlDb`(@TempDir sqlOutputDir: Path) {
-        val engine = dsl {
+        dsl {
             changeModules(PetStore().module)
+        }.use { engine ->
+
+            val outputSqlFile = sqlOutputDir.resolve("output.sql")
+
+            engine.generateSql(sqlOutputDir)
+
+            assertThat(outputSqlFile).exists()
+
+            val readText = outputSqlFile.readText()
+            println(readText)
+            assertThat(readText).isNotEmpty()
         }
-
-        val outputSqlFile = sqlOutputDir.resolve("output.sql")
-
-        engine.generateSql(sqlOutputDir)
-
-        assertThat(outputSqlFile).exists()
-
-        val readText = outputSqlFile.readText()
-        println(readText)
-        assertThat(readText).isNotEmpty()
     }
 
     @Test
     fun `Can apply changes directly to the database`() {
         dsl {
             changeModules(PetStore().module)
-        }.run {
-            assertThat(getCurrentState())
+        }.use {
+            assertThat(it.getCurrentState())
                 .describedAs("No changes have been applied yet").isEmpty()
-            assertThat(applySql())
+            assertThat(it.applySql())
                 .describedAs("At least two SQLs were executed").isGreaterThan(2)
-            assertThat(getCurrentState())
+            assertThat(it.getCurrentState())
                 .describedAs("Changes are reported as applied").hasSizeGreaterThan(2)
-            println(getCurrentState().toList().joinToString(separator = "\n"))
-            assertThat(applySql())
+            println(it.getCurrentState().toList().joinToString(separator = "\n"))
+            assertThat(it.applySql())
                 .describedAs("Re-running will apply no changes because its up to date").isZero()
         }
     }

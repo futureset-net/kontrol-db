@@ -12,12 +12,13 @@ internal class PickupChangesViaModuleTest {
 
     @Test
     fun `Can get migration changes from scan`() {
-        val result = dsl {
+        dsl {
             changeModules(PetStore().module)
-        }
+        }.use { result ->
 
-        assertThat(result.refactorings).hasSizeGreaterThan(1)
-        assertThat(result.refactorings).hasAtLeastOneElementOfType(CreateProductTable::class.java)
-        assertThat(result.refactorings).hasAtLeastOneElementOfType(CreateCustomerTable::class.java)
+            assertThat(result.refactorings).hasSizeGreaterThan(1)
+            assertThat(result.refactorings).hasAtLeastOneElementOfType(CreateProductTable::class.java)
+            assertThat(result.refactorings).hasAtLeastOneElementOfType(CreateCustomerTable::class.java)
+        }
     }
 }

@@ -14,23 +14,24 @@ internal class CreateVersionControlTableTest {
 
     @Test
     fun `Create a version control table`() {
-        val result = dsl {
+        dsl {
+        }.use { result ->
+            assertThat(result).isNotNull
+            assertThat(result.refactorings).hasSize(1)
+            assertThat(result.refactorings.first()).isInstanceOf(CreateVersionControlTable::class.java)
+            assertThat(result.refactorings.first() as CreateVersionControlTable)
+                .extracting { x -> x.forward.first() as CreateTable }
+                .extracting(CreateTable::table)
+                .extracting(SchemaObject::name)
+                .extracting(DbIdentifier::name)
+                .isEqualTo(DEFAULT_VERSION_CONTROL_TABLE)
         }
-        assertThat(result).isNotNull
-        assertThat(result.refactorings).hasSize(1)
-        assertThat(result.refactorings.first()).isInstanceOf(CreateVersionControlTable::class.java)
-        assertThat(result.refactorings.first() as CreateVersionControlTable)
-            .extracting { x -> x.forward.first() as CreateTable }
-            .extracting(CreateTable::table)
-            .extracting(SchemaObject::name)
-            .extracting(DbIdentifier::name)
-            .isEqualTo(DEFAULT_VERSION_CONTROL_TABLE)
     }
 
     @Test
     fun `Check has a version control table with custom name`(@TempDir tempDir: Path) {
         val customName = "HELLO"
-        val result = dsl {
+        dsl {
             dbSettings {
                 versionControlTable {
                     name(customName)
@@ -39,24 +40,25 @@ internal class CreateVersionControlTableTest {
                 }
                 defaultTablespace("TEST_TABLESPACE")
             }
+        }.use { result ->
+
+            assertThat(result).isNotNull
+
+            assertThat(result.refactorings).hasSize(1)
+            assertThat(result.refactorings.first()).isInstanceOf(CreateVersionControlTable::class.java)
+            assertThat(result.refactorings.first() as CreateVersionControlTable)
+                .extracting { x -> x.forward.first() as CreateTable }
+                .extracting(CreateTable::table)
+                .extracting(SchemaObject::name)
+                .extracting(DbIdentifier::name)
+                .isEqualTo(customName)
+
+            val script = tempDir.resolve("output.sql")
+            result.generateSql(tempDir)
+            assertThat(script).exists()
+            val scriptText = script.readText()
+            println(scriptText)
+            assertThat(scriptText).contains("""CREATE TABLE "PUBLIC"."PUBLIC"."HELLO"""")
         }
-
-        assertThat(result).isNotNull
-
-        assertThat(result.refactorings).hasSize(1)
-        assertThat(result.refactorings.first()).isInstanceOf(CreateVersionControlTable::class.java)
-        assertThat(result.refactorings.first() as CreateVersionControlTable)
-            .extracting { x -> x.forward.first() as CreateTable }
-            .extracting(CreateTable::table)
-            .extracting(SchemaObject::name)
-            .extracting(DbIdentifier::name)
-            .isEqualTo(customName)
-
-        val script = tempDir.resolve("output.sql")
-        result.generateSql(tempDir)
-        assertThat(script).exists()
-        val scriptText = script.readText()
-        println(scriptText)
-        assertThat(scriptText).contains("""CREATE TABLE "PUBLIC"."PUBLIC"."HELLO"""")
     }
 }

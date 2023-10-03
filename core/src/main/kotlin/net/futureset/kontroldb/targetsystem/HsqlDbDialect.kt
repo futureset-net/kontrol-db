@@ -5,7 +5,7 @@ import net.futureset.kontroldb.executeSql
 import java.sql.Connection
 import java.time.format.DateTimeFormatter
 
-class HsqlDbDialect : AnsiDialect {
+open class HsqlDbDialect : AnsiDialect {
 
     private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")

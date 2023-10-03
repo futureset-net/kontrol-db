@@ -3,6 +3,7 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.ColumnValue.Companion.column
 import net.futureset.kontroldb.ColumnValue.Companion.expression
 import net.futureset.kontroldb.ColumnValue.Companion.valueFromNumber
+import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.modelchange.insert
 import net.futureset.kontroldb.modelchange.update
@@ -23,48 +24,50 @@ internal class VariousCheckSumScenariosTest {
 
     @Test
     fun `Refactorings can be re-run where indicated when the checksum changes`() {
-        val result = dsl {
+        dsl {
             changeModules(PetStore().module)
+        }.use { result ->
+
+            assertThat(result.getCurrentState()).isEmpty()
+
+            assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
+
+            assertThat(result.getCurrentState()).describedAs("changes applied").hasSizeGreaterThan(2)
+
+            result.sqlExecutor.withConnection {
+                it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${IncrementCustomerId::class.qualifiedName}'")
+            }
+
+            assertThat(result.applySql()).isGreaterThan(1)
+            assertThat(
+                result.sqlExecutor.withConnection { conn ->
+                    conn.executeQuery("SELECT EXECUTION_COUNT FROM $DEFAULT_VERSION_CONTROL_TABLE WHERE ID='${IncrementCustomerId::class.qualifiedName}'") {
+                        it.getInt(1)
+                    }.first()
+                },
+            ).isEqualTo(2)
         }
-
-        assertThat(result.getCurrentState()).isEmpty()
-
-        assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
-
-        assertThat(result.getCurrentState()).describedAs("changes applied").hasSizeGreaterThan(2)
-
-        result.sqlExecutor.withConnection {
-            it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${IncrementCustomerId::class.qualifiedName}'")
-        }
-
-        assertThat(result.applySql()).isGreaterThan(1)
-        assertThat(
-            result.sqlExecutor.withConnection { conn ->
-                conn.executeQuery("SELECT EXECUTION_COUNT FROM $DEFAULT_VERSION_CONTROL_TABLE WHERE ID='${IncrementCustomerId::class.qualifiedName}'") {
-                    it.getInt(1)
-                }.first()
-            },
-        ).isEqualTo(2)
     }
 
     @Test
     fun `If checksum changes on a non re-runnable changeset, this is an error`() {
-        val result = dsl {
+        dsl {
             changeModules(PetStore().module)
+        }.use { result ->
+
+            assertThat(result.getCurrentState()).isEmpty()
+
+            assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
+
+            assertThat(result.getCurrentState()).describedAs("changes applied").hasSizeGreaterThan(2)
+
+            result.sqlExecutor.withConnection {
+                it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${CreateProductTable::class.qualifiedName}'")
+            }
+
+            assertThatThrownBy(result::applySql).isInstanceOf(IllegalStateException::class.java)
+                .hasMessageContaining("Checksum mismatch for net.futureset.kontroldb.test.petstore.CreateProductTable ")
         }
-
-        assertThat(result.getCurrentState()).isEmpty()
-
-        assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
-
-        assertThat(result.getCurrentState()).describedAs("changes applied").hasSizeGreaterThan(2)
-
-        result.sqlExecutor.withConnection {
-            it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${CreateProductTable::class.qualifiedName}'")
-        }
-
-        assertThatThrownBy(result::applySql).isInstanceOf(IllegalStateException::class.java)
-            .hasMessageContaining("Checksum mismatch for net.futureset.kontroldb.test.petstore.CreateProductTable ")
     }
 
     class InsertIntoProduct : Refactoring(
@@ -90,7 +93,7 @@ internal class VariousCheckSumScenariosTest {
 
     class IncrementInventory : Refactoring(
         executionOrder { ymd(2023, 9, 10) author("ben") sequence(2) },
-        executeMode = ExecuteMode.ALWAYS,
+        executeMode = ALWAYS,
         forward = changes {
             update {
                 table("PRODUCT")
@@ -105,7 +108,7 @@ internal class VariousCheckSumScenariosTest {
 
     @Test
     fun `A run always refactoring always runs!`() {
-        val result = dsl {
+        dsl {
             changeModules(
                 module {
                     singleOf(::CreateProductTable).bind(Refactoring::class)
@@ -113,13 +116,16 @@ internal class VariousCheckSumScenariosTest {
                     singleOf(::IncrementInventory).bind(Refactoring::class)
                 },
             )
-        }
-        assertThat(result.refactorings.last()).isInstanceOf(IncrementInventory::class.java)
-        assertThat(result.applySql()).isGreaterThan(2)
+        }.use { result ->
+            assertThat(result.refactorings.last()).isInstanceOf(IncrementInventory::class.java)
+            assertThat(result.refactorings.last()).extracting(Refactoring::executeMode).isEqualTo(ALWAYS)
 
-        assertThat(result.getNextRefactorings()).hasSize(1)
-        assertThat(result.applySql()).isEqualTo(2)
-        assertThat(result.getNextRefactorings()).hasSize(1)
-        assertThat(result.applySql()).isEqualTo(2)
+            assertThat(result.applySql()).isGreaterThan(2)
+
+            assertThat(result.getNextRefactorings()).hasSize(1)
+            assertThat(result.applySql()).isEqualTo(2)
+            assertThat(result.getNextRefactorings()).hasSize(1)
+            assertThat(result.applySql()).isEqualTo(2)
+        }
     }
 }

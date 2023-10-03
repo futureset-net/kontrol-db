@@ -8,10 +8,10 @@ internal class DefaultTargetFeatureTest {
 
     @Test
     fun `Default settings check`() {
-        val result = dsl {}
-
-        assertThat(result.effectiveSettings.jdbcUrl)
-            .describedAs("default target database is HSQLDB")
-            .isEqualTo("jdbc:hsqldb:mem:testdb")
+        dsl {}.use {
+            assertThat(it.effectiveSettings.jdbcUrl)
+                .describedAs("default target database is HSQLDB")
+                .isEqualTo("jdbc:hsqldb:mem:testdb")
+        }
     }
 }

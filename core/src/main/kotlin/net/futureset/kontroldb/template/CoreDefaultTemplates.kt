@@ -3,6 +3,7 @@ package net.futureset.kontroldb.template
 import net.futureset.kontroldb.SqlTemplate
 import net.futureset.kontroldb.template.hsqldb.CreateTemporaryTableTemplate
 import net.futureset.kontroldb.template.sqlserver.AddNotNullSqlServerTemplate
+import net.futureset.kontroldb.template.sqlserver.DropIfExistsSqlServerTemplate
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -28,4 +29,6 @@ val coreTemplateModule = module {
     singleOf(::CreateTemporaryTableTemplate).bind(SqlTemplate::class)
     singleOf(::SelectQueryTemplate).bind(SqlTemplate::class)
     singleOf(::CreateProcedureTemplate).bind(SqlTemplate::class)
+    singleOf(::DropIfExistsTemplate).bind(SqlTemplate::class)
+    singleOf(::DropIfExistsSqlServerTemplate).bind(SqlTemplate::class)
 }

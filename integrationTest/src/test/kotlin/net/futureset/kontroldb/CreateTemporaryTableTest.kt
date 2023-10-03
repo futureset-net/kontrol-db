@@ -32,24 +32,25 @@ internal class CreateTemporaryTableTest {
     @ParameterizedTest
     @EnumSource(TablePersistence::class)
     fun `Can create a temporary table`(tableType: TablePersistence) {
-        val engine = KontrolDb.dsl {
+        KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(::CreateATemporaryTable).bind(Refactoring::class)
                     single { tableType }
                 },
             )
+        }.use { engine ->
+
+            engine.applySql()
+
+            assertThat(
+                engine.sqlExecutor.withConnection {
+                    it.executeQuery("""SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES where table_name='fred'""") { rs ->
+                        rs.getInt(1)
+                    }.first()
+                },
+            ).isEqualTo(if (tableType == TablePersistence.GLOBAL_TEMPORARY) 1 else 0)
         }
-
-        engine.applySql()
-
-        assertThat(
-            engine.sqlExecutor.withConnection {
-                it.executeQuery("""SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES where table_name='fred'""") { rs ->
-                    rs.getInt(1)
-                }.first()
-            },
-        ).isEqualTo(if (tableType == TablePersistence.GLOBAL_TEMPORARY) 1 else 0)
     }
 
     class CreateATemporaryTableFromAQuery() : Refactoring(
@@ -73,23 +74,24 @@ internal class CreateTemporaryTableTest {
 
     @Test
     fun `Create a temporary table from a query`() {
-        val engine = KontrolDb.dsl {
+        KontrolDb.dsl {
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
                     singleOf(::CreateATemporaryTableFromAQuery).bind(Refactoring::class)
                 },
             )
+        }.use { engine ->
+
+            engine.applySql()
+
+            assertThat(
+                engine.sqlExecutor.withConnection {
+                    it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
+                        rs.getInt(1)
+                    }.first()
+                },
+            ).isZero()
         }
-
-        engine.applySql()
-
-        assertThat(
-            engine.sqlExecutor.withConnection {
-                it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
-                    rs.getInt(1)
-                }.first()
-            },
-        ).isZero()
     }
 }
