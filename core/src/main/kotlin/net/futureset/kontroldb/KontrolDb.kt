@@ -2,7 +2,7 @@ package net.futureset.kontroldb
 
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.settings.DbDialect
-import net.futureset.kontroldb.settings.ExecutionSettings
+import net.futureset.kontroldb.settings.ExecutionSettingsBuilder
 import net.futureset.kontroldb.settings.TargetSettingsBuilder
 import org.koin.core.module.Module
 
@@ -18,13 +18,14 @@ class KontrolDb {
         targetSettingsBuilder.apply(block)
     }
 
-    fun executionSettings(block: ExecutionSettings.() -> Unit) {
-        kontrolDbEngineBuilder.executionSettings.apply(block)
+    fun executionSettings(block: ExecutionSettingsBuilder.() -> Unit) {
+        kontrolDbEngineBuilder.executionSettings = ExecutionSettingsBuilder().apply(block).build()
     }
 
     fun dbDialect(dbDialect: DbDialect) {
         kontrolDbEngineBuilder.dbDialect = dbDialect
     }
+
     fun model(): KontrolDbEngine {
         kontrolDbEngineBuilder.targetSettings = targetSettingsBuilder.build()
         return kontrolDbEngineBuilder.build()

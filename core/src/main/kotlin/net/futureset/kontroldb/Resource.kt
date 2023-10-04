@@ -7,7 +7,7 @@ import java.nio.file.Paths
 import java.util.Objects
 import kotlin.io.path.inputStream
 
-data class Resource(val path: String) {
+data class Resource(private val path: String) {
 
     val lazyHashCode: Int by lazy {
         inputStream()?.use {
@@ -27,14 +27,6 @@ data class Resource(val path: String) {
             Resource(
                 input.replace("\\", "/"),
             )
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is Resource) {
-            Objects.equals(this.path, other.path) && Objects.equals(this.lazyHashCode, other.lazyHashCode)
-        } else {
-            false
-        }
     }
 
     override fun hashCode() = Objects.hash(this.path, lazyHashCode)

@@ -16,9 +16,9 @@ internal class GenerateSqlServerScriptTest {
     fun `Can generate a sql server script`(@TempDir tempDir: Path) {
         dsl {
             executionSettings {
-                outputTablespace = true
-                outputCatalog = true
-                outputSchema = true
+                isOutputTablespace(true)
+                isOutputCatalog(true)
+                isOutputSchema(true)
             }
             dbSettings {
                 defaultSchema("dbo")
@@ -30,7 +30,7 @@ internal class GenerateSqlServerScriptTest {
             changeModules(PetStore().module)
         }.use { result ->
 
-            var generatedFile = tempDir.resolve("output.sql")
+            val generatedFile = tempDir.resolve("output.sql")
             result.generateSql(tempDir)
 
             assertThat(generatedFile).describedAs("script was generated").exists()

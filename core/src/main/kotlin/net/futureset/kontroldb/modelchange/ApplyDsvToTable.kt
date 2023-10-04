@@ -34,10 +34,9 @@ data class ApplyDsvToTable(
         }
     }
 
-    data class ApplyDsvToTableBuilder(
-        override var table: SchemaObject? = null,
-    ) : TableBuilder<ApplyDsvToTableBuilder, ApplyDsvToTable> {
+    class ApplyDsvToTableBuilder : TableBuilder<ApplyDsvToTableBuilder, ApplyDsvToTable> {
 
+        override lateinit var table: SchemaObject
         private var useDbLoadingTool = false
         private var headerMappings = mutableListOf<Pair<String, ColumnDefinition>>()
         private var primaryKeys = mutableSetOf<DbIdentifier>()
@@ -81,8 +80,8 @@ data class ApplyDsvToTable(
 
         override fun build(): ApplyDsvToTable {
             return ApplyDsvToTable(
-                table = requireNotNull(table) { "table must be specified for ApplyDsvToTable" },
-                file = requireNotNull(file) { "file must be specified for ApplyDsvToTable" },
+                table = table,
+                file = file,
                 useDbLoadingTool = useDbLoadingTool,
                 headerMappings = headerMappings.associate { it },
                 primaryKeys = primaryKeys,

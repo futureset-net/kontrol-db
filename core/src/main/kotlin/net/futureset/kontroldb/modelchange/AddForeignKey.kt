@@ -15,11 +15,12 @@ data class AddForeignKey(
 ) : ConstraintModelChange {
 
     data class AddForeignKeyBuilder(
-        override var table: SchemaObject? = null,
         private var constraintName: DbIdentifier? = null,
         var foreignTable: SchemaObject? = null,
         var columnMap: MutableMap<DbIdentifier, DbIdentifier> = mutableMapOf(),
     ) : TableBuilder<AddForeignKeyBuilder, AddForeignKey> {
+
+        override lateinit var table: SchemaObject
 
         fun foreignTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
             foreignTable(SchemaObjectBuilder().apply { name?.let(::name) }.apply(block).build())

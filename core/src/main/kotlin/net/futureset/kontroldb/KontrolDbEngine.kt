@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.modelchange.Comment
 import net.futureset.kontroldb.modelchange.Insert.InsertBuilder.Companion.insertRow
 import net.futureset.kontroldb.modelchange.Update.UpdateBuilder.Companion.updateRow
@@ -13,6 +14,8 @@ import net.futureset.kontroldb.refactoring.EXECUTION_ORDER
 import net.futureset.kontroldb.refactoring.FIRST_APPLIED
 import net.futureset.kontroldb.refactoring.ID_COLUMN
 import net.futureset.kontroldb.refactoring.LAST_APPLIED
+import net.futureset.kontroldb.refactoring.MIGRATION_RUN_ID
+import net.futureset.kontroldb.refactoring.StartMigration
 import net.futureset.kontroldb.settings.DbDialect
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.settings.ExecutionSettings
@@ -87,6 +90,10 @@ data class KontrolDbEngine(
 
     private fun calculateState(): KontrolDbState {
         val currentState = sqlExecutor.getCurrentState().associateBy(AppliedRefactoring::id)
+        refactorings.removeIf { it is StartMigration }
+        if (refactorings.any { shouldRun(currentState, it) }) {
+            refactorings.add(StartMigration())
+        }
         return KontrolDbState(
             allSourceControlledChanges = refactorings.toSortedSet().toList(),
             appliedChanges = currentState,
@@ -96,7 +103,7 @@ data class KontrolDbEngine(
             lastExecutionSequence = currentState.values.maxOfOrNull { it.executionSequence } ?: 1,
         )
             .apply {
-                logger.debug("State {}", this)
+                logger.debug("State\n{}\n", this)
             }
     }
 
@@ -166,9 +173,10 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                 table(effectiveSettings.versionControlTable)
                 set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.now()))
                 set(EXECUTION_COUNT to ColumnValue.expression("$EXECUTION_COUNT+1"))
-                set(EXECUTED_SEQUENCE to ColumnValue.valueFromNumber(index))
+                set(EXECUTED_SEQUENCE to value(index))
+                set(MIGRATION_RUN_ID to value(effectiveSettings.migrationRunId))
                 where {
-                    DbIdentifier(ID_COLUMN) eq ColumnValue.valueFromString(appliedRefactoring.id)
+                    DbIdentifier(ID_COLUMN) eq value(appliedRefactoring.id)
                 }
             }
         }
@@ -180,6 +188,7 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                 valueExpression(FIRST_APPLIED, effectiveSettings.now())
                 valueExpression(LAST_APPLIED, effectiveSettings.now())
                 value(EXECUTION_ORDER, refactoring.executionOrder.toSingleValue())
+                value(MIGRATION_RUN_ID, effectiveSettings.migrationRunId)
                 value(EXECUTED_SEQUENCE, index)
                 value(EXECUTION_COUNT, 1)
                 value(CHECK_SUM, refactoring.checkSum())
@@ -198,9 +207,9 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
             versionControlTable = SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE)),
         ),
         var executionSettings: ExecutionSettings = ExecutionSettings(
-            outputCatalog = true,
-            outputSchema = true,
-            outputTablespace = true,
+            isOutputCatalog = true,
+            isOutputSchema = true,
+            isOutputTablespace = true,
         ),
         var modules: MutableList<Module> = mutableListOf(),
     ) : Builder<KontrolDbEngineBuilder, KontrolDbEngine> {
@@ -210,7 +219,12 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                 singleOf(::CreateVersionControlTable).bind(Refactoring::class)
                 single<DbDialect> { dbDialect }.bind(DbDialect::class)
                 single {
-                    EffectiveSettings(get<DbDialect>(), get<ExecutionSettings>(), get<TargetSettings>())
+                    EffectiveSettings(
+                        get<DbDialect>(),
+                        get<ExecutionSettings>(),
+                        get<TargetSettings>(),
+                        System.currentTimeMillis(),
+                    )
                 }
                 single {
                     val templates = getAll<SqlTemplate<ModelChange>>()

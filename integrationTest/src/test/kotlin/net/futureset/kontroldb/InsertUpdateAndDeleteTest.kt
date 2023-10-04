@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
@@ -76,10 +77,10 @@ internal class InsertUpdateAndDeleteTest {
         @JvmStatic
         fun fred() = listOf(
             Param(99) {
-                col("TEST_COLUMN") eq literal(5)
+                col("TEST_COLUMN") eq 5
             },
             Param(95) {
-                col("TEST_COLUMN") lt literal(6)
+                col("TEST_COLUMN") lt value(6)
             },
         )
     }

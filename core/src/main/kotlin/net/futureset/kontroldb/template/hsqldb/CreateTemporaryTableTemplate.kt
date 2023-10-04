@@ -13,7 +13,7 @@ class CreateTemporaryTableTemplate(private val db: EffectiveSettings) :
         return CreateTemporaryTable::class
     }
 
-    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = db.dbName == "hsqldb"
+    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = db.databaseName == "hsqldb"
 
     override fun convertToSingleStatement(change: CreateTemporaryTable): String {
         val colNames = change.columnDefinitions.takeUnless { it.isEmpty() } ?: change.fromSelect?.columns?.map { it.columnName }.orEmpty()

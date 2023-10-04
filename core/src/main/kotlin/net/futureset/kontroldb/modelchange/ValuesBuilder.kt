@@ -2,6 +2,7 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.ColumnValue
+import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import java.time.LocalDate
@@ -13,7 +14,7 @@ class ValuesBuilder :
     private val rowValues: MutableMap<DbIdentifier, ColumnValue> = mutableMapOf()
 
     fun value(colName: String, v: String) = apply {
-        rowValues[DbIdentifier(colName)] = ColumnValue.valueFromString(v)
+        rowValues[DbIdentifier(colName)] = value(v)
     }
 
     fun valueExpression(colName: String, v: String) = apply {
@@ -21,18 +22,18 @@ class ValuesBuilder :
     }
 
     fun value(colName: String, v: Number) = apply {
-        rowValues[DbIdentifier(colName)] = ColumnValue.valueFromNumber(v)
+        rowValues[DbIdentifier(colName)] = value(v)
     }
 
     fun value(colName: String, v: LocalDate) = apply {
-        rowValues[DbIdentifier(colName)] = ColumnValue.valueFromDate(v)
+        rowValues[DbIdentifier(colName)] = value(v)
     }
 
     fun value(colName: String, v: LocalDateTime) = apply {
-        rowValues[DbIdentifier(colName)] = ColumnValue.valueFromDateTime(v)
+        rowValues[DbIdentifier(colName)] = value(v)
     }
     fun value(colName: String, v: Boolean) = apply {
-        rowValues[DbIdentifier(colName)] = ColumnValue.valueFromBoolean(v)
+        rowValues[DbIdentifier(colName)] = value(v)
     }
 
     override fun build(): Map<DbIdentifier, ColumnValue> {

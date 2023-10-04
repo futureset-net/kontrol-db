@@ -12,7 +12,7 @@ class AddNotNullSqlServerTemplate(db: EffectiveSettings) : DbAwareTemplate<AddNo
     }
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean {
-        return effectiveSettings.dbName == "sqlserver"
+        return effectiveSettings.databaseName == "sqlserver"
     }
 
     override fun convertToSingleStatement(change: AddNotNull): String {

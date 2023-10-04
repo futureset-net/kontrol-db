@@ -22,13 +22,13 @@ data class InsertOrUpdateRow(
 ) : ModelChange {
 
     @KontrolDbDslMarker
-    data class InsertOrUpdateRowBuilder(
-        override var table: SchemaObject? = null,
+    class InsertOrUpdateRowBuilder(
         private var columnValues: MutableList<Map<DbIdentifier, ColumnValue>> = mutableListOf(),
         private var primaryKeys: MutableSet<DbIdentifier> = mutableSetOf(),
         private var updateMode: UpdateMode = UpdateMode.UPDATE_AND_INSERT,
     ) : TableBuilder<InsertOrUpdateRowBuilder, InsertOrUpdateRow> {
 
+        override lateinit var table: SchemaObject
         fun values(lambda: ValuesBuilder.() -> Unit) = apply {
             columnValues.add(ValuesBuilder().apply(lambda).build())
         }
@@ -44,7 +44,7 @@ data class InsertOrUpdateRow(
             columnValues.addAll(rows)
         }
         override fun build(): InsertOrUpdateRow {
-            return InsertOrUpdateRow(requireNotNull(table), columnValues = columnValues, primaryKeys = primaryKeys, updateMode)
+            return InsertOrUpdateRow(table, columnValues = columnValues, primaryKeys = primaryKeys, updateMode)
         }
     }
 }

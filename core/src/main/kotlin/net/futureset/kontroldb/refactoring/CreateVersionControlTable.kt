@@ -4,6 +4,7 @@ import net.futureset.kontroldb.ExecutionOrder
 import net.futureset.kontroldb.Refactoring
 import net.futureset.kontroldb.StandardColumnTypes.INT_16
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.StandardColumnTypes.INT_64
 import net.futureset.kontroldb.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.addPrimaryKey
@@ -30,6 +31,8 @@ const val EXECUTION_FREQUENCY = "EXECUTION_FREQUENCY"
 
 const val EXECUTION_COUNT = "EXECUTION_COUNT"
 
+const val MIGRATION_RUN_ID = "MIGRATION_RUN_ID"
+
 const val CHECK_SUM = "CHECK_SUM"
 
 class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactoring(
@@ -44,6 +47,7 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
             column(FIRST_APPLIED, LOCALDATETIME)
             column(EXECUTION_FREQUENCY, Varchar(20))
             column(EXECUTION_COUNT, INT_16)
+            column(MIGRATION_RUN_ID, INT_64)
             column(CHECK_SUM, Varchar(23))
         }
         addPrimaryKey {

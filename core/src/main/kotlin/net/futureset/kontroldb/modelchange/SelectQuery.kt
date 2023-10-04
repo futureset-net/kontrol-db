@@ -18,11 +18,13 @@ data class SelectQuery(
     @KontrolDbDslMarker
     data class SelectQueryBuilder(
         var columns: MutableList<ColumnAndValue> = mutableListOf(),
-        override var table: SchemaObject? = null,
         private var includeData: Boolean = true,
         private var predicate: SqlPredicate? = null,
         override var alias: String? = null,
     ) : TableAliasBuilder<SelectQueryBuilder, SelectQuery> {
+
+        override lateinit var table: SchemaObject
+
         fun column(columnName: String, expression: String? = null) = apply {
             columns.add(ColumnAndValue(DbIdentifier(columnName), expression?.let(ColumnValue::expression)))
         }
@@ -45,7 +47,7 @@ data class SelectQuery(
         override fun build(): SelectQuery =
             SelectQuery(
                 columns = columns,
-                table = TableAlias(alias, requireNotNull(table)),
+                table = TableAlias(alias, table),
                 predicate = predicate,
                 includeData = this.includeData,
             )

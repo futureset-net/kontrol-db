@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.test.petstore
 
-import net.futureset.kontroldb.ColumnValue
 import net.futureset.kontroldb.ColumnValue.Companion.expression
+import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ExecuteMode
 import net.futureset.kontroldb.Refactoring
@@ -21,7 +21,7 @@ class IncrementCustomerId : Refactoring(
             table("CUSTOMER")
             set("CUST_ID" to expression("CUST_ID+1"))
             where {
-                DbIdentifier("FIRSTNAME") eq ColumnValue.valueFromString("ben")
+                DbIdentifier("FIRSTNAME") eq value("ben")
             }
         }
     },
@@ -30,7 +30,7 @@ class IncrementCustomerId : Refactoring(
             table("CUSTOMER")
             set("CUST_ID" to expression("CUST_ID-1"))
             where {
-                DbIdentifier("FIRSTNAME") eq ColumnValue.valueFromString("ben")
+                DbIdentifier("FIRSTNAME") eq value("ben")
             }
         }
     },

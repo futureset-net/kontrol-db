@@ -2,6 +2,7 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ConstraintModelChange
 import net.futureset.kontroldb.DbIdentifier
+import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.TableBuilder
@@ -10,18 +11,26 @@ data class AddPrimaryKey(
     val table: SchemaObject?,
     val columnReferences: List<DbIdentifier>,
     val clustered: Boolean?,
+    val inline: Boolean,
     override var constraintName: DbIdentifier? = null,
 ) : ConstraintModelChange {
 
-    data class AddPrimaryKeyBuilder(
-        override var table: SchemaObject? = null,
+    @KontrolDbDslMarker
+    class AddPrimaryKeyBuilder(
         private var constraintName: DbIdentifier? = null,
         private val columns: MutableList<DbIdentifier> = mutableListOf(),
         private var clustered: Boolean? = null,
+        private var inline: Boolean = false,
     ) : TableBuilder<AddPrimaryKeyBuilder, AddPrimaryKey> {
+
+        override lateinit var table: SchemaObject
 
         fun constraintName(constraintName: String) = apply {
             this.constraintName = DbIdentifier(constraintName)
+        }
+
+        fun inline() = apply {
+            this.inline = true
         }
 
         fun clustered(clustered: Boolean) = apply {
@@ -38,6 +47,7 @@ data class AddPrimaryKey(
                 constraintName = constraintName,
                 clustered = clustered,
                 columnReferences = columns,
+                inline = inline,
             )
         }
     }

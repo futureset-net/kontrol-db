@@ -19,7 +19,7 @@ class SqlServerDialect : AnsiDialect {
     override val statementSeparator = "\ngo"
     override val nullableByDefault = true
     override val ddlInTransactions = true
-    override val name = "sqlserver"
+    override val databaseName = "sqlserver"
 
     override fun closeHook(): (Connection) -> Unit {
         return { }

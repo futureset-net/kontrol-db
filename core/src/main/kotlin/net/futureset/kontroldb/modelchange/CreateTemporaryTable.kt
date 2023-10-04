@@ -17,14 +17,14 @@ data class CreateTemporaryTable(
     var fromSelect: SelectQuery? = null,
 ) : ModelChange {
 
-    data class CreateTemporaryTableBuilder(
-        override var table: SchemaObject? = null,
+    class CreateTemporaryTableBuilder(
         private var tablePersistence: TablePersistence = TablePersistence.TEMPORARY,
         private val columns: MutableList<ColumnDefinition> = mutableListOf(),
         private var primaryKey: AddPrimaryKey? = null,
         private var fromSelect: SelectQuery? = null,
         private var preserveRowsOnCommit: Boolean = true,
     ) : TableBuilder<CreateTemporaryTableBuilder, CreateTemporaryTable> {
+        override lateinit var table: SchemaObject
 
         fun tableType(tableType: TablePersistence) = apply {
             this.tablePersistence = tableType
@@ -39,12 +39,12 @@ data class CreateTemporaryTable(
         }
 
         fun primaryKey(lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit) = apply {
-            primaryKey = AddPrimaryKey.AddPrimaryKeyBuilder().apply(lambda).build()
+            primaryKey = AddPrimaryKey.AddPrimaryKeyBuilder().inline().table(this.table).apply(lambda).build()
         }
 
         override fun build(): CreateTemporaryTable {
             return CreateTemporaryTable(
-                table = requireNotNull(table),
+                table = table,
                 tablePersistence = tablePersistence,
                 columnDefinitions = columns,
                 fromSelect = fromSelect,

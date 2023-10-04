@@ -15,11 +15,10 @@ data class AddNotNull(
     override val constraintName: DbIdentifier?,
 ) : ConstraintModelChange {
 
-    class AddNotNullBuilder(
-        override var table: SchemaObject? = null,
-    ) : TableBuilder<AddNotNullBuilder, AddNotNull> {
+    class AddNotNullBuilder : TableBuilder<AddNotNullBuilder, AddNotNull> {
 
         private lateinit var column: ColumnDefinition
+        override lateinit var table: SchemaObject
         fun column(name: String, type: ColumnType, block: ColumnDefinitionBuilder.() -> Unit = { }) = apply {
             column = ColumnDefinitionBuilder(name, type).apply(block).build()
         }

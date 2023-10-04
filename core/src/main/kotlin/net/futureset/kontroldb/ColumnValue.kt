@@ -10,35 +10,23 @@ data class ColumnValue(
     private val quoted: Boolean,
 
 ) : SqlString, Operand {
+
+    override fun isNull(): Boolean = value == null
+
     companion object {
 
         fun column(name: String) = DbIdentifier(name)
 
         fun expression(expr: String) = ColumnValue(expr, false)
 
-        fun valueFromBoolean(value: Boolean): ColumnValue {
-            return ColumnValue(value.toString(), false)
-        }
-
-        fun valueFromBoolean(value: String): ColumnValue {
-            return ColumnValue(value.toString(), false)
-        }
-        fun valueFromNumber(value: Number): ColumnValue {
-            return ColumnValue(value.toString(), false)
-        }
-
-        fun nullValue(): ColumnValue {
-            return ColumnValue(null, false)
-        }
-
-        fun valueFromString(value: String): ColumnValue {
-            return ColumnValue(value, true)
-        }
-        fun valueFromDateTime(value: LocalDateTime): ColumnValue {
-            return ColumnValue(value, false)
-        }
-        fun valueFromDate(value: LocalDate): ColumnValue {
-            return ColumnValue(value, false)
+        fun value(value: Any?): ColumnValue {
+            return when (value) {
+                "NULL" -> ColumnValue(null, false)
+                null -> ColumnValue(null, false)
+                is Number -> ColumnValue(value, false)
+                is Boolean -> ColumnValue(value, false)
+                else -> ColumnValue(value, true)
+            }
         }
     }
 

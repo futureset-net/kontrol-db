@@ -20,12 +20,13 @@ data class CreateTable(
 
     @KontrolDbDslMarker
     data class CreateTableBuilder(
-        override var table: SchemaObject? = null,
         private var tablespace: String? = null,
         private val columns: MutableList<ColumnDefinition> = mutableListOf(),
         private var primaryKey: AddPrimaryKey? = null,
         private var fromSelect: SelectQuery? = null,
     ) : TableBuilder<CreateTableBuilder, CreateTable> {
+
+        override lateinit var table: SchemaObject
 
         fun tablespace(tablespace: String) = apply {
             this.tablespace = tablespace
@@ -40,12 +41,12 @@ data class CreateTable(
         }
 
         fun primaryKey(lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit) = apply {
-            primaryKey = AddPrimaryKey.AddPrimaryKeyBuilder().apply(lambda).build()
+            primaryKey = AddPrimaryKey.AddPrimaryKeyBuilder().inline().table(this.table).apply(lambda).build()
         }
 
         override fun build(): CreateTable {
             return CreateTable(
-                table = requireNotNull(table),
+                table = table,
                 tablespace = tablespace?.let(::Tablespace),
                 columnDefinitions = columns,
                 fromSelect = fromSelect,

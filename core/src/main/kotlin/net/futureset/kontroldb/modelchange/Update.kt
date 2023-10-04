@@ -14,11 +14,12 @@ data class Update(
 ) : ModelChange {
 
     data class UpdateBuilder(
-        override var table: SchemaObject? = null,
         override var alias: String? = null,
         private var columnValues: MutableMap<DbIdentifier, ColumnValue> = mutableMapOf(),
         private var predicate: SqlPredicate = AllOf(emptyList()),
     ) : TableAliasBuilder<UpdateBuilder, Update> {
+
+        override lateinit var table: SchemaObject
 
         fun where(lambda: PredicateBuilder.() -> Unit) = apply {
             predicate = PredicateBuilder().apply(lambda).build()
@@ -29,7 +30,7 @@ data class Update(
         }
         override fun build(): Update {
             return Update(
-                TableAlias(alias, requireNotNull(table)),
+                TableAlias(alias, table),
                 columnValues = columnValues.map { ColumnAndValue(it.key, it.value, separator = "=") },
                 predicate = predicate,
             )

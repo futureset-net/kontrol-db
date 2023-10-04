@@ -26,7 +26,7 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
-class ApplyDsvToTableTemplate(private val db: EffectiveSettings) :
+class ApplyDsvToTableTemplate(db: EffectiveSettings) :
     DbAwareTemplate<ApplyDsvToTable>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<ApplyDsvToTable> {
         return ApplyDsvToTable::class
@@ -95,7 +95,7 @@ class ApplyDsvToTableTemplate(private val db: EffectiveSettings) :
                         columnDefinitions = emptyList(),
                         tablePersistence = TablePersistence.TEMPORARY,
                         preserveRowsOnCommit = true,
-                        primaryKey = AddPrimaryKey(table = null, columnReferences = change.primaryKeys.toList(), clustered = true),
+                        primaryKey = AddPrimaryKey(table = tempTable, columnReferences = change.primaryKeys.toList(), clustered = true, inline = true),
                         fromSelect = SelectQuery(
                             columns = change.primaryKeys.map { ColumnAndValue(it, null) },
                             table = change.table.alias(),

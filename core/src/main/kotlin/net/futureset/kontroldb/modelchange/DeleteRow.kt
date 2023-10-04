@@ -9,11 +9,13 @@ data class DeleteRow(
     val predicate: SqlPredicate?,
 ) : ModelChange {
 
-    data class DeleteRowBuilder(
-        override var table: SchemaObject? = null,
+    class DeleteRowBuilder(
+
         override var alias: String? = null,
         var predicate: SqlPredicate = AllOf(emptyList()),
     ) : TableAliasBuilder<DeleteRowBuilder, DeleteRow> {
+
+        override lateinit var table: SchemaObject
 
         fun where(lambda: PredicateBuilder.() -> Unit) = apply {
             predicate = PredicateBuilder().apply(lambda).build()
@@ -21,7 +23,7 @@ data class DeleteRow(
 
         override fun build(): DeleteRow {
             return DeleteRow(
-                TableAlias(alias, requireNotNull(table)),
+                TableAlias(alias, table),
                 predicate = predicate,
             )
         }

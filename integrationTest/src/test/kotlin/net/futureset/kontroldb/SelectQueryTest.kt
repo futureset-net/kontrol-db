@@ -23,18 +23,21 @@ internal class SelectQueryTest {
             createTable {
                 table("fred")
                 column("TEST_COLUMN", INT_32)
+                column("STRING_COLUMN", Varchar(5))
             }
             insert {
                 table("fred")
                 for (i in 1..100) {
                     values {
                         value("TEST_COLUMN", i)
+                        value("STRING_COLUMN", ('A' + (i % 10)).toString())
                     }
                 }
             }
             createTable {
                 table("results")
                 column("TEST_COLUMN", Varchar(256))
+                column("STRING_COLUMN", Varchar(5))
             }
             insert {
                 table("results")
@@ -42,6 +45,7 @@ internal class SelectQueryTest {
                 fromQuery {
                     table("fred")
                     column("TEST_COLUMN")
+                    column("STRING_COLUMN")
                     where(param)
                 }
             }
@@ -82,31 +86,67 @@ internal class SelectQueryTest {
         @JvmStatic
         fun fred() = listOf(
             Param(1) {
-                col("TEST_COLUMN") eq literal(5)
+                "TEST_COLUMN".column() eq 5
+            },
+            Param(1) {
+                5.literal() eq "TEST_COLUMN".column()
             },
             Param(5) {
-                col("TEST_COLUMN") lt literal(6)
+                "TEST_COLUMN".column() lt 6
+            },
+            Param(94) {
+                6.literal() lt "TEST_COLUMN".column()
             },
             Param(6) {
-                col("TEST_COLUMN") lte literal(6)
+                "TEST_COLUMN".column() lte 6
+            },
+            Param(95) {
+                6.literal() lte "TEST_COLUMN".column()
             },
             Param(4) {
-                col("TEST_COLUMN") gt literal(96)
+                "TEST_COLUMN".column() gt 96
             },
             Param(5) {
-                col("TEST_COLUMN") gte literal(96)
+                "TEST_COLUMN".column() gte 96
             },
             Param(9) {
-                col("TEST_COLUMN") gt literal(10)
-                col("TEST_COLUMN") lt literal(20)
+                "TEST_COLUMN".column() gt 10
+                "TEST_COLUMN".column() lt 20
+            },
+            Param(10) {
+                "STRING_COLUMN".column() eq "A"
             },
             Param(6) {
-                col("TEST_COLUMN") between (literal(10) to literal(15))
+                "TEST_COLUMN".column() inRangeOf (10 to 15)
+            },
+            Param(40) {
+                "STRING_COLUMN".column() inRangeOf ("F" to "I")
+            },
+            Param(20) {
+                "STRING_COLUMN".column() gt "H"
+            },
+            Param(20) {
+                "H".literal() lt "STRING_COLUMN".column()
+            },
+            Param(10) {
+                "STRING_COLUMN".column() lt "B"
+            },
+            Param(30) {
+                "STRING_COLUMN".column() gte "H"
+            },
+            Param(20) {
+                "STRING_COLUMN".column() lte "B"
+            },
+            Param(100) {
+                true.literal() eq true
+            },
+            Param(0) {
+                true.literal() eq false
             },
             Param(100) {
                 anyOf {
-                    col("TEST_COLUMN") gt literal(10)
-                    col("TEST_COLUMN") lt literal(20)
+                    "TEST_COLUMN".column() gt 10
+                    "TEST_COLUMN".column() lt 20
                 }
             },
         )

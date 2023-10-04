@@ -8,6 +8,6 @@ data class Tablespace(val name: String) : SqlString {
         return (
             effectiveSettings.openQuote + name +
                 effectiveSettings.closeQuote
-            ).takeIf { effectiveSettings.outputTablespace }.orEmpty()
+            ).takeIf { effectiveSettings.isOutputTablespace }.orEmpty()
     }
 }

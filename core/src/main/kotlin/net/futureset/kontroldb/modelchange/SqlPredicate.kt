@@ -2,6 +2,7 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.ColumnAndValue
+import net.futureset.kontroldb.ColumnValue
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.SqlString
@@ -16,7 +17,9 @@ interface SqlPredicate : SqlString {
     }
 }
 
-interface Operand : SqlString
+interface Operand : SqlString {
+    fun isNull() = false
+}
 
 data class AllOf(val predicates: List<SqlPredicate>) : SqlPredicate {
 
@@ -78,7 +81,7 @@ data class Exists(private val selectQuery: SelectQuery) : SqlPredicate {
 
 data class Eq(val a: Operand, val b: Operand) : SqlPredicate {
     override fun toSql(effectiveSettings: EffectiveSettings) =
-        a.toSql(effectiveSettings) + " = " + b.toSql(effectiveSettings)
+        a.toSql(effectiveSettings) + (" = ".takeUnless { b.isNull() } ?: " IS ") + b.toSql(effectiveSettings)
 }
 
 data class Gt(val a: Operand, val b: Operand) : SqlPredicate {
@@ -104,7 +107,9 @@ data class Gte(val a: Operand, val b: Operand) : SqlPredicate {
 
 data class Between(val subject: Operand, val a: Operand, val b: Operand) : SqlPredicate {
     override fun toSql(effectiveSettings: EffectiveSettings) =
-        subject.toSql(effectiveSettings) + " BETWEEN " + a.toSql(effectiveSettings) + " AND " + b.toSql(effectiveSettings)
+        subject.toSql(effectiveSettings) + " BETWEEN " + a.toSql(effectiveSettings) + " AND " + b.toSql(
+            effectiveSettings,
+        )
 }
 
 @KontrolDbDslMarker
@@ -123,28 +128,72 @@ class PredicateBuilder(private var predicate: SqlPredicate = AllOf(predicates = 
         predicate += PredicateBuilder(AnyOf(emptyList())).apply(lambda).build()
     }
 
-    infix fun Operand.between(operand: Pair<Operand, Operand>) = apply {
-        predicate += Between(this, operand.first, operand.second)
+    infix fun Operand.inRangeOf(operand: Pair<Any, Any>) = apply {
+        predicate += Between(
+            this,
+            operand.first.let { if (it is Operand) it else ColumnValue.value(it) },
+            operand.second.let { if (it is Operand) it else ColumnValue.value(it) },
+        )
     }
 
     infix fun Operand.eq(operand: Operand) = apply {
         predicate += Eq(this, operand)
     }
 
+    infix fun Operand.eq(operand: String) = apply {
+        eq(ColumnValue(operand, true))
+    }
+
+    infix fun Operand.eq(operand: Any) = apply {
+        eq(ColumnValue(operand, false))
+    }
+
     infix fun Operand.gt(operand: Operand) = apply {
         predicate += Gt(this, operand)
+    }
+
+    infix fun Operand.gt(operand: String) = apply {
+        gt(ColumnValue(operand, true))
+    }
+
+    infix fun Operand.gt(operand: Any) = apply {
+        gt(ColumnValue(operand, false))
     }
 
     infix fun Operand.lt(operand: Operand) = apply {
         predicate += Lt(this, operand)
     }
 
+    infix fun Operand.lt(operand: String) = apply {
+        lt(ColumnValue(operand, true))
+    }
+
+    infix fun Operand.lt(operand: Any) = apply {
+        lt(ColumnValue(operand, false))
+    }
+
     infix fun Operand.lte(operand: Operand) = apply {
         predicate += Lte(this, operand)
     }
 
+    infix fun Operand.lte(operand: String) = apply {
+        lte(ColumnValue(operand, true))
+    }
+
+    infix fun Operand.lte(operand: Any) = apply {
+        lte(ColumnValue(operand, false))
+    }
+
     infix fun Operand.gte(operand: Operand) = apply {
         predicate += Gte(this, operand)
+    }
+
+    infix fun Operand.gte(operand: String) = apply {
+        gte(ColumnValue(operand, true))
+    }
+
+    infix fun Operand.gte(operand: Any) = apply {
+        gte(ColumnValue(operand, false))
     }
 
     fun not(lambda: PredicateBuilder.() -> Unit) = apply {

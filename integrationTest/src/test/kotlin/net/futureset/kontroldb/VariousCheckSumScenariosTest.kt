@@ -2,7 +2,6 @@ package net.futureset.kontroldb
 
 import net.futureset.kontroldb.ColumnValue.Companion.column
 import net.futureset.kontroldb.ColumnValue.Companion.expression
-import net.futureset.kontroldb.ColumnValue.Companion.valueFromNumber
 import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.modelchange.insert
@@ -99,7 +98,7 @@ internal class VariousCheckSumScenariosTest {
                 table("PRODUCT")
                 set("CURRENT_INVENTORY_COUNT" to expression("CURRENT_INVENTORY_COUNT+1"))
                 where {
-                    column("ID") eq valueFromNumber(1)
+                    column("ID") eq 1
                 }
             }
         },
@@ -122,10 +121,10 @@ internal class VariousCheckSumScenariosTest {
 
             assertThat(result.applySql()).isGreaterThan(2)
 
-            assertThat(result.getNextRefactorings()).hasSize(1)
-            assertThat(result.applySql()).isEqualTo(2)
-            assertThat(result.getNextRefactorings()).hasSize(1)
-            assertThat(result.applySql()).isEqualTo(2)
+            assertThat(result.getNextRefactorings()).hasSize(2)
+            assertThat(result.applySql()).isEqualTo(3)
+            assertThat(result.getNextRefactorings()).hasSize(2)
+            assertThat(result.applySql()).isEqualTo(3)
         }
     }
 }

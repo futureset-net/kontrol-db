@@ -19,14 +19,13 @@ data class CreateIndex(
 
     @KontrolDbDslMarker
     data class CreateIndexBuilder(
-        override var table: SchemaObject? = null,
         private var indexName: DbIdentifier? = null,
         private var tablespace: String? = null,
         private var clustered: Boolean = false,
         private var unique: Boolean = false,
         private val columns: MutableList<DbIdentifier> = mutableListOf(),
     ) : TableBuilder<CreateIndexBuilder, CreateIndex> {
-
+        override lateinit var table: SchemaObject
         fun indexName(indexName: String) = apply {
             this.indexName = DbIdentifier(indexName)
         }
@@ -49,7 +48,7 @@ data class CreateIndex(
 
         override fun build(): CreateIndex {
             return CreateIndex(
-                table = requireNotNull(table) { "Table not specified for Index" },
+                table = table,
                 indexName = indexName,
                 tablespace = tablespace?.let(::Tablespace),
                 clustered = clustered,

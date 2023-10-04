@@ -13,13 +13,14 @@ data class Insert(
 
 ) : ModelChange {
 
-    data class InsertBuilder(
-        override var table: SchemaObject? = null,
+    class InsertBuilder(
+
         override var alias: String? = null,
         private var columnValues: MutableList<Map<DbIdentifier, ColumnValue>> = mutableListOf(),
         private var fromSelect: SelectQuery? = null,
     ) : TableAliasBuilder<InsertBuilder, Insert> {
 
+        override lateinit var table: SchemaObject
         fun values(lambda: ValuesBuilder.() -> Unit) = apply {
             columnValues.add(ValuesBuilder().apply(lambda).build())
         }
@@ -29,7 +30,7 @@ data class Insert(
         }
 
         override fun build(): Insert {
-            return Insert(requireNotNull(table), columnValues = columnValues, fromSelect = fromSelect)
+            return Insert(table, columnValues = columnValues, fromSelect = fromSelect)
         }
 
         fun fromQuery(lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {

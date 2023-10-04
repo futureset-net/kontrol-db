@@ -16,7 +16,7 @@ interface DbDialect {
     val statementSeparator: String
     val nullableByDefault: Boolean
     val ddlInTransactions: Boolean
-    val name: String
+    val databaseName: String
 
     fun getNativeType(columnType: ColumnType): String
 

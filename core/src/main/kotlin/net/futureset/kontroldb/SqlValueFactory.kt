@@ -6,11 +6,11 @@ import java.time.LocalDateTime
 interface SqlValueFactory {
 
     fun col(name: String) = DbIdentifier(name)
-    fun literal(value: String) = ColumnValue.valueFromString(value)
-    fun literal(value: Boolean) = ColumnValue.valueFromBoolean(value)
-    fun literal(value: LocalDate) = ColumnValue.valueFromDate(value)
-    fun literal(value: LocalDateTime) = ColumnValue.valueFromDateTime(value)
-    fun literal(value: Number) = ColumnValue.valueFromNumber(value)
-
-    fun expression(value: String) = ColumnValue.expression(value)
+    fun String.column() = col(this)
+    fun String.expression() = ColumnValue.expression(this)
+    fun String.literal() = ColumnValue.value(this)
+    fun Number.literal() = ColumnValue.value(this)
+    fun Boolean.literal() = ColumnValue.value(this)
+    fun LocalDate.literal() = ColumnValue.value(this)
+    fun LocalDateTime.literal() = ColumnValue.value(this)
 }

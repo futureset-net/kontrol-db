@@ -9,13 +9,13 @@ data class DropTable(
     val table: SchemaObject,
 ) : ModelChange {
 
-    data class DropTableBuilder(
-        override var table: SchemaObject? = null,
-    ) : TableBuilder<DropTableBuilder, DropTable> {
+    class DropTableBuilder : TableBuilder<DropTableBuilder, DropTable> {
+
+        override lateinit var table: SchemaObject
 
         override fun build(): DropTable {
             return DropTable(
-                table = requireNotNull(table),
+                table = table,
             )
         }
     }
