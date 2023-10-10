@@ -3,6 +3,8 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.createTemporaryTable
+import net.futureset.kontroldb.modelchange.executeQuery
+import net.futureset.kontroldb.targetsystem.HsqlDbDialect
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -75,6 +77,7 @@ internal class CreateTemporaryTableTest {
     @Test
     fun `Create a temporary table from a query`() {
         KontrolDb.dsl {
+            dbDialect(HsqlDbDialect())
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -91,7 +94,7 @@ internal class CreateTemporaryTableTest {
                         rs.getInt(1)
                     }.first()
                 },
-            ).isZero()
+            ).isEqualTo(0)
         }
     }
 }

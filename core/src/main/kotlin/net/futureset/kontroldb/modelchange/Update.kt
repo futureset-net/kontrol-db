@@ -13,6 +13,7 @@ data class Update(
     val predicate: SqlPredicate,
 ) : ModelChange {
 
+    override fun isDdl() = false
     data class UpdateBuilder(
         override var alias: String? = null,
         private var columnValues: MutableMap<DbIdentifier, ColumnValue> = mutableMapOf(),

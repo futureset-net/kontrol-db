@@ -7,6 +7,7 @@ interface KontrolDbCommands {
 
     fun generateSql(outputDirectory: Path)
     fun applySql(): Int
-    fun getCurrentState(): SortedSet<AppliedRefactoring>
+    fun getAppliedRefactorings(): SortedSet<AppliedRefactoring>
     fun getNextRefactorings(): List<Refactoring>
+    fun generateSqlRollback(outputDirectory: Path)
 }

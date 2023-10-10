@@ -1,14 +1,14 @@
 package net.futureset.kontroldb.refactoring
 
-import net.futureset.kontroldb.EARLIEST_CHANGE
 import net.futureset.kontroldb.ExecuteMode
+import net.futureset.kontroldb.LATEST_CHANGE
 import net.futureset.kontroldb.Refactoring
-import net.futureset.kontroldb.modelchange.StartBanner
+import net.futureset.kontroldb.modelchange.EndBanner
 
-class StartMigration :
+class EndMigration :
     Refactoring(
-        executionOrder = EARLIEST_CHANGE.afterThis(),
-        forward = listOf(StartBanner("Start Migration")),
+        executionOrder = LATEST_CHANGE,
+        forward = listOf(EndBanner("End Migration")),
         rollback = emptyList(),
         executeMode = ExecuteMode.ALWAYS,
     ),

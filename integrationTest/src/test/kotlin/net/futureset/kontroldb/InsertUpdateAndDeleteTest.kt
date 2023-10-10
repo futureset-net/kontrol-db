@@ -6,6 +6,7 @@ import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.delete
+import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.modelchange.insertOrUpdateRow
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
@@ -80,7 +81,7 @@ internal class InsertUpdateAndDeleteTest {
                 col("TEST_COLUMN") eq 5
             },
             Param(95) {
-                col("TEST_COLUMN") lt value(6)
+                col("TEST_COLUMN") lt 6
             },
         )
     }

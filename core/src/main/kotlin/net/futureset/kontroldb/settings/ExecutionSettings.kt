@@ -5,12 +5,18 @@ import net.futureset.kontroldb.OperatingSystem
 import java.nio.file.Path
 import java.nio.file.Paths
 
+enum class TransactionScope {
+    STATEMENT,
+    REFACTORING,
+    MIGRATION,
+}
 interface IExecutionSettings {
     val isOutputSchema: Boolean
     val isOutputCatalog: Boolean
     val isOutputTablespace: Boolean
     val operatingSystem: OperatingSystem
     val outputDirectory: Path
+    val transactionScope: TransactionScope
 }
 
 data class ExecutionSettings(
@@ -20,6 +26,7 @@ data class ExecutionSettings(
     override val isOutputTablespace: Boolean = false,
     override val operatingSystem: OperatingSystem = OperatingSystem.WINDOWS,
     override val outputDirectory: Path = Paths.get(""),
+    override val transactionScope: TransactionScope = TransactionScope.REFACTORING,
 ) : IExecutionSettings
 
 class ExecutionSettingsBuilder : Builder<ExecutionSettingsBuilder, ExecutionSettings> {
@@ -29,10 +36,16 @@ class ExecutionSettingsBuilder : Builder<ExecutionSettingsBuilder, ExecutionSett
     private var isOutputTablespace: Boolean = false
     private var operatingSystem: OperatingSystem = OperatingSystem.WINDOWS
     private var outputDirectory: Path = Paths.get("")
+    private var transactionScope: TransactionScope = TransactionScope.REFACTORING
 
     fun isOutputSchema(isOutputSchema: Boolean) = apply { this.isOutputSchema = isOutputSchema }
     fun isOutputCatalog(isOutputCatalog: Boolean) = apply { this.isOutputCatalog = isOutputCatalog }
     fun isOutputTablespace(isOutputTablespace: Boolean) = apply { this.isOutputTablespace = isOutputTablespace }
+
+    fun transactionScope(transactionScope: TransactionScope) = apply {
+        this.transactionScope = transactionScope
+    }
+
     fun outputDirectory(outputDirectory: Path) = apply { this.outputDirectory = outputDirectory }
     override fun build(): ExecutionSettings =
         ExecutionSettings(isOutputSchema, isOutputCatalog, isOutputTablespace, operatingSystem, outputDirectory)

@@ -13,7 +13,7 @@ import org.koin.dsl.module
 
 internal class DropIfExistsTest {
 
-    class CreateACustomerIndex : Refactoring(
+    class CreateACustomerIndexAndDropEverything : Refactoring(
         executionOrder {
             author("ben")
             ymd(2023, 10, 1)
@@ -30,6 +30,9 @@ internal class DropIfExistsTest {
             dropTableIfExists {
                 name("CUSTOMER")
             }
+            dropTableIfExists {
+                name("NON_EXISTENT")
+            }
         },
         rollback = emptyList(),
     )
@@ -40,7 +43,7 @@ internal class DropIfExistsTest {
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    singleOf(::CreateACustomerIndex).bind(Refactoring::class)
+                    singleOf(::CreateACustomerIndexAndDropEverything).bind(Refactoring::class)
                 },
             )
         }.use {

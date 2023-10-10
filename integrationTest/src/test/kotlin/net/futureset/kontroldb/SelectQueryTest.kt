@@ -4,6 +4,7 @@ import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.createTable
+import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.modelchange.insert
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest

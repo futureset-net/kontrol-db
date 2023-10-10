@@ -1,9 +1,17 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.ColumnValue.Companion.column
 import net.futureset.kontroldb.ColumnValue.Companion.value
+import net.futureset.kontroldb.ExecuteMode.ALWAYS
+import net.futureset.kontroldb.ExecuteMode.ONCE
+import net.futureset.kontroldb.ExecuteMode.ON_CHANGE
 import net.futureset.kontroldb.modelchange.Comment
+import net.futureset.kontroldb.modelchange.ExecutesSql
 import net.futureset.kontroldb.modelchange.Insert.InsertBuilder.Companion.insertRow
 import net.futureset.kontroldb.modelchange.Update.UpdateBuilder.Companion.updateRow
+import net.futureset.kontroldb.modelchange.executeQuery
+import net.futureset.kontroldb.modelchange.sqlLogger
+import net.futureset.kontroldb.refactoring.AStartEndMarker
 import net.futureset.kontroldb.refactoring.CHECK_SUM
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
@@ -11,15 +19,19 @@ import net.futureset.kontroldb.refactoring.EXECUTED_SEQUENCE
 import net.futureset.kontroldb.refactoring.EXECUTION_COUNT
 import net.futureset.kontroldb.refactoring.EXECUTION_FREQUENCY
 import net.futureset.kontroldb.refactoring.EXECUTION_ORDER
+import net.futureset.kontroldb.refactoring.EndMigration
 import net.futureset.kontroldb.refactoring.FIRST_APPLIED
 import net.futureset.kontroldb.refactoring.ID_COLUMN
 import net.futureset.kontroldb.refactoring.LAST_APPLIED
 import net.futureset.kontroldb.refactoring.MIGRATION_RUN_ID
+import net.futureset.kontroldb.refactoring.ROLLED_BACK
 import net.futureset.kontroldb.refactoring.StartMigration
 import net.futureset.kontroldb.settings.DbDialect
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.settings.ExecutionSettings
 import net.futureset.kontroldb.settings.TargetSettings
+import net.futureset.kontroldb.settings.TransactionScope.MIGRATION
+import net.futureset.kontroldb.settings.TransactionScope.REFACTORING
 import net.futureset.kontroldb.targetsystem.HsqlDbDialect
 import net.futureset.kontroldb.template.coreTemplateModule
 import org.koin.core.context.startKoin
@@ -33,20 +45,17 @@ import org.koin.dsl.onClose
 import org.koin.logger.SLF4JLogger
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.util.SortedSet
-import kotlin.io.path.createDirectories
-import kotlin.io.path.isDirectory
-import kotlin.io.path.notExists
-import kotlin.io.path.writeText
+import java.sql.SQLException
+import java.util.*
+import kotlin.reflect.KClass
 
 data class KontrolDbEngine(
     private val allRefactoring: List<Refactoring>,
-    val effectiveSettings: EffectiveSettings,
+    override val effectiveSettings: EffectiveSettings,
     val templateResolver: TemplateResolver,
-    val sqlExecutor: SqlExecutor,
-) : KontrolDbCommands, AutoCloseable {
+    val sqlExecutor: ApplyDirectlyMigrationHandler,
+    val applyToScript: WriteChangesToFileMigrationHandler,
+) : KontrolDbCommands, AutoCloseable, ExecutesSql {
 
     val refactorings = allRefactoring.toSortedSet()
 
@@ -61,81 +70,126 @@ data class KontrolDbEngine(
 
     override fun generateSql(outputDirectory: Path) {
         effectiveSettings.isScripting = true
-        require(outputDirectory.notExists() || outputDirectory.isDirectory())
-        outputDirectory.createDirectories()
-
-        val generateSql = generateSql()
-        outputDirectory.resolve("output.sql").writeText(
-            generateSql.joinToString(
-                separator = effectiveSettings.operatingSystem.lineSeparator.repeat(2),
-                postfix = effectiveSettings.operatingSystem.lineSeparator,
-            ),
-        )
+        applyToScript.outputDirectory = outputDirectory
+        generateChanges(applyToScript, false)
     }
 
-    override fun getCurrentState(): SortedSet<AppliedRefactoring> {
-        return calculateState().appliedChanges.values.toSortedSet()
+    override fun generateSqlRollback(outputDirectory: Path) {
+        effectiveSettings.isScripting = true
+        applyToScript.outputDirectory = outputDirectory
+        generateChanges(applyToScript, true)
     }
 
     override fun applySql(): Int {
         effectiveSettings.isScripting = false
-        val sqlToApply = generateSql().filter { it.isNotBlank() }
-        sqlExecutor.executeAll(sqlToApply)
-        return sqlToApply.size
+        return generateChanges(sqlExecutor, false).size
     }
 
     override fun getNextRefactorings(): List<Refactoring> {
-        return calculateState().changesToApply
+        return calculateState().refactoringsToApply
     }
 
     private fun calculateState(): KontrolDbState {
-        val currentState = sqlExecutor.getCurrentState().associateBy(AppliedRefactoring::id)
-        refactorings.removeIf { it is StartMigration }
-        if (refactorings.any { shouldRun(currentState, it) }) {
-            refactorings.add(StartMigration())
-        }
+        val currentState = getAppliedRefactorings().associateBy(AppliedRefactoring::id)
+        val orderedChanges = refactorings.filterNot { it is StartMigration }.toSortedSet().toList()
         return KontrolDbState(
-            allSourceControlledChanges = refactorings.toSortedSet().toList(),
-            appliedChanges = currentState,
-            changesToApply = refactorings.toSortedSet()
-                .filter { shouldRun(currentState, it) }
-                .toList(),
+            refactoringsInSourceControl = orderedChanges,
+            appliedRefactorings = currentState,
+            refactoringsToApply = orderedChanges.filter { shouldRun(currentState, it) }.toList(),
             lastExecutionSequence = currentState.values.maxOfOrNull { it.executionSequence } ?: 1,
         )
-            .apply {
-                logger.debug("State\n{}\n", this)
-            }
     }
 
-    private fun generateSql(): List<String> {
+    private fun <T : Refactoring, U : Refactoring> MutableList<Refactoring>.addFirstButAfterRefactoringOfType(
+        theType: KClass<T>,
+        aRefactoring: U,
+    ) {
+        val index = indexOfFirst { theType.isInstance(it) }
+        add(if (index < 0) 0 else index + 1, aRefactoring)
+    }
+    private fun <T : Refactoring, U : Refactoring> MutableList<Refactoring>.addLastButBeforeRefactoringOfType(
+        theType: KClass<T>,
+        aRefactoring: U,
+    ) {
+        val index = indexOfLast { theType.isInstance(it) }
+        add(if (index < 0) this.size else index, aRefactoring)
+    }
+    private fun generateChanges(migrationHandler: MigrationHandler, rollback: Boolean): List<String> {
         val state = calculateState()
-        return state.changesToApply
-            .flatMapIndexed { i, refactoring ->
-                listOf(Comment("Start ${refactoring.id()}\nContains ${refactoring.forward.size} changes")) + refactoring.forward + logInVersionControl(
-                    i + state.lastExecutionSequence,
-                    refactoring,
-                    state.appliedChanges[refactoring.id()],
-                )
+        migrationHandler.start()
+        effectiveSettings.startState = state
+        val changeToApply = state.refactoringsToApply.let { if (rollback) it.reversed() else it }.toMutableList()
+        if (changeToApply.isNotEmpty()) {
+            if (rollback) {
+                changeToApply.add(0, StartMigration())
+                changeToApply.addLastButBeforeRefactoringOfType(CreateVersionControlTable::class, EndMigration())
+            } else {
+                changeToApply.addFirstButAfterRefactoringOfType(CreateVersionControlTable::class, StartMigration())
+                changeToApply.add(EndMigration())
             }
-            .toMutableList()
-            .apply {
-                add(
-                    0,
-                    Comment(
-                        """
-kontrol-db
+        }
+        return migrationHandler.wrapInTransactionOnWhen(effectiveSettings.transactionScope == MIGRATION) {
+            changeToApply
+                .mapIndexed { i, refactoring ->
+                    Pair(
+                        refactoring,
+                        emptyList<ModelChange>() +
+                            Comment("Start ${if (rollback) "ROLLBACK" else ""} ${refactoring.id()}\nContains ${refactoring.forward.size} changes") +
+                            (
+                                if (rollback) {
+                                    refactoring.rollback
+                                } else {
+                                    refactoring.forward
+                                }
+                                ) +
+                            listOfNotNull(
+                                logInVersionControl(
+                                    i + state.lastExecutionSequence,
+                                    refactoring,
+                                    state.appliedRefactorings[refactoring.id()],
+                                    rollback,
+                                ).takeUnless { rollback && refactoring is CreateVersionControlTable },
+                            ),
+                    )
+                }
+                .flatMap { (refactoring, modelChanges) ->
+                    migrationHandler.wrapInTransactionOnWhen(effectiveSettings.transactionScope == REFACTORING) {
+                        migrationHandler.executeRefactoring(refactoring)
+                        modelChanges.flatMap { modelChange ->
+                            modelChange.lines()
+                                .also { lines -> migrationHandler.executeModelChange(modelChange, lines) }
+                        }
+                    }
+                }.also {
+                    migrationHandler.end()
+                }
+        }
+    }
 
-Contains ${state.changesToApply.size} refactorings
-${state.changesToApply.joinToString(separator = "\n") { it::class.qualifiedName + " " + it.id() }}
-
-
-Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}    
-                        """.trimIndent(),
-                    ),
-                )
+    override fun getAppliedRefactorings(): SortedSet<AppliedRefactoring> {
+        try {
+            return withConnection {
+                it.executeQuery<AppliedRefactoring>(
+                    "SELECT " +
+                        listOf(EXECUTION_ORDER, ID_COLUMN, CHECK_SUM, EXECUTED_SEQUENCE, ROLLED_BACK)
+                            .map(::DbIdentifier)
+                            .joinToString { d -> d.toSql(effectiveSettings) } +
+                        " FROM " +
+                        effectiveSettings.versionControlTable.toSql(effectiveSettings),
+                ) { rs ->
+                    AppliedRefactoring(
+                        executionOrder = ExecutionOrder.fromStringValue(rs.getString(1)),
+                        id = rs.getString(2),
+                        checksum = rs.getString(3),
+                        executionSequence = rs.getInt(4),
+                        rolledback = rs.getBoolean(5),
+                    )
+                }.toSortedSet()
             }
-            .flatMap { templateResolver.findTemplate(it)?.convert(it).orEmpty() }
-            .mapNotNull { "$it${effectiveSettings.statementSeparator}" }
+        } catch (e: SQLException) {
+            sqlLogger.warn("Cannot retrieve current state, assume no control table : " + e.message)
+            return sortedSetOf()
+        }
     }
 
     private fun shouldRun(
@@ -145,20 +199,25 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
         val previousExecution =
             currentState[refactoring.id()] ?: run { logger.info("Run ${refactoring.id()}"); return true }
         return when (refactoring.executeMode) {
-            ExecuteMode.ALWAYS -> {
-                logger.info("Always run ${refactoring.id()}"); true
+            ALWAYS -> {
+                logger.info("Always run ${refactoring.id()}")
+                true
             }
 
-            ExecuteMode.ONCE -> {
-                check(previousExecution.checksum == refactoring.checkSum()) {
+            ONCE -> {
+                check(previousExecution.checksum == refactoring.checkSum() || previousExecution.rolledback) {
                     "Checksum mismatch for ${refactoring.id()} checksum ${refactoring.checkSum()}!=${previousExecution.checksum}"
-                }; false
+                }
+                previousExecution.rolledback
             }
 
-            ExecuteMode.ON_CHANGE -> (previousExecution.checksum != refactoring.checkSum()).apply {
-                if (this) {
+            ON_CHANGE -> when {
+                previousExecution.checksum != refactoring.checkSum() -> {
                     logger.info("Checksum changed from/to '${previousExecution.checksum}/${refactoring.checkSum()}' so re-running ${refactoring.id()}")
+                    true
                 }
+
+                else -> false
             }
         }
     }
@@ -167,33 +226,46 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
         index: Int,
         refactoring: Refactoring,
         appliedRefactoring: AppliedRefactoring?,
+        rollback: Boolean,
     ): ModelChange {
-        if (appliedRefactoring != null) {
-            return updateRow {
+        return if (appliedRefactoring != null || rollback) {
+            updateRow {
                 table(effectiveSettings.versionControlTable)
                 set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.now()))
-                set(EXECUTION_COUNT to ColumnValue.expression("$EXECUTION_COUNT+1"))
+                set(
+                    EXECUTION_COUNT to ColumnValue.expression(
+                        column(EXECUTION_COUNT).toSql(effectiveSettings) +
+                            if (!rollback || refactoring is AStartEndMarker) " + 1" else " - 1",
+                    ),
+                )
                 set(EXECUTED_SEQUENCE to value(index))
                 set(MIGRATION_RUN_ID to value(effectiveSettings.migrationRunId))
+                set(ROLLED_BACK to value(rollback))
                 where {
-                    DbIdentifier(ID_COLUMN) eq value(appliedRefactoring.id)
+                    col(ID_COLUMN) eq refactoring.id()
+                }
+            }
+        } else {
+            insertRow {
+                table(effectiveSettings.versionControlTable)
+                values {
+                    value(ID_COLUMN, refactoring.id())
+                    value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
+                    valueExpression(FIRST_APPLIED, effectiveSettings.now())
+                    valueExpression(LAST_APPLIED, effectiveSettings.now())
+                    value(EXECUTION_ORDER, refactoring.executionOrder.toSingleValue())
+                    value(MIGRATION_RUN_ID, effectiveSettings.migrationRunId)
+                    value(EXECUTED_SEQUENCE, index)
+                    value(ROLLED_BACK, false)
+                    value(EXECUTION_COUNT, 1)
+                    value(CHECK_SUM, refactoring.checkSum())
                 }
             }
         }
-        return insertRow {
-            table(effectiveSettings.versionControlTable)
-            values {
-                value(ID_COLUMN, refactoring.id())
-                value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
-                valueExpression(FIRST_APPLIED, effectiveSettings.now())
-                valueExpression(LAST_APPLIED, effectiveSettings.now())
-                value(EXECUTION_ORDER, refactoring.executionOrder.toSingleValue())
-                value(MIGRATION_RUN_ID, effectiveSettings.migrationRunId)
-                value(EXECUTED_SEQUENCE, index)
-                value(EXECUTION_COUNT, 1)
-                value(CHECK_SUM, refactoring.checkSum())
-            }
-        }
+    }
+
+    private fun ModelChange.lines(): List<String> {
+        return templateResolver.findTemplate(this)?.convert(this)?.filterNotNull() ?: emptyList()
     }
 
     override fun close() {
@@ -235,8 +307,9 @@ Generated on ${ZonedDateTime.now().withNano(0).format(DateTimeFormatter.ISO_LOCA
                 single<TargetSettings> { targetSettings }
                 single { executionSettings }
                 includes(coreTemplateModule)
-                singleOf(::SqlExecutor).onClose { it?.close() }
-                single { KontrolDbEngine(getAll(), get(), get(), get()) }
+                singleOf(::ApplyDirectlyMigrationHandler).onClose { it?.close() }
+                singleOf(::WriteChangesToFileMigrationHandler)
+                single { KontrolDbEngine(getAll(), get(), get(), get(), get()) }
             }
 
             val buildEngine = startKoin {

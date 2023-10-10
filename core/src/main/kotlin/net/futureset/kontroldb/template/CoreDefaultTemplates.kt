@@ -31,4 +31,6 @@ val coreTemplateModule = module {
     singleOf(::CreateProcedureTemplate).bind(SqlTemplate::class)
     singleOf(::DropIfExistsTemplate).bind(SqlTemplate::class)
     singleOf(::DropIfExistsSqlServerTemplate).bind(SqlTemplate::class)
+    singleOf(::StartMigrationTemplate).bind(SqlTemplate::class)
+    singleOf(::EndMigrationTemplate).bind(SqlTemplate::class)
 }

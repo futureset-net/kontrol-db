@@ -1,5 +1,6 @@
 package net.futureset.kontroldb.settings
 
+import net.futureset.kontroldb.KontrolDbState
 import net.futureset.kontroldb.TemplateResolver
 
 class EffectiveSettings(
@@ -10,6 +11,7 @@ class EffectiveSettings(
 ) : DbDialect by dbDialect, ITargetSettings by targetSettings, IExecutionSettings by executionSettings {
 
     lateinit var templateResolver: TemplateResolver
+    var startState: KontrolDbState? = null
     override val isOutputTablespace = (dbDialect.supportsTablespace && executionSettings.isOutputTablespace)
     override val isOutputCatalog = executionSettings.isOutputCatalog && dbDialect.supportsCatalogs
     override val defaultCatalog =
@@ -18,4 +20,5 @@ class EffectiveSettings(
     override val defaultIndexTablespace =
         (targetSettings.defaultIndexTablespace ?: targetSettings.defaultTablespace)?.takeIf { isOutputTablespace }
     var isScripting = false
+    override val transactionScope: TransactionScope = if (dbDialect.ddlInTransactions) executionSettings.transactionScope else TransactionScope.STATEMENT
 }

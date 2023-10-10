@@ -15,6 +15,9 @@ data class SelectQuery(
     val predicate: SqlPredicate? = null,
 
 ) : ModelChange {
+
+    override fun isDdl() = false
+
     @KontrolDbDslMarker
     data class SelectQueryBuilder(
         var columns: MutableList<ColumnAndValue> = mutableListOf(),

@@ -1,14 +1,14 @@
 package net.futureset.kontroldb
 
 data class KontrolDbState(
-    val allSourceControlledChanges: List<Refactoring>,
-    val changesToApply: List<Refactoring>,
+    val refactoringsInSourceControl: List<Refactoring>,
+    val refactoringsToApply: List<Refactoring>,
     val lastExecutionSequence: Int,
-    val appliedChanges: Map<String, AppliedRefactoring>,
+    val appliedRefactorings: Map<String, AppliedRefactoring>,
 ) {
     override fun toString(): String {
         val columnWidths = mutableMapOf<String, Int>()
-        columnWidths["SOURCE_CONTROL"] = allSourceControlledChanges.maxOfOrNull { it.id().length } ?: 14
+        columnWidths["SOURCE_CONTROL"] = refactoringsInSourceControl.maxOfOrNull { it.id().length } ?: 14
         columnWidths["WILL_APPLY"] = 10
         columnWidths["ALREADY_APPLIED"] = 15
         val horizontalLine = "=".repeat(columnWidths.keys.sumOf { columnWidth(it, columnWidths) } + columnWidths.size * 2 + 4)
@@ -22,14 +22,14 @@ data class KontrolDbState(
                 ).joinToString(separator = " | ", prefix = "| ", postfix = " |"),
                 horizontalLine,
             ) +
-                allSourceControlledChanges.map { refactoring ->
+                refactoringsInSourceControl.map { refactoring ->
                     listOf(
                         data("SOURCE_CONTROL", columnWidths, refactoring.id()),
-                        data("WILL_APPLY", columnWidths, if (changesToApply.contains(refactoring)) "Y" else ""),
+                        data("WILL_APPLY", columnWidths, if (refactoringsToApply.contains(refactoring)) "Y" else ""),
                         data(
                             "ALREADY_APPLIED",
                             columnWidths,
-                            if (appliedChanges.containsKey(refactoring.id())) "Y" else "",
+                            if (appliedRefactorings.containsKey(refactoring.id())) "Y" else "",
                         ),
                     ).joinToString(separator = " | ", prefix = "| ", postfix = " |")
                 } +

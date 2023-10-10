@@ -6,7 +6,7 @@ import net.futureset.kontroldb.modelchange.Insert
 import net.futureset.kontroldb.settings.EffectiveSettings
 import kotlin.reflect.KClass
 
-class InsertTemplate(private val db: EffectiveSettings) : DbAwareTemplate<Insert>(db, TemplatePriority.DEFAULT) {
+class InsertTemplate(db: EffectiveSettings) : DbAwareTemplate<Insert>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<Insert> {
         return Insert::class
     }
@@ -25,7 +25,7 @@ class InsertTemplate(private val db: EffectiveSettings) : DbAwareTemplate<Insert
             ${forEach(change.columnValues.first().keys)}
             )            
             VALUES
-            ${change.columnValues.joinToString(separator = "),\n(", prefix = "(", postfix = ")") {row -> forEach(row.values) }}               
+            ${change.columnValues.joinToString(separator = "),\n(", prefix = "(", postfix = ")") {row -> forEach(row.values) }}
             """.trimIndent()
         }
     }

@@ -28,6 +28,8 @@ data class DeleteRow(
             )
         }
     }
+
+    override fun isDdl() = false
 }
 
 fun ModelChangesBuilder.delete(block: DeleteRow.DeleteRowBuilder.() -> Unit): DeleteRow =

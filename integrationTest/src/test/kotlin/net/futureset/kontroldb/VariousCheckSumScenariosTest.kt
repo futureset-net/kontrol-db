@@ -4,6 +4,8 @@ import net.futureset.kontroldb.ColumnValue.Companion.column
 import net.futureset.kontroldb.ColumnValue.Companion.expression
 import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.KontrolDb.Companion.dsl
+import net.futureset.kontroldb.modelchange.executeQuery
+import net.futureset.kontroldb.modelchange.executeSql
 import net.futureset.kontroldb.modelchange.insert
 import net.futureset.kontroldb.modelchange.update
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
@@ -27,11 +29,11 @@ internal class VariousCheckSumScenariosTest {
             changeModules(PetStore().module)
         }.use { result ->
 
-            assertThat(result.getCurrentState()).isEmpty()
+            assertThat(result.getAppliedRefactorings()).isEmpty()
 
             assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
 
-            assertThat(result.getCurrentState()).describedAs("changes applied").hasSizeGreaterThan(2)
+            assertThat(result.getAppliedRefactorings()).describedAs("changes applied").hasSizeGreaterThan(2)
 
             result.sqlExecutor.withConnection {
                 it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${IncrementCustomerId::class.qualifiedName}'")
@@ -54,11 +56,11 @@ internal class VariousCheckSumScenariosTest {
             changeModules(PetStore().module)
         }.use { result ->
 
-            assertThat(result.getCurrentState()).isEmpty()
+            assertThat(result.getAppliedRefactorings()).isEmpty()
 
             assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
 
-            assertThat(result.getCurrentState()).describedAs("changes applied").hasSizeGreaterThan(2)
+            assertThat(result.getAppliedRefactorings()).describedAs("changes applied").hasSizeGreaterThan(2)
 
             result.sqlExecutor.withConnection {
                 it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${CreateProductTable::class.qualifiedName}'")
@@ -121,10 +123,10 @@ internal class VariousCheckSumScenariosTest {
 
             assertThat(result.applySql()).isGreaterThan(2)
 
-            assertThat(result.getNextRefactorings()).hasSize(2)
-            assertThat(result.applySql()).isEqualTo(3)
-            assertThat(result.getNextRefactorings()).hasSize(2)
-            assertThat(result.applySql()).isEqualTo(3)
+            assertThat(result.getNextRefactorings()).hasSize(1)
+            assertThat(result.applySql()).isEqualTo(4)
+            assertThat(result.getNextRefactorings()).hasSize(1)
+            assertThat(result.applySql()).isEqualTo(4)
         }
     }
 }

@@ -13,6 +13,8 @@ data class Insert(
 
 ) : ModelChange {
 
+    override fun isDdl() = false
+
     class InsertBuilder(
 
         override var alias: String? = null,

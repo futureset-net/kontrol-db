@@ -15,20 +15,20 @@ abstract class Refactoring(
         }
     }
 
+    open fun containsDdl(): Boolean {
+        return forward.any { it.isDdl() }
+    }
+
     override fun compareTo(other: Refactoring): Int {
         return Comparator.comparing(Refactoring::executionOrder).thenComparing(Refactoring::id).compare(this, other)
     }
 
-    fun id(): String {
+    open fun id(): String {
         return requireNotNull(this::class.qualifiedName) { "Refactoring must be a normal class" }
     }
 
-    fun checkSum(): String {
+    open fun checkSum(): String {
         return forward.map(ModelChange::checksum).sum().absoluteValue.toString(16)
-    }
-
-    override fun toString(): String {
-        return javaClass.canonicalName + " " + forward.map { it.getName() }
     }
 
     companion object {

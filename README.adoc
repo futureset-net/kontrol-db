@@ -1,4 +1,5 @@
 = kontrol-db
+:toc:
 :source-highlighter: highlightjs
 
 A database migration tool.
@@ -113,6 +114,61 @@ class AddNotNull : Refactoring(
 )
 
 ----
+=== Create Procedure
+[source,kotlin]
+----
+@Single
+class CreateAProcedureFromAFile : Refactoring(
+    executionOrder {
+        ymd(2023, 11, 30)
+        author("ben")
+    },
+    forward = changes {
+        dropProcedureIfExists {
+            name("NEW_CUSTOMER")
+        }
+        createProcedure {
+            procedure {
+                name("NEW_CUSTOMER")
+            }
+            resource("net/futureset/kontroldb/NewCustomerProc.sql")
+            wholeDefinition(true)
+            language("SQL")
+        }
+    },
+    rollback = emptyList(),
+    executeMode = ExecuteMode.ON_CHANGE,
+)
+
+//.........................................
+
+class CreateAProcedure : Refactoring(
+    executionOrder {
+        ymd(2023, 11, 30)
+        author("ben")
+    },
+    forward = changes {
+        createProcedure {
+            procedure {
+                name("NEW_CUSTOMER")
+            }
+            body(
+                """
+            CREATE PROCEDURE NEW_CUSTOMER( IN firstname VARCHAR(50), IN lastname VARCHAR(50), IN address VARCHAR(100))
+            MODIFIES SQL DATA
+            BEGIN ATOMIC
+                INSERT INTO CUSTOMER(CUST_ID,FIRSTNAME,LASTNAME,ADDRESS,CITY,STATE,ZIP)
+                VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
+            END
+                """.trimIndent(),
+            )
+            wholeDefinition(true)
+        }
+    },
+    rollback = emptyList(),
+
+)
+----
 === Create Role
 [source,kotlin]
 ----
@@ -176,6 +232,36 @@ class CreateTable : Refactoring(
             table("CUSTOMER")
         }
     },
+)
+----
+=== Drop If Exists
+[source,kotlin]
+----
+package net.futureset.kontroldb.test.examples.refactoring
+
+import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.modelchange.dropIndexIfExists
+import net.futureset.kontroldb.modelchange.dropTablefExists
+import org.koin.core.annotation.Single
+
+@Single
+class DropTable : Refactoring(
+    executionOrder {
+        ymd(2023, 9, 29)
+        author("ben")
+    },
+    forward = changes {
+            dropIndexIfExists {
+                name("IX_LASTNAME")
+            }
+            dropTableIfExists {
+                name("CUSTOMER")
+            }
+            dropTableIfExists {
+                name("NON_EXISTENT")
+            }
+    },
+    rollback = emptyList(),
 )
 ----
 === Drop Table

@@ -1,7 +1,8 @@
 package net.futureset.kontroldb.refactoring
 
-import net.futureset.kontroldb.ExecutionOrder
+import net.futureset.kontroldb.EARLIEST_CHANGE
 import net.futureset.kontroldb.Refactoring
+import net.futureset.kontroldb.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.StandardColumnTypes.INT_16
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.StandardColumnTypes.INT_64
@@ -11,11 +12,8 @@ import net.futureset.kontroldb.modelchange.addPrimaryKey
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.settings.EffectiveSettings
-import java.time.LocalDate
 
 const val DEFAULT_VERSION_CONTROL_TABLE = "KONTROL_DB_VERSIONING"
-
-val VERSION_TABLE_ID = ExecutionOrder(LocalDate.of(2000, 1, 1), "system")
 
 const val ID_COLUMN = "ID"
 
@@ -35,13 +33,15 @@ const val MIGRATION_RUN_ID = "MIGRATION_RUN_ID"
 
 const val CHECK_SUM = "CHECK_SUM"
 
+const val ROLLED_BACK = "ROLLED_BACK"
+
 class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactoring(
-    executionOrder = VERSION_TABLE_ID,
+    executionOrder = EARLIEST_CHANGE,
     forward = changes {
         createTable {
             table(effectiveSettings.versionControlTable)
             column(ID_COLUMN, Varchar(120))
-            column(EXECUTION_ORDER, Varchar(20))
+            column(EXECUTION_ORDER, Varchar(24))
             column(EXECUTED_SEQUENCE, INT_32)
             column(LAST_APPLIED, LOCALDATETIME)
             column(FIRST_APPLIED, LOCALDATETIME)
@@ -49,6 +49,7 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
             column(EXECUTION_COUNT, INT_16)
             column(MIGRATION_RUN_ID, INT_64)
             column(CHECK_SUM, Varchar(23))
+            column(ROLLED_BACK, BOOLEAN)
         }
         addPrimaryKey {
             table(effectiveSettings.versionControlTable)

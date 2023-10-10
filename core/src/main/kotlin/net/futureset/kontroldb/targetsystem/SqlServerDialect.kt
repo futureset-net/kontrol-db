@@ -1,6 +1,7 @@
 package net.futureset.kontroldb.targetsystem
 
 import net.futureset.kontroldb.AnsiDialect
+import java.nio.file.Path
 import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,7 +17,8 @@ class SqlServerDialect : AnsiDialect {
 
     override val openQuote = "["
     override val closeQuote = "]"
-    override val statementSeparator = "\ngo"
+    override val batchSeparator = "\ngo\n"
+    override val statementSeparator = ";\n\n"
     override val nullableByDefault = true
     override val ddlInTransactions = true
     override val databaseName = "sqlserver"
@@ -29,8 +31,20 @@ class SqlServerDialect : AnsiDialect {
         return "CURRENT_TIMESTAMP"
     }
 
+    override fun startTransaction(id: Int): String {
+        return "BEGIN TRAN"
+    }
+
+    override fun endTransaction(id: Int): String {
+        return "COMMIT TRAN"
+    }
+
     override fun literalDatetime(date: LocalDateTime): String {
         return "TO_TIMESTAMP('${date.format(dateTimeFormatter)}','DD/MM/YYYY HH:MI:SS')"
+    }
+
+    override fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
+        TODO("Not yet implemented")
     }
 
     override fun literalDate(date: LocalDate): String {

@@ -2,4 +2,4 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ModelChange
 
-data class Comment(val text: String) : ModelChange, CommentMarker
+data class EndBanner(val message: String) : ModelChange, CommentMarker

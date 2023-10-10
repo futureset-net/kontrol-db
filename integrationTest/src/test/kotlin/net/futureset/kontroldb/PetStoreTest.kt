@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import org.koin.ksp.generated.module
 import java.nio.file.Path
-import kotlin.io.path.readText
+import kotlin.io.path.readLines
 
-internal class ApplyToHsqlDbTest {
+internal class PetStoreTest {
 
     @Test
-    fun `Can generate an sql script that will run on HsqlDb`(@TempDir sqlOutputDir: Path) {
+    fun `Can generate a sql script and then execute it on empty db`(@TempDir sqlOutputDir: Path) {
         dsl {
             changeModules(PetStore().module)
         }.use { engine ->
@@ -23,9 +23,13 @@ internal class ApplyToHsqlDbTest {
 
             assertThat(outputSqlFile).exists()
 
-            val readText = outputSqlFile.readText()
-            println(readText)
-            assertThat(readText).isNotEmpty()
+            engine.sqlExecutor.close()
+
+            val readText = outputSqlFile.readLines()
+            println(readText.mapIndexed { index, s -> "$index".padStart(4, '0') + " $s" }.joinToString(separator = "\n"))
+            engine.sqlExecutor.withConnection {
+                engine.effectiveSettings.runScriptAgainstDb(it, outputSqlFile)
+            }
         }
     }
 
@@ -34,13 +38,14 @@ internal class ApplyToHsqlDbTest {
         dsl {
             changeModules(PetStore().module)
         }.use {
-            assertThat(it.getCurrentState())
+            assertThat(it.getAppliedRefactorings())
                 .describedAs("No changes have been applied yet").isEmpty()
             assertThat(it.applySql())
                 .describedAs("At least two SQLs were executed").isGreaterThan(2)
-            assertThat(it.getCurrentState())
+            val applied = it.getAppliedRefactorings()
+            assertThat(applied)
                 .describedAs("Changes are reported as applied").hasSizeGreaterThan(2)
-            println(it.getCurrentState().toList().joinToString(separator = "\n"))
+            println(applied.toList().joinToString(separator = "\n"))
             assertThat(it.applySql())
                 .describedAs("Re-running will apply no changes because its up to date").isZero()
         }

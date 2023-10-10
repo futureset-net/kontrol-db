@@ -3,6 +3,7 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.KontrolDb.Companion.dsl
 import net.futureset.kontroldb.modelchange.createProcedure
 import net.futureset.kontroldb.modelchange.dropProcedureIfExists
+import net.futureset.kontroldb.modelchange.executeSql
 import net.futureset.kontroldb.targetsystem.HsqlDbDialect
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
@@ -52,7 +53,7 @@ internal class StoredProcTest {
             )
         }.use {
             assertThat(it.applySql())
-                .describedAs("Run procs").isEqualTo(9)
+                .describedAs("Run procs").isEqualTo(10)
             it.sqlExecutor.withConnection { conn ->
                 conn.executeSql("call NEW_CUSTOMER('BEN','SMITH','ADR')")
             }
@@ -91,8 +92,7 @@ internal class StoredProcTest {
                 },
             )
         }.use {
-            assertThat(it.applySql())
-                .describedAs("Run procs").isEqualTo(10)
+            assertThat(it.applySql()).describedAs("Run procs").isEqualTo(11)
             it.sqlExecutor.withConnection { conn ->
                 conn.executeSql("call NEW_CUSTOMER('BEN','SMITH','ADR')")
             }
@@ -110,7 +110,7 @@ internal class StoredProcTest {
                 },
             )
         }.use {
-            assertThat(it.applySql()).describedAs("Run procs").isEqualTo(10)
+            assertThat(it.applySql()).describedAs("Run procs").isEqualTo(11)
             assertThat(it.applySql()).describedAs("No changes should be re-run").isZero()
         }
         val procDef =
@@ -129,7 +129,7 @@ internal class StoredProcTest {
                 assertThat(it.getNextRefactorings()).hasAtLeastOneElementOfType(CreateAProcedureFromAFile::class.java)
                 assertThat(it.getNextRefactorings()).noneMatch { it is CreateCustomerTable }
                 assertThat(it.applySql())
-                    .describedAs("Should detect change").isEqualTo(4)
+                    .describedAs("Should detect change").isEqualTo(5)
             }
         } finally {
             procDef.replaceText("XYZ", "LDN")

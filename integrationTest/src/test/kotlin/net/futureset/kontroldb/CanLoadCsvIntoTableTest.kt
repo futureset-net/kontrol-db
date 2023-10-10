@@ -14,6 +14,7 @@ import net.futureset.kontroldb.modelchange.applyDsvToTable
 import net.futureset.kontroldb.modelchange.createIndex
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable
+import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.io.TempDir
@@ -79,7 +80,7 @@ internal class CanLoadCsvIntoTableTest {
 
     class LoadACsvFile(
         csvFile: Path,
-        seq: Int = 1,
+        seq: Short = 1,
         insertRows: Boolean = false,
         deleteRows: Boolean = false,
         updateRows: Boolean = false,
@@ -119,7 +120,7 @@ internal class CanLoadCsvIntoTableTest {
 
     class LoadACsvFileStage2(
         csvFile: Path,
-        seq: Int = 1,
+        seq: Short = 1,
         insertRows: Boolean = false,
         deleteRows: Boolean = false,
         updateRows: Boolean = false,

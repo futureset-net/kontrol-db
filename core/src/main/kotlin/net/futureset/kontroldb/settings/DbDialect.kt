@@ -1,6 +1,7 @@
 package net.futureset.kontroldb.settings
 
 import net.futureset.kontroldb.ColumnType
+import java.nio.file.Path
 import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -13,6 +14,7 @@ interface DbDialect {
     val supportsTablespace: Boolean
     val openQuote: String
     val closeQuote: String
+    val batchSeparator: String
     val statementSeparator: String
     val nullableByDefault: Boolean
     val ddlInTransactions: Boolean
@@ -29,5 +31,9 @@ interface DbDialect {
         return "'" + SQL_TIMESTAMP_FORMAT.format(date) + "'"
     }
 
+    fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path)
+
     fun closeHook(): (Connection) -> Unit
+    fun startTransaction(id: Int): String
+    fun endTransaction(id: Int): String
 }
