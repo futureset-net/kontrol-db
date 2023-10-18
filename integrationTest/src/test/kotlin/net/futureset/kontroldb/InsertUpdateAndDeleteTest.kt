@@ -1,6 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.ColumnValue.Companion.value
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
@@ -53,7 +54,8 @@ internal class InsertUpdateAndDeleteTest {
     @ParameterizedTest
     @MethodSource("fred")
     fun `Check various predicates`(param: Param) {
-        KontrolDb.dsl {
+        dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(InsertUpdateAndDeleteTest::CreateATable).bind(Refactoring::class)

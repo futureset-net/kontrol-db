@@ -1,0 +1,19 @@
+package net.futureset.kontroldb.core.template
+
+import net.futureset.kontroldb.DbAwareTemplate
+import net.futureset.kontroldb.SqlTemplate
+import net.futureset.kontroldb.TemplatePriority
+import net.futureset.kontroldb.modelchange.CreateProcedure
+import net.futureset.kontroldb.settings.EffectiveSettings
+import org.koin.core.annotation.Singleton
+
+@Singleton(binds = [SqlTemplate::class])
+class CreateProcedureTemplate(db: EffectiveSettings) :
+    DbAwareTemplate<CreateProcedure>(db, TemplatePriority.DEFAULT) {
+    override fun type() = CreateProcedure::class
+
+    override fun convertToSingleStatement(change: CreateProcedure): String? {
+        val body = change.body ?: change.path?.text()
+        return if (change.wholeDefinition) body else "CREATE PROCEDURE ${change.procedure.toSql()}\n$body"
+    }
+}

@@ -28,61 +28,53 @@ data class TargetSettings(
     override val defaultCatalog: DbIdentifier? = null,
     override val versionControlTable: SchemaObject,
 
-) : ITargetSettings
+) : ITargetSettings {
+    fun builder() = TargetSettingsBuilder(this)
+}
 
-data class TargetSettingsBuilder(
+class TargetSettingsBuilder(
 
-    private var jdbcUrl: String? = null,
-    private var username: String? = null,
-    private var password: String? = null,
-    private var defaultTablespace: DbIdentifier? = null,
-    private var defaultIndexTablespace: DbIdentifier? = null,
-    private var defaultSchema: DbIdentifier? = null,
-    private var defaultCatalog: DbIdentifier? = null,
-    private var versionControlTable: SchemaObject = SchemaObjectBuilder().name(DEFAULT_VERSION_CONTROL_TABLE).build(),
+    private var targetSettings: TargetSettings = TargetSettings(
+        jdbcUrl = "jdbc:hsqldb:mem:test",
+        versionControlTable = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)),
+    ),
+
 ) : Builder<TargetSettingsBuilder, TargetSettings> {
     fun versionControlTable(block: SchemaObjectBuilder.() -> Unit) = apply {
-        versionControlTable = SchemaObjectBuilder().apply(block).build()
+        targetSettings = targetSettings.copy(
+            versionControlTable = SchemaObjectBuilder(targetSettings.versionControlTable).apply(block).build(),
+        )
     }
 
     fun jdbcUrl(jdbcUrl: String) = apply {
-        this.jdbcUrl = jdbcUrl
+        targetSettings = targetSettings.copy(jdbcUrl = jdbcUrl)
     }
 
     fun username(username: String) = apply {
-        this.username = username
+        targetSettings = targetSettings.copy(username = username)
     }
 
     fun password(password: String) = apply {
-        this.password = password
+        targetSettings = targetSettings.copy(password = password)
     }
 
     fun defaultTablespace(defaultTablespace: String) = apply {
-        this.defaultTablespace = DbIdentifier(defaultTablespace)
+        targetSettings = targetSettings.copy(defaultTablespace = DbIdentifier(defaultTablespace))
     }
 
     fun defaultIndexTablespace(defaultIndexTablespace: String) = apply {
-        this.defaultIndexTablespace = DbIdentifier(defaultIndexTablespace)
+        targetSettings = targetSettings.copy(defaultIndexTablespace = DbIdentifier(defaultIndexTablespace))
     }
 
     fun defaultSchema(defaultSchema: String) = apply {
-        this.defaultSchema = DbIdentifier(defaultSchema)
+        targetSettings = targetSettings.copy(defaultSchema = DbIdentifier(defaultSchema))
     }
 
     fun defaultCatalog(defaultCatalog: String) = apply {
-        this.defaultCatalog = DbIdentifier(defaultCatalog)
+        targetSettings = targetSettings.copy(defaultCatalog = DbIdentifier(defaultCatalog))
     }
 
     override fun build(): TargetSettings {
-        return TargetSettings(
-            jdbcUrl = jdbcUrl,
-            username = username,
-            password = password,
-            defaultTablespace = defaultTablespace,
-            defaultIndexTablespace = defaultIndexTablespace,
-            defaultCatalog = defaultCatalog,
-            defaultSchema = defaultSchema,
-            versionControlTable = versionControlTable,
-        )
+        return targetSettings
     }
 }

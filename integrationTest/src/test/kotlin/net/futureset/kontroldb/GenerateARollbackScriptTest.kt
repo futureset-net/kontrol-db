@@ -1,7 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDb.Companion.dsl
-import net.futureset.kontroldb.targetsystem.SqlServerDialect
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -13,8 +12,10 @@ import kotlin.io.path.readText
 class GenerateARollbackScriptTest {
 
     @Test
-    fun `Can generate a sql server rollback script`(@TempDir tempDir: Path) {
+    fun `Can generate a rollback script`(@TempDir tempDir: Path) {
         dsl {
+            dialect("default") // will be overridden by loadConfig, but included for coverage
+            loadConfig("test-config.yml")
             executionSettings {
                 isOutputTablespace(true)
                 isOutputCatalog(true)
@@ -26,19 +27,17 @@ class GenerateARollbackScriptTest {
                 defaultTablespace("MY_TABLESPACE")
                 defaultIndexTablespace("MY_INDEX_TABLESPACE")
             }
-            dbDialect(SqlServerDialect())
             changeModules(PetStore().module)
         }.use { result ->
-
             val generatedFile = tempDir.resolve("output.sql")
             result.generateSqlRollback(tempDir)
 
             assertThat(generatedFile).describedAs("script was generated").exists()
             val scriptContent = generatedFile.readText()
             println(scriptContent)
-            assertThat(scriptContent).contains("DROP TABLE [KONTROL_DB_VERSIONING]")
+            assertThat(scriptContent).contains("DROP TABLE ${result.effectiveSettings.openQuote}KONTROL_DB_VERSIONING${result.effectiveSettings.closeQuote}")
             assertThat(scriptContent)
-                .contains("DROP TABLE [CUSTOMER]")
+                .contains("DROP TABLE ${result.effectiveSettings.openQuote}CUSTOMER${result.effectiveSettings.closeQuote}")
         }
     }
 }

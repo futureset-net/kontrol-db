@@ -1,10 +1,9 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDb.Companion.dsl
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.createProcedure
 import net.futureset.kontroldb.modelchange.dropProcedureIfExists
 import net.futureset.kontroldb.modelchange.executeSql
-import net.futureset.kontroldb.targetsystem.HsqlDbDialect
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -45,6 +44,7 @@ internal class StoredProcTest {
     @Test
     fun `Can apply a stored proc and execute it`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -85,6 +85,7 @@ internal class StoredProcTest {
     @Test
     fun `Can apply a stored proc from a file and execute it`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -102,7 +103,7 @@ internal class StoredProcTest {
     @Test
     fun `Can apply a stored proc from a file and re-execute if it changes`() {
         dsl {
-            dbDialect(NonClosingDialect(HsqlDbDialect()))
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -110,6 +111,7 @@ internal class StoredProcTest {
                 },
             )
         }.use {
+            it.dontClose = true
             assertThat(it.applySql()).describedAs("Run procs").isEqualTo(11)
             assertThat(it.applySql()).describedAs("No changes should be re-run").isZero()
         }
@@ -119,6 +121,7 @@ internal class StoredProcTest {
             procDef.replaceText("LDN", "XYZ")
 
             dsl {
+                loadConfig("test-config.yml")
                 changeModules(
                     module {
                         singleOf(::CreateCustomerTable).bind(Refactoring::class)

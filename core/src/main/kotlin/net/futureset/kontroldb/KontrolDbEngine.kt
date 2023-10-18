@@ -5,8 +5,11 @@ import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.ExecuteMode.ONCE
 import net.futureset.kontroldb.ExecuteMode.ON_CHANGE
+import net.futureset.kontroldb.modelchange.ChangeToDefaultSchema
 import net.futureset.kontroldb.modelchange.Comment
-import net.futureset.kontroldb.modelchange.ExecutesSql
+import net.futureset.kontroldb.modelchange.CommentMarker
+import net.futureset.kontroldb.modelchange.InitCatalog
+import net.futureset.kontroldb.modelchange.InitSchema
 import net.futureset.kontroldb.modelchange.Insert.InsertBuilder.Companion.insertRow
 import net.futureset.kontroldb.modelchange.Update.UpdateBuilder.Companion.updateRow
 import net.futureset.kontroldb.modelchange.executeQuery
@@ -14,7 +17,6 @@ import net.futureset.kontroldb.modelchange.sqlLogger
 import net.futureset.kontroldb.refactoring.AStartEndMarker
 import net.futureset.kontroldb.refactoring.CHECK_SUM
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
-import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.refactoring.EXECUTED_SEQUENCE
 import net.futureset.kontroldb.refactoring.EXECUTION_COUNT
 import net.futureset.kontroldb.refactoring.EXECUTION_FREQUENCY
@@ -26,38 +28,27 @@ import net.futureset.kontroldb.refactoring.LAST_APPLIED
 import net.futureset.kontroldb.refactoring.MIGRATION_RUN_ID
 import net.futureset.kontroldb.refactoring.ROLLED_BACK
 import net.futureset.kontroldb.refactoring.StartMigration
-import net.futureset.kontroldb.settings.DbDialect
 import net.futureset.kontroldb.settings.EffectiveSettings
-import net.futureset.kontroldb.settings.ExecutionSettings
-import net.futureset.kontroldb.settings.TargetSettings
 import net.futureset.kontroldb.settings.TransactionScope.MIGRATION
 import net.futureset.kontroldb.settings.TransactionScope.REFACTORING
-import net.futureset.kontroldb.targetsystem.HsqlDbDialect
-import net.futureset.kontroldb.template.coreTemplateModule
-import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.core.logger.Level
-import org.koin.core.module.Module
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
-import org.koin.dsl.module
-import org.koin.dsl.onClose
-import org.koin.logger.SLF4JLogger
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.sql.SQLException
-import java.util.*
+import java.util.SortedSet
 import kotlin.reflect.KClass
 
 data class KontrolDbEngine(
     private val allRefactoring: List<Refactoring>,
-    override val effectiveSettings: EffectiveSettings,
-    val templateResolver: TemplateResolver,
+    val effectiveSettings: EffectiveSettings,
+    private val templateResolver: TemplateResolver,
     val sqlExecutor: ApplyDirectlyMigrationHandler,
     val applyToScript: WriteChangesToFileMigrationHandler,
-) : KontrolDbCommands, AutoCloseable, ExecutesSql {
+) : KontrolDbCommands, AutoCloseable {
 
     val refactorings = allRefactoring.toSortedSet()
+
+    var dontClose: Boolean = false
 
     init {
         effectiveSettings.templateResolver = templateResolver
@@ -69,19 +60,16 @@ data class KontrolDbEngine(
     private val logger = LoggerFactory.getLogger(KontrolDbEngine::class.java)
 
     override fun generateSql(outputDirectory: Path) {
-        effectiveSettings.isScripting = true
         applyToScript.outputDirectory = outputDirectory
         generateChanges(applyToScript, false)
     }
 
     override fun generateSqlRollback(outputDirectory: Path) {
-        effectiveSettings.isScripting = true
         applyToScript.outputDirectory = outputDirectory
         generateChanges(applyToScript, true)
     }
 
     override fun applySql(): Int {
-        effectiveSettings.isScripting = false
         return generateChanges(sqlExecutor, false).size
     }
 
@@ -89,7 +77,19 @@ data class KontrolDbEngine(
         return calculateState().refactoringsToApply
     }
 
+    private fun initialiseDatabase() {
+        listOfNotNull(
+            effectiveSettings.defaultCatalog?.let(::InitCatalog),
+            effectiveSettings.defaultSchema?.let(::InitSchema),
+            effectiveSettings.defaultSchema?.let { ChangeToDefaultSchema() },
+        ).onEach { modelChange ->
+            val t = templateResolver.findTemplate(modelChange)
+            sqlExecutor.executeModelChange(modelChange, t?.convert(modelChange)?.filterNotNull().orEmpty())
+        }
+    }
+
     private fun calculateState(): KontrolDbState {
+        initialiseDatabase()
         val currentState = getAppliedRefactorings().associateBy(AppliedRefactoring::id)
         val orderedChanges = refactorings.filterNot { it is StartMigration }.toSortedSet().toList()
         return KontrolDbState(
@@ -133,32 +133,34 @@ data class KontrolDbEngine(
                 .mapIndexed { i, refactoring ->
                     Pair(
                         refactoring,
-                        emptyList<ModelChange>() +
-                            Comment("Start ${if (rollback) "ROLLBACK" else ""} ${refactoring.id()}\nContains ${refactoring.forward.size} changes") +
-                            (
-                                if (rollback) {
-                                    refactoring.rollback
-                                } else {
-                                    refactoring.forward
-                                }
-                                ) +
-                            listOfNotNull(
-                                logInVersionControl(
-                                    i + state.lastExecutionSequence,
-                                    refactoring,
-                                    state.appliedRefactorings[refactoring.id()],
-                                    rollback,
-                                ).takeUnless { rollback && refactoring is CreateVersionControlTable },
+                        (
+                            emptyList<ModelChange>() +
+                                Comment("Start ${if (rollback) "ROLLBACK" else ""} ${refactoring.id()}\nContains ${refactoring.forward.size} changes") +
+                                (
+                                    if (rollback) {
+                                        refactoring.rollback
+                                    } else {
+                                        refactoring.forward
+                                    }
+                                    ) +
+                                listOfNotNull(
+                                    logInVersionControl(
+                                        i + state.lastExecutionSequence,
+                                        refactoring,
+                                        state.appliedRefactorings[refactoring.id()],
+                                        rollback,
+                                    ).takeUnless { rollback && refactoring is CreateVersionControlTable },
+                                )
                             ),
                     )
                 }
                 .flatMap { (refactoring, modelChanges) ->
                     migrationHandler.wrapInTransactionOnWhen(effectiveSettings.transactionScope == REFACTORING) {
                         migrationHandler.executeRefactoring(refactoring)
-                        modelChanges.flatMap { modelChange ->
-                            modelChange.lines()
-                                .also { lines -> migrationHandler.executeModelChange(modelChange, lines) }
-                        }
+                        modelChanges.fold(mutableListOf(), this::moveCommentTextOntoNextChange)
+                            .flatMap { (modelChange, l) ->
+                                l.also { lines -> migrationHandler.executeModelChange(modelChange, lines) }
+                            }
                     }
                 }.also {
                     migrationHandler.end()
@@ -166,9 +168,25 @@ data class KontrolDbEngine(
         }
     }
 
+    private fun moveCommentTextOntoNextChange(acc: MutableList<Pair<ModelChange, List<String>>>, model: ModelChange): MutableList<Pair<ModelChange, List<String>>> {
+        if (acc.size > 0 && acc.last().first is CommentMarker) {
+            val comment = acc.last()
+            acc.add(
+                Pair(
+                    model,
+                    model.lines()
+                        .mapIndexed { index, s -> if (index == 0) comment.second.joinToString(separator = "\n", postfix = "\n") + s else s },
+                ),
+            )
+            acc[acc.size - 2] = Pair(comment.first, emptyList())
+        } else {
+            acc.add(Pair(model, model.lines()))
+        }
+        return acc
+    }
     override fun getAppliedRefactorings(): SortedSet<AppliedRefactoring> {
         try {
-            return withConnection {
+            return sqlExecutor.withConnection {
                 it.executeQuery<AppliedRefactoring>(
                     "SELECT " +
                         listOf(EXECUTION_ORDER, ID_COLUMN, CHECK_SUM, EXECUTED_SEQUENCE, ROLLED_BACK)
@@ -269,55 +287,9 @@ data class KontrolDbEngine(
     }
 
     override fun close() {
-        stopKoin()
-    }
-
-    data class KontrolDbEngineBuilder(
-        var dbDialect: DbDialect = HsqlDbDialect(),
-        var targetSettings: TargetSettings = TargetSettings(
-            jdbcUrl = "jdbc:hsqldb:mem:testdb",
-            versionControlTable = SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE)),
-        ),
-        var executionSettings: ExecutionSettings = ExecutionSettings(
-            isOutputCatalog = true,
-            isOutputSchema = true,
-            isOutputTablespace = true,
-        ),
-        var modules: MutableList<Module> = mutableListOf(),
-    ) : Builder<KontrolDbEngineBuilder, KontrolDbEngine> {
-
-        override fun build(): KontrolDbEngine {
-            val coreModule = module {
-                singleOf(::CreateVersionControlTable).bind(Refactoring::class)
-                single<DbDialect> { dbDialect }.bind(DbDialect::class)
-                single {
-                    EffectiveSettings(
-                        get<DbDialect>(),
-                        get<ExecutionSettings>(),
-                        get<TargetSettings>(),
-                        System.currentTimeMillis(),
-                    )
-                }
-                single {
-                    val templates = getAll<SqlTemplate<ModelChange>>()
-                    val result = TemplateResolver(templates)
-                    templates.forEach { it.templateResolver = result }
-                    result
-                }
-                single<TargetSettings> { targetSettings }
-                single { executionSettings }
-                includes(coreTemplateModule)
-                singleOf(::ApplyDirectlyMigrationHandler).onClose { it?.close() }
-                singleOf(::WriteChangesToFileMigrationHandler)
-                single { KontrolDbEngine(getAll(), get(), get(), get(), get()) }
-            }
-
-            val buildEngine = startKoin {
-                logger(SLF4JLogger(level = Level.INFO))
-                modules(coreModule)
-                modules(modules)
-            }
-            return buildEngine.koin.get<KontrolDbEngine>()
+        if (!dontClose) {
+            sqlExecutor.close()
         }
+        stopKoin()
     }
 }

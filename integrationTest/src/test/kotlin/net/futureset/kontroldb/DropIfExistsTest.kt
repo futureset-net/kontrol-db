@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDb.Companion.dsl
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.createIndex
 import net.futureset.kontroldb.modelchange.dropIndexIfExists
 import net.futureset.kontroldb.modelchange.dropTableIfExists
@@ -40,6 +40,7 @@ internal class DropIfExistsTest {
     @Test
     fun `Can drop a table and index if they exist`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)

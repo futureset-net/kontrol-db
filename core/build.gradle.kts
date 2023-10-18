@@ -1,13 +1,14 @@
 plugins {
     `application`
+    alias(libs.plugins.ksp)
 }
 dependencies {
+    ksp(libs.koin.compiler)
+
     api(libs.bundles.koin)
     api(libs.kotlin.reflect)
     api(libs.logback.classic)
-    api(libs.snakeyaml)
-    api(libs.hsqldb)
-    api(libs.hsqldb.tool)
+    api(libs.bundles.jackson.yaml)
 }
 
 val unitTestCoverageLimit: String by project

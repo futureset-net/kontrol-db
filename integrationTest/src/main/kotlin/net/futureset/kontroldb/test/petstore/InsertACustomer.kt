@@ -12,6 +12,7 @@ class InsertACustomer : Refactoring(
         ymd(2023, 8, 28)
     },
     forward = changes {
+
         insert {
             table("CUSTOMER")
             values {

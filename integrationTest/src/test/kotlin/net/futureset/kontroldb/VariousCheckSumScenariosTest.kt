@@ -3,7 +3,7 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.ColumnValue.Companion.column
 import net.futureset.kontroldb.ColumnValue.Companion.expression
 import net.futureset.kontroldb.ExecuteMode.ALWAYS
-import net.futureset.kontroldb.KontrolDb.Companion.dsl
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.modelchange.executeSql
 import net.futureset.kontroldb.modelchange.insert
@@ -26,6 +26,7 @@ internal class VariousCheckSumScenariosTest {
     @Test
     fun `Refactorings can be re-run where indicated when the checksum changes`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use { result ->
 
@@ -53,6 +54,7 @@ internal class VariousCheckSumScenariosTest {
     @Test
     fun `If checksum changes on a non re-runnable changeset, this is an error`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use { result ->
 
@@ -110,6 +112,7 @@ internal class VariousCheckSumScenariosTest {
     @Test
     fun `A run always refactoring always runs!`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateProductTable).bind(Refactoring::class)

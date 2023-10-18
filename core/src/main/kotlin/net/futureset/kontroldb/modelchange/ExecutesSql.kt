@@ -1,10 +1,8 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.settings.EffectiveSettings
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.ResultSet
 
 val sqlLogger: Logger = LoggerFactory.getLogger("SQL")
@@ -43,23 +41,6 @@ inline fun <reified T> Connection.executeQuery(sql: String, block: (ResultSet) -
             if (!success) {
                 sqlLogger.error("Failed\n$sql")
             }
-        }
-    }
-}
-
-interface ExecutesSql {
-
-    val effectiveSettings: EffectiveSettings
-
-    fun <T> withConnection(block: (Connection) -> T): T {
-        return DriverManager.getConnection(effectiveSettings.jdbcUrl, effectiveSettings.username, effectiveSettings.password).use {
-            block(it)
-        }
-    }
-
-    fun close() {
-        withConnection {
-            effectiveSettings.closeHook()(it)
         }
     }
 }

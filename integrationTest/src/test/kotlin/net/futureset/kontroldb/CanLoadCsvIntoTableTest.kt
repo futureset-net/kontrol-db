@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.StandardColumnTypes.Char
 import net.futureset.kontroldb.StandardColumnTypes.DATE
@@ -172,7 +173,8 @@ internal class CanLoadCsvIntoTableTest {
                 },
         )
 
-        KontrolDb.dsl {
+        dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -240,7 +242,8 @@ internal class CanLoadCsvIntoTableTest {
         assertThat(lineDeletedText).isNotEqualTo(text)
         val dsvFile2 = tempDir.resolve("customers2.dsv")
         dsvFile2.writeText(lineDeletedText)
-        KontrolDb.dsl {
+        dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)

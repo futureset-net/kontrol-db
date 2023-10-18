@@ -1,10 +1,10 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.createTemporaryTable
 import net.futureset.kontroldb.modelchange.executeQuery
-import net.futureset.kontroldb.targetsystem.HsqlDbDialect
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -34,7 +34,8 @@ internal class CreateTemporaryTableTest {
     @ParameterizedTest
     @EnumSource(TablePersistence::class)
     fun `Can create a temporary table`(tableType: TablePersistence) {
-        KontrolDb.dsl {
+        dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateATemporaryTable).bind(Refactoring::class)
@@ -76,8 +77,8 @@ internal class CreateTemporaryTableTest {
 
     @Test
     fun `Create a temporary table from a query`() {
-        KontrolDb.dsl {
-            dbDialect(HsqlDbDialect())
+        dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)

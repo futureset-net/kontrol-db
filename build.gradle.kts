@@ -36,6 +36,13 @@ subprojects {
         sourceCompatibility = JavaVersion.VERSION_20
         targetCompatibility = JavaVersion.VERSION_20
     }
+
+    sourceSets {
+        getByName("main") {
+            kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
+        }
+    }
+
     testing {
         suites {
             val test by getting(JvmTestSuite::class) {
@@ -56,6 +63,12 @@ subprojects {
     }
 
     val unitTestCoverageLimit: String by project
+
+    tasks.withType<Test>() {
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
 
     tasks.named("check") {
         dependsOn("jacocoTestCoverageVerification")

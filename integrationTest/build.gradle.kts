@@ -2,11 +2,6 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-sourceSets {
-    getByName("main") {
-        kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
-    }
-}
 dependencies {
 
     implementation(project(":core"))
@@ -15,6 +10,14 @@ dependencies {
 }
 
 tasks.test {
+    classpath += project(":hsqldb").sourceSets["main"].runtimeClasspath
+    finalizedBy("jacocoTestReport")
+}
+
+tasks.register<Test>("sqlserverTest") {
+    group = "verification"
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = (sourceSets.test.get().runtimeClasspath + project(":sqlserver").sourceSets["main"].runtimeClasspath)
     finalizedBy("jacocoTestReport")
 }
 

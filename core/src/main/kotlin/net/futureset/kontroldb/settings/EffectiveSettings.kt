@@ -7,9 +7,9 @@ class EffectiveSettings(
     private val dbDialect: DbDialect,
     private val executionSettings: IExecutionSettings,
     private val targetSettings: ITargetSettings,
-    val migrationRunId: Long,
 ) : DbDialect by dbDialect, ITargetSettings by targetSettings, IExecutionSettings by executionSettings {
 
+    val migrationRunId: Long = System.currentTimeMillis()
     lateinit var templateResolver: TemplateResolver
     var startState: KontrolDbState? = null
     override val isOutputTablespace = (dbDialect.supportsTablespace && executionSettings.isOutputTablespace)
@@ -19,6 +19,6 @@ class EffectiveSettings(
     override val defaultTablespace = targetSettings.defaultTablespace?.takeIf { isOutputTablespace }
     override val defaultIndexTablespace =
         (targetSettings.defaultIndexTablespace ?: targetSettings.defaultTablespace)?.takeIf { isOutputTablespace }
-    var isScripting = false
-    override val transactionScope: TransactionScope = if (dbDialect.ddlInTransactions) executionSettings.transactionScope else TransactionScope.STATEMENT
+    override val transactionScope: TransactionScope =
+        if (dbDialect.ddlInTransactions) executionSettings.transactionScope else TransactionScope.STATEMENT
 }

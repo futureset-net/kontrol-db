@@ -16,32 +16,20 @@ data class SchemaObject(val name: DbIdentifier, val schema: Schema? = null) : Sq
 
 @KontrolDbDslMarker
 data class SchemaObjectBuilder(
-    private var name: String? = null,
-    private var schema: String? = null,
-    private var catalog: String? = null,
+    private var schemaObject: SchemaObject = SchemaObject(name = DbIdentifier("not-specified")),
 ) : Builder<SchemaObjectBuilder, SchemaObject> {
 
     fun name(name: String): SchemaObjectBuilder = apply {
-        this.name = name
+        this.schemaObject = schemaObject.copy(name = DbIdentifier(name))
     }
 
-    fun schema(schema: String?): SchemaObjectBuilder = apply {
-        this.schema = schema
+    fun schema(schema: String): SchemaObjectBuilder = apply {
+        schemaObject = schemaObject.copy(schema = CatalogAndSchema(schemaName = DbIdentifier(schema), catalogName = null))
     }
 
-    fun catalog(catalog: String?): SchemaObjectBuilder = apply {
-        this.catalog = catalog
+    fun catalogAndSchema(catalog: String, schema: String): SchemaObjectBuilder = apply {
+        schemaObject = schemaObject.copy(schema = CatalogAndSchema(schemaName = DbIdentifier(schema), catalogName = DbIdentifier(catalog)))
     }
 
-    override fun build(): SchemaObject {
-        return SchemaObject(
-            name = DbIdentifier(requireNotNull(name)),
-            schema = schema?.let {
-                CatalogAndSchema(
-                    schemaName = DbIdentifier(it),
-                    catalogName = catalog?.let(::DbIdentifier),
-                )
-            },
-        )
-    }
+    override fun build() = schemaObject
 }

@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDb.Companion.dsl
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,6 +14,7 @@ internal class PetStoreTest {
     @Test
     fun `Can generate a sql script and then execute it on empty db`(@TempDir sqlOutputDir: Path) {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use { engine ->
 
@@ -36,6 +37,7 @@ internal class PetStoreTest {
     @Test
     fun `Can apply changes directly to the database`() {
         dsl {
+            loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use {
             assertThat(it.getAppliedRefactorings())

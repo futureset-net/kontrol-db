@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDb.Companion.dsl
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

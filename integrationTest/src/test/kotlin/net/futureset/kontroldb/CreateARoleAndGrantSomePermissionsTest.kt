@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.createRole
 import net.futureset.kontroldb.modelchange.dropRole
 import net.futureset.kontroldb.modelchange.grantPermissions
@@ -51,7 +52,8 @@ internal class CreateARoleAndGrantSomePermissionsTest {
 
     @Test
     fun `can create a role and grant permissions to it`() {
-        val result = KontrolDb.dsl {
+        val result = dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateARoleCalledFred).bind(Refactoring::class)

@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.PredicateBuilder
@@ -62,7 +63,8 @@ internal class SelectQueryTest {
     @ParameterizedTest
     @MethodSource("fred")
     fun `Check various predicates`(param: Param) {
-        KontrolDb.dsl {
+        dsl {
+            loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(SelectQueryTest::CreateATable).bind(Refactoring::class)
