@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.hsqldb.dialect
 
 import net.futureset.kontroldb.AnsiDialect
-import net.futureset.kontroldb.modelchange.executeSql
 import net.futureset.kontroldb.settings.DbDialect
 import org.hsqldb.cmdline.SqlFile
 import org.koin.core.annotation.Singleton
@@ -21,10 +20,9 @@ class HsqlDbDialect : AnsiDialect {
     override val nullableByDefault = true
     override val ddlInTransactions = true
     override val databaseName = "hsqldb"
-
-    override fun closeHook(): (Connection) -> Unit {
-        return { connection -> connection.executeSql("SHUTDOWN") }
-    }
+    override val literalTrue: String = "true"
+    override val literalFalse: String = "false"
+    override val order: Int = 10
 
     override fun startTransaction(id: Int): String {
         return "START TRANSACTION READ WRITE"
@@ -34,7 +32,7 @@ class HsqlDbDialect : AnsiDialect {
         return "COMMIT"
     }
 
-    override fun now(): String {
+    override fun dbNowTimestamp(): String {
         return "CURRENT_TIMESTAMP"
     }
 

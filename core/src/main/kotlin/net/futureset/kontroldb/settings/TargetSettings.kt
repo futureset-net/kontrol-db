@@ -4,6 +4,8 @@ import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 
 interface ITargetSettings {
@@ -14,19 +16,19 @@ interface ITargetSettings {
     val defaultIndexTablespace: DbIdentifier?
     val defaultSchema: DbIdentifier?
     val defaultCatalog: DbIdentifier?
-    val versionControlTable: SchemaObject
+    val versionControlTable: Table
 }
 
 data class TargetSettings(
 
     override val jdbcUrl: String?,
-    override val username: String? = null,
+    override val username: String? = "sa",
     override val password: String? = null,
     override val defaultTablespace: DbIdentifier? = null,
     override val defaultIndexTablespace: DbIdentifier? = null,
     override val defaultSchema: DbIdentifier? = null,
     override val defaultCatalog: DbIdentifier? = null,
-    override val versionControlTable: SchemaObject,
+    override val versionControlTable: Table,
 
 ) : ITargetSettings {
     fun builder() = TargetSettingsBuilder(this)
@@ -36,13 +38,14 @@ class TargetSettingsBuilder(
 
     private var targetSettings: TargetSettings = TargetSettings(
         jdbcUrl = "jdbc:hsqldb:mem:test",
-        versionControlTable = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)),
+        username = "sa",
+        versionControlTable = Table(schemaObject = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)), tablePersistence = TablePersistence.NORMAL),
     ),
 
 ) : Builder<TargetSettingsBuilder, TargetSettings> {
     fun versionControlTable(block: SchemaObjectBuilder.() -> Unit) = apply {
         targetSettings = targetSettings.copy(
-            versionControlTable = SchemaObjectBuilder(targetSettings.versionControlTable).apply(block).build(),
+            versionControlTable = Table(SchemaObjectBuilder(targetSettings.versionControlTable.schemaObject).apply(block).build(), TablePersistence.NORMAL),
         )
     }
 

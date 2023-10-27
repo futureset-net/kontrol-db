@@ -4,7 +4,5 @@ interface ModelChange {
 
     fun getName(): String = javaClass.simpleName
 
-    fun checksum() = hashCode()
-
-    fun isDdl() = true
+    fun checksum(resourceResolver: ResourceResolver) = hashCode()
 }

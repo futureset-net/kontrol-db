@@ -10,12 +10,14 @@ enum class TransactionScope {
     REFACTORING,
     MIGRATION,
 }
+
 interface IExecutionSettings {
     val isOutputSchema: Boolean
     val isOutputCatalog: Boolean
     val isOutputTablespace: Boolean
     val operatingSystem: OperatingSystem
     val outputDirectory: Path
+    val externalFileRoot: Path
     val transactionScope: TransactionScope
 }
 
@@ -26,27 +28,31 @@ data class ExecutionSettings(
     override val isOutputTablespace: Boolean = false,
     override val operatingSystem: OperatingSystem = OperatingSystem.WINDOWS,
     override val outputDirectory: Path = Paths.get(""),
+    override val externalFileRoot: Path = Paths.get(""),
     override val transactionScope: TransactionScope = TransactionScope.REFACTORING,
 ) : IExecutionSettings
 
-class ExecutionSettingsBuilder : Builder<ExecutionSettingsBuilder, ExecutionSettings> {
+class ExecutionSettingsBuilder(private var executionSettings: ExecutionSettings = ExecutionSettings()) : Builder<ExecutionSettingsBuilder, ExecutionSettings> {
 
-    private var isOutputSchema: Boolean = false
-    private var isOutputCatalog: Boolean = false
-    private var isOutputTablespace: Boolean = false
-    private var operatingSystem: OperatingSystem = OperatingSystem.WINDOWS
-    private var outputDirectory: Path = Paths.get("")
-    private var transactionScope: TransactionScope = TransactionScope.REFACTORING
+    fun isOutputSchema(isOutputSchema: Boolean) =
+        apply { executionSettings = executionSettings.copy(isOutputSchema = isOutputSchema) }
 
-    fun isOutputSchema(isOutputSchema: Boolean) = apply { this.isOutputSchema = isOutputSchema }
-    fun isOutputCatalog(isOutputCatalog: Boolean) = apply { this.isOutputCatalog = isOutputCatalog }
-    fun isOutputTablespace(isOutputTablespace: Boolean) = apply { this.isOutputTablespace = isOutputTablespace }
+    fun isOutputCatalog(isOutputCatalog: Boolean) =
+        apply { executionSettings = executionSettings.copy(isOutputCatalog = isOutputCatalog) }
 
-    fun transactionScope(transactionScope: TransactionScope) = apply {
-        this.transactionScope = transactionScope
+    fun isOutputTablespace(isOutputTablespace: Boolean) =
+        apply { executionSettings = executionSettings.copy(isOutputTablespace = isOutputTablespace) }
+
+    fun externalFileRoot(path: Path) = apply {
+        executionSettings = executionSettings.copy(externalFileRoot = path)
     }
 
-    fun outputDirectory(outputDirectory: Path) = apply { this.outputDirectory = outputDirectory }
-    override fun build(): ExecutionSettings =
-        ExecutionSettings(isOutputSchema, isOutputCatalog, isOutputTablespace, operatingSystem, outputDirectory)
+    fun transactionScope(transactionScope: TransactionScope) = apply {
+        executionSettings = executionSettings.copy(transactionScope = transactionScope)
+    }
+
+    fun outputDirectory(outputDirectory: Path) =
+        apply { executionSettings = executionSettings.copy(outputDirectory = outputDirectory) }
+
+    override fun build(): ExecutionSettings = executionSettings
 }

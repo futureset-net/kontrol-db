@@ -2,21 +2,40 @@
 
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.modelchange.TablePersistence
+
 interface TableBuilder<B : TableBuilder<B, T>, T : ModelChange> : Builder<B, T> {
 
-    var table: SchemaObject
+    var table: Table
 
-    fun table(block: SchemaObjectBuilder.() -> Unit = {}): B {
-        return table(SchemaObjectBuilder().apply(block).build())
-    }
+    fun table(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
+        table = Table(
+            schemaObject = SchemaObjectBuilder(
+                SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
+            ).apply(block).build(),
+        )
+    } as B
 
-    fun table(table: SchemaObject): B {
+    fun localTemporaryTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
+        table = Table(
+            tablePersistence = TablePersistence.TEMPORARY,
+            schemaObject = SchemaObjectBuilder(
+                SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
+            ).apply(block).build(),
+        )
+    } as B
+
+    fun globalTemporaryTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
+        table = Table(
+            tablePersistence = TablePersistence.GLOBAL_TEMPORARY,
+            schemaObject = SchemaObjectBuilder(
+                SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
+            ).apply(block).build(),
+        )
+    } as B
+
+    fun table(table: Table): B {
         this.table = table
-        return this as B
-    }
-
-    fun table(table: String): B {
-        table(SchemaObject(name = DbIdentifier(table)))
         return this as B
     }
 }

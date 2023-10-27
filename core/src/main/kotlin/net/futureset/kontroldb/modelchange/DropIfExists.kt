@@ -32,7 +32,3 @@ fun ModelChangesBuilder.dropProcedureIfExists(lambda: SchemaObjectBuilder.() -> 
 fun ModelChangesBuilder.dropTableIfExists(lambda: SchemaObjectBuilder.() -> Unit) {
     changes.add(DropIfExistsBuilder().objectName(lambda).objectType(DbObjectType.TABLE).build())
 }
-
-fun ModelChangesBuilder.dropIndexIfExists(lambda: SchemaObjectBuilder.() -> Unit) {
-    changes.add(DropIfExistsBuilder().objectName(lambda).objectType(DbObjectType.INDEX).build())
-}

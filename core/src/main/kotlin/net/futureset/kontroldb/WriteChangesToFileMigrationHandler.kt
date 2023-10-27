@@ -1,6 +1,5 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.modelchange.CommentMarker
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicInteger
@@ -36,7 +35,7 @@ class WriteChangesToFileMigrationHandler(
     }
 
     override fun executeModelChange(change: ModelChange, rawChanges: List<String>) {
-        allLines.addAll(rawChanges.map { if (change is CommentMarker) it else "$it${effectiveSettings.statementSeparator}" })
+        allLines.addAll(rawChanges)
     }
 
     override fun executeRefactoring(refactoring: Refactoring) {

@@ -21,29 +21,34 @@ import org.koin.dsl.module
 import org.koin.ksp.generated.module
 import org.koin.logger.SLF4JLogger
 import java.nio.file.Paths
+import kotlin.io.path.absolute
 
 data class KontrolDbEngineBuilder(
     private var dialect: String = "default",
     private var targetSettings: TargetSettings = TargetSettings(
         jdbcUrl = "jdbc:hsqldb:mem:testdb",
-        versionControlTable = SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE)),
+        versionControlTable = Table(SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE))),
     ),
     private var executionSettings: ExecutionSettings = ExecutionSettings(
         isOutputCatalog = true,
         isOutputSchema = true,
         isOutputTablespace = true,
+        externalFileRoot = Paths.get("").absolute(),
     ),
-    private var modules: MutableList<Module> = mutableListOf(),
+    private var modules: MutableSet<Module> = mutableSetOf(),
 ) : Builder<KontrolDbEngineBuilder, KontrolDbEngine> {
 
     private val configFileControl: ConfigFileControl = ConfigFileControl()
 
     override fun build(): KontrolDbEngine {
-        val coreModule = module {
+        val engineModule = module {
             singleOf(::CreateVersionControlTable).bind(Refactoring::class)
             single {
                 EffectiveSettings(
-                    requireNotNull(getAll<DbDialect>().firstOrNull { it.databaseName == dialect }) { "Could not find dialect named '$dialect'" },
+                    requireNotNull(
+                        getAll<DbDialect>().sorted().reversed().firstOrNull { it.databaseName == dialect }
+                            .also { logger.info("selected dialect $it") },
+                    ) { "Could not find dialect named '$dialect'" },
                     get<IExecutionSettings>(),
                     get<ITargetSettings>(),
                 )
@@ -63,9 +68,10 @@ data class KontrolDbEngineBuilder(
         }
 
         val buildEngine = startKoin {
+//            allowOverride(false)
             logger(SLF4JLogger(level = Level.INFO))
-            modules(coreModule)
-            modules(modules)
+            modules(engineModule)
+            modules(modules.toList())
         }
         return buildEngine.koin.get<KontrolDbEngine>()
     }
@@ -90,11 +96,11 @@ data class KontrolDbEngineBuilder(
         this.dialect = dialect
     }
     fun dbSettings(block: TargetSettingsBuilder.() -> Unit) = apply {
-        targetSettings = TargetSettingsBuilder().apply(block).build()
+        targetSettings = TargetSettingsBuilder(targetSettings).apply(block).build()
     }
 
     fun executionSettings(block: ExecutionSettingsBuilder.() -> Unit) = apply {
-        executionSettings = ExecutionSettingsBuilder().apply(block).build()
+        executionSettings = ExecutionSettingsBuilder(executionSettings).apply(block).build()
     }
 
     fun changeModules(module: Module) = apply {

@@ -53,7 +53,7 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
         }
         addPrimaryKey {
             table(effectiveSettings.versionControlTable)
-            constraintName(effectiveSettings.versionControlTable.name.name + "_PK")
+            constraintName(effectiveSettings.versionControlTable.schemaObject.name.name + "_PK")
             column(ID_COLUMN)
         }
     },

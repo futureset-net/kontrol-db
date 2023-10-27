@@ -19,6 +19,9 @@ class DefaultDialect : AnsiDialect {
     override val nullableByDefault = true
     override val ddlInTransactions = false
     override val databaseName = "default"
+    override val literalTrue: String = "true"
+    override val literalFalse: String = "false"
+    override val order: Int = 10
 
     override fun startTransaction(id: Int): String {
         return "START TRANSACTION READ WRITE"
@@ -28,13 +31,11 @@ class DefaultDialect : AnsiDialect {
         return "COMMIT"
     }
 
-    override fun now(): String {
+    override fun dbNowTimestamp(): String {
         return "CURRENT_TIMESTAMP"
     }
 
     override fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
         TODO("Not implemented for default")
     }
-
-    override fun closeHook(): (Connection) -> Unit = {}
 }

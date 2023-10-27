@@ -1,9 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ColumnAndValue
 import net.futureset.kontroldb.ColumnValue
-import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.SqlString
 import net.futureset.kontroldb.SqlValueFactory
@@ -119,13 +117,17 @@ class PredicateBuilder(private var predicate: SqlPredicate = AllOf(predicates = 
     fun existsSelect(vararg columnNames: String, lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
         predicate = Exists(
             SelectQuery.SelectQueryBuilder()
-                .apply { columns.addAll(columnNames.toList().map(::DbIdentifier).map { ColumnAndValue(it, null) }) }
+                .apply { columnNames.toList().forEach { column(it, null) } }
                 .apply(lambda).build(),
         )
     }
 
     fun anyOf(lambda: PredicateBuilder.() -> Unit) = apply {
         predicate += PredicateBuilder(AnyOf(emptyList())).apply(lambda).build()
+    }
+
+    fun allOf(lambda: PredicateBuilder.() -> Unit) = apply {
+        predicate += PredicateBuilder(AllOf(emptyList())).apply(lambda).build()
     }
 
     infix fun Operand.inRangeOf(operand: Pair<Any, Any>) = apply {

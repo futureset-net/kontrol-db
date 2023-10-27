@@ -1,6 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.settings.EffectiveSettings
+import java.io.BufferedReader
 
 abstract class DbAwareTemplate<T : ModelChange>(
     private val effectiveSettings: EffectiveSettings,
@@ -40,6 +41,11 @@ abstract class DbAwareTemplate<T : ModelChange>(
         return canApplyTo(effectiveSettings)
     }
 
+    fun Resource.text() = effectiveSettings.resourceResolver.resourceText(this)
+
+    fun Resource.reader(): BufferedReader {
+        return effectiveSettings.resourceResolver.reader(this)
+    }
     open fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean {
         return true
     }

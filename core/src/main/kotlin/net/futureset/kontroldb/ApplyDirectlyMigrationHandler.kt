@@ -4,17 +4,35 @@ import net.futureset.kontroldb.modelchange.executeSql
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.ResultSet
 
 class ApplyDirectlyMigrationHandler(val effectiveSettings: EffectiveSettings) : MigrationHandler {
 
-    private val currentConnection: ThreadLocal<Connection> = ThreadLocal.withInitial(::makeConnection)
+    private val connectionHolder = ConnectionHolder(this::makeConnection)
+
+    private val consoleResultSetHandler: (ResultSet) -> Unit = { rs ->
+        val headings = mutableListOf<String>()
+        for (i in 1..rs.metaData.columnCount) {
+            headings.add(rs.metaData.getColumnLabel(i) ?: rs.metaData.getColumnName(i))
+        }
+        val results = mutableListOf<Map<String, String>>()
+        while (rs.next()) {
+            results.add(headings.associateWith(rs::getString))
+        }
+        println(
+            results.dataTable(
+                *headings.map { heading -> heading to { m: Map<String, String> -> m[heading] } }
+                    .toTypedArray(),
+            ) + "\n",
+        )
+    }
 
     override fun executeModelChange(change: ModelChange, rawChanges: List<String>) {
         withConnection {
             rawChanges
                 .toList()
                 .forEach { sql ->
-                    it.executeSql(sql)
+                    it.executeSql(sql, if (change is SupportsResultSetHandler) change.resultSetHandler(effectiveSettings) else consoleResultSetHandler)
                 }
         }
     }
@@ -23,20 +41,15 @@ class ApplyDirectlyMigrationHandler(val effectiveSettings: EffectiveSettings) : 
     }
 
     override fun <T> wrapInTransactionOnWhen(predicate: Boolean, lambda: () -> T): T {
-        val connection = currentConnection.get()
-        return try {
-            connection.autoCommit = false
-            val result = lambda()
-            connection.commit()
-            result
-        } finally {
-            connection.autoCommit = true
+        return if (predicate) {
+            connectionHolder.wrapInTransaction(lambda)
+        } else {
+            lambda()
         }
     }
 
     fun close() {
-        effectiveSettings.closeHook().invoke(currentConnection.get())
-        currentConnection.remove()
+        connectionHolder.close()
     }
 
     private fun makeConnection(): Connection {
@@ -48,20 +61,10 @@ class ApplyDirectlyMigrationHandler(val effectiveSettings: EffectiveSettings) : 
     }
 
     override fun end() {
-        currentConnection.remove()
+        connectionHolder.close()
     }
 
     fun <T> withConnection(block: (Connection) -> T): T {
-        var success = false
-        try {
-            val result = block.invoke(currentConnection.get())
-            success = true
-            return result
-        } finally {
-            if (!success) {
-                currentConnection.get().rollback()
-                currentConnection.remove()
-            }
-        }
+        return connectionHolder.withConnection(block)
     }
 }

@@ -11,4 +11,14 @@ enum class OperatingSystem(val lineSeparator: String) {
             else -> LINUX.lineSeparator
         },
     ),
+    ;
+
+    companion object {
+        fun current(): OperatingSystem =
+            when {
+                "win" in System.getProperty("os.name", "") -> WINDOWS
+                "mac" in System.getProperty("os.name", "") -> MAC
+                else -> LINUX
+            }
+    }
 }

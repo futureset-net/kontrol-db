@@ -3,18 +3,18 @@ package net.futureset.kontroldb.core.template
 import net.futureset.kontroldb.DbAwareTemplate
 import net.futureset.kontroldb.SqlTemplate
 import net.futureset.kontroldb.TemplatePriority
-import net.futureset.kontroldb.modelchange.Insert
+import net.futureset.kontroldb.modelchange.InsertRows
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class InsertTemplate(db: EffectiveSettings) : DbAwareTemplate<Insert>(db, TemplatePriority.DEFAULT) {
-    override fun type(): KClass<Insert> {
-        return Insert::class
+class InsertRowsTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertRows>(db, TemplatePriority.DEFAULT) {
+    override fun type(): KClass<InsertRows> {
+        return InsertRows::class
     }
 
-    override fun convertToSingleStatement(change: Insert): String {
+    override fun convertToSingleStatement(change: InsertRows): String {
         if (change.fromSelect != null) {
             return """
              INSERT INTO ${change.table.toSql()}(

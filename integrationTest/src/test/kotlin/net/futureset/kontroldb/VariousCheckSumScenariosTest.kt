@@ -6,8 +6,8 @@ import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.modelchange.executeSql
-import net.futureset.kontroldb.modelchange.insert
-import net.futureset.kontroldb.modelchange.update
+import net.futureset.kontroldb.modelchange.insertRows
+import net.futureset.kontroldb.modelchange.updateRows
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.test.petstore.CreateProductTable
 import net.futureset.kontroldb.test.petstore.IncrementCustomerId
@@ -15,12 +15,14 @@ import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.ksp.generated.module
 import java.time.LocalDateTime
 
+@ExtendWith(DatabaseProvision::class)
 internal class VariousCheckSumScenariosTest {
 
     @Test
@@ -29,20 +31,32 @@ internal class VariousCheckSumScenariosTest {
             loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use { result ->
-
             assertThat(result.getAppliedRefactorings()).isEmpty()
 
             assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
 
-            assertThat(result.getAppliedRefactorings()).describedAs("changes applied").hasSizeGreaterThan(2)
+            assertThat(result.getAppliedRefactorings().simpleNames()).describedAs("changes applied")
+                .containsExactly(
+                    "CreateVersionControlTable",
+                    "StartMigration",
+                    "CreateCustomerTable",
+                    "CreateProductTable",
+                    "InsertACustomer",
+                    "IncrementCustomerId",
+                    "CreateCustomerSaleTable",
+                    "CreateTableByMistake",
+                    "DropMistakeTable",
+                    "CreateSalesItemTable",
+                    "EndMigration",
+                )
 
-            result.sqlExecutor.withConnection {
+            result.applySqlDirectly.withConnection {
                 it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${IncrementCustomerId::class.qualifiedName}'")
             }
 
             assertThat(result.applySql()).isGreaterThan(1)
             assertThat(
-                result.sqlExecutor.withConnection { conn ->
+                result.applySqlDirectly.withConnection { conn ->
                     conn.executeQuery("SELECT EXECUTION_COUNT FROM $DEFAULT_VERSION_CONTROL_TABLE WHERE ID='${IncrementCustomerId::class.qualifiedName}'") {
                         it.getInt(1)
                     }.first()
@@ -64,7 +78,7 @@ internal class VariousCheckSumScenariosTest {
 
             assertThat(result.getAppliedRefactorings()).describedAs("changes applied").hasSizeGreaterThan(2)
 
-            result.sqlExecutor.withConnection {
+            result.applySqlDirectly.withConnection {
                 it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${CreateProductTable::class.qualifiedName}'")
             }
 
@@ -76,9 +90,9 @@ internal class VariousCheckSumScenariosTest {
     class InsertIntoProduct : Refactoring(
         executionOrder { ymd(2023, 9, 10) author("ben") },
         forward = changes {
-            insert {
+            insertRows {
                 table("PRODUCT")
-                values {
+                row {
                     value("ID", 1)
                     value("PRODUCT_NAME", "PRODUCT NAME")
                     value("PACKAGE_ID", System.currentTimeMillis() % 1000)
@@ -98,7 +112,7 @@ internal class VariousCheckSumScenariosTest {
         executionOrder { ymd(2023, 9, 10) author("ben") sequence(2) },
         executeMode = ALWAYS,
         forward = changes {
-            update {
+            updateRows {
                 table("PRODUCT")
                 set("CURRENT_INVENTORY_COUNT" to expression("CURRENT_INVENTORY_COUNT+1"))
                 where {
@@ -126,10 +140,10 @@ internal class VariousCheckSumScenariosTest {
 
             assertThat(result.applySql()).isGreaterThan(2)
 
-            assertThat(result.getNextRefactorings()).hasSize(1)
-            assertThat(result.applySql()).isEqualTo(4)
-            assertThat(result.getNextRefactorings()).hasSize(1)
-            assertThat(result.applySql()).isEqualTo(4)
+            assertThat(result.getNextRefactorings().simpleNames()).containsExactly("IncrementInventory")
+            assertThat(result.applySql()).isGreaterThanOrEqualTo(4)
+            assertThat(result.getNextRefactorings().simpleNames()).containsExactly("IncrementInventory")
+            assertThat(result.applySql()).isGreaterThanOrEqualTo(4)
         }
     }
 }

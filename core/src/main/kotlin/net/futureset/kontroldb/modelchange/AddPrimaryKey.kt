@@ -4,11 +4,11 @@ import net.futureset.kontroldb.ConstraintModelChange
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 
 data class AddPrimaryKey(
-    val table: SchemaObject?,
+    val table: Table,
     val columnReferences: List<DbIdentifier>,
     val clustered: Boolean?,
     val inline: Boolean,
@@ -23,7 +23,7 @@ data class AddPrimaryKey(
         private var inline: Boolean = false,
     ) : TableBuilder<AddPrimaryKeyBuilder, AddPrimaryKey> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
 
         fun constraintName(constraintName: String) = apply {
             this.constraintName = DbIdentifier(constraintName)

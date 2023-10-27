@@ -1,6 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.Resource.Companion.resource
 import net.futureset.kontroldb.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.StandardColumnTypes.Char
 import net.futureset.kontroldb.StandardColumnTypes.DATE
@@ -9,6 +10,7 @@ import net.futureset.kontroldb.StandardColumnTypes.INT_16
 import net.futureset.kontroldb.StandardColumnTypes.INT_64
 import net.futureset.kontroldb.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.modelchange.ApplyDsvToTable
 import net.futureset.kontroldb.modelchange.addNotNull
 import net.futureset.kontroldb.modelchange.addPrimaryKey
 import net.futureset.kontroldb.modelchange.applyDsvToTable
@@ -18,6 +20,8 @@ import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -25,13 +29,15 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koin.mp.KoinPlatform.stopKoin
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import kotlin.io.path.readText
 import kotlin.io.path.writeLines
 import kotlin.io.path.writeText
 
+@ExtendWith(DatabaseProvision::class)
 internal class CanLoadCsvIntoTableTest {
 
     class CreateCustomerTable : Refactoring(
@@ -54,9 +60,9 @@ internal class CanLoadCsvIntoTableTest {
             }
             createIndex {
                 unique(true)
-                indexName("UK_LASTNAME")
+                indexName("UK_FIRSTNAME")
                 table("CUSTOMER")
-                column("LASTNAME")
+                column("FIRSTNAME")
             }
             addPrimaryKey {
                 table {
@@ -96,7 +102,7 @@ internal class CanLoadCsvIntoTableTest {
         forward = changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
-                file(Resource.resource(csvFile.toString()))
+                file(resource(csvFile))
                 insertRows(insertRows)
                 deleteRows(deleteRows)
                 updateRows(updateRows)
@@ -135,7 +141,7 @@ internal class CanLoadCsvIntoTableTest {
         forward = changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
-                file(Resource.resource(csvFile.toString()))
+                file(resource(csvFile.toString()))
                 insertRows(insertRows)
                 deleteRows(deleteRows)
                 updateRows(updateRows)
@@ -163,7 +169,11 @@ internal class CanLoadCsvIntoTableTest {
         val dsvFile = tempDir.resolve("customers.dsv")
         val createCount = 8
         dsvFile.writeLines(
-            listOf("CUST_ID,FIRSTNAME,LASTNAME,FAVOURITE_LETTER,FAVOURITE_DECIMAL,IS_AN_IDIOT,NUMBER_OF_STAMPS,DATE_OF_BIRTH,TIME_RIGHT_NOW".split(",").joinToString(separator = delimiter)) + generateSequence(
+            listOf(
+                "CUST_ID,FIRSTNAME,LASTNAME,FAVOURITE_LETTER,FAVOURITE_DECIMAL,IS_AN_IDIOT,NUMBER_OF_STAMPS,DATE_OF_BIRTH,TIME_RIGHT_NOW".split(
+                    ",",
+                ).joinToString(separator = delimiter),
+            ) + generateSequence(
                 1,
             ) { it + 1 }.takeWhile { it <= createCount }
                 .map {
@@ -175,24 +185,27 @@ internal class CanLoadCsvIntoTableTest {
 
         dsl {
             loadConfig("test-config.yml")
+            executionSettings {
+                externalFileRoot(tempDir)
+            }
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
                     single { LoadACsvFile(get(), insertRows = true, delimiter = delimiter) }.bind(Refactoring::class)
-                    single { dsvFile }
+                    single { Paths.get("customers.dsv") }
                 },
             )
         }.use { result ->
             result.applySql()
-            val customerCount = result.sqlExecutor.withConnection {
+            val customerCount = result.applySqlDirectly.withConnection {
                 it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
                     rs.getInt(1)
                 }.first()
             }
             assertThat(customerCount).isEqualTo(createCount)
             assertThat(
-                result.sqlExecutor.withConnection {
-                    it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE IS_AN_IDIOT=true") { rs ->
+                result.applySqlDirectly.withConnection {
+                    it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE IS_AN_IDIOT=1") { rs ->
                         rs.getInt(1)
                     }.first()
                 },
@@ -215,6 +228,32 @@ internal class CanLoadCsvIntoTableTest {
             DoUpdates(true, false, false, true),
             DoUpdates(false, true, false, false),
         )
+
+        @JvmStatic
+        fun errorScenarios() = listOf<ErrorScenario>(
+            ErrorScenario("Path /afile must be relative") {
+                table("fred")
+                file(resource("/afile"))
+            },
+            ErrorScenario("Must specify primary key for insert or updates") {
+                table("fred")
+                file(resource("afile.dsv"))
+            },
+            ErrorScenario("Must specify primary key for insert or updates") {
+                table("fred")
+                file(resource("afile.dsv"))
+                columnMapping("TEST_COLUMN", Varchar(20), "TEST", primaryKey = false)
+                updateRows(true)
+                insertRows(false)
+            },
+            ErrorScenario("Cannot ignore insert violations if insert rows is not set") {
+                table("fred")
+                file(resource("afile.dsv"))
+                columnMapping("TEST_COLUMN", Varchar(20), "TEST", primaryKey = true)
+                ignoreInsertViolations(true)
+                insertRows(false)
+            },
+        )
     }
 
     @ParameterizedTest
@@ -228,9 +267,7 @@ internal class CanLoadCsvIntoTableTest {
             ) { it + 1 }.takeWhile { it <= createCount }
                 .map {
                     "$it,Ben$it,Riley$it,C,3.14,${it.let { r -> r % 2 }},$it,1974-10-26,${
-                        LocalDateTime.now().format(
-                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"),
-                        )
+                        LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
                     }"
                 },
         )
@@ -244,13 +281,16 @@ internal class CanLoadCsvIntoTableTest {
         dsvFile2.writeText(lineDeletedText)
         dsl {
             loadConfig("test-config.yml")
+            executionSettings {
+                externalFileRoot(tempDir)
+            }
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    single { LoadACsvFile(dsvFile, insertRows = true) }.bind(Refactoring::class)
+                    single { LoadACsvFile(dsvFile.fileName, insertRows = true) }.bind(Refactoring::class)
                     single {
                         LoadACsvFileStage2(
-                            dsvFile2,
+                            dsvFile2.fileName,
                             seq = 2,
                             insertRows = arg.inserts,
                             updateRows = arg.updates,
@@ -262,12 +302,12 @@ internal class CanLoadCsvIntoTableTest {
             )
         }.use { result ->
             result.applySql()
-            val customerCount = result.sqlExecutor.withConnection {
+            val customerCount = result.applySqlDirectly.withConnection {
                 it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
                     rs.getInt(1)
                 }.first()
             }
-            val updateRecordCount = result.sqlExecutor.withConnection {
+            val updateRecordCount = result.applySqlDirectly.withConnection {
                 it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE LASTNAME='RileyChanged'") { rs ->
                     rs.getInt(1)
                 }.first()
@@ -280,5 +320,48 @@ internal class CanLoadCsvIntoTableTest {
                 assertThat(customerCount).describedAs("No lines deleted").isEqualTo(createCount)
             }
         }
+    }
+
+    class ParameterizableCsvLoad(lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit) : Refactoring(
+        executionOrder {
+            ymd(2023, 10, 27)
+            author("ben")
+        },
+        forward = changes {
+            applyDsvToTable(lambda)
+        },
+        rollback = emptyList(),
+    )
+
+    data class ErrorScenario(
+        val message: String,
+        val lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit,
+    )
+
+    @ParameterizedTest
+    @MethodSource("errorScenarios")
+    fun errorScenarios(
+        errorScenario: ErrorScenario,
+        @TempDir tempDir: Path,
+    ) {
+        runCatching {
+            dsl {
+                loadConfig("test-config.yml")
+                executionSettings {
+                    externalFileRoot(tempDir)
+                }
+                changeModules(
+                    module {
+                        single { ParameterizableCsvLoad(errorScenario.lambda) }.bind(Refactoring::class)
+                    },
+                )
+            }
+        }.onFailure {
+            assertThat(it.cause?.cause?.message).isEqualTo(errorScenario.message)
+            stopKoin()
+        }
+            .onSuccess {
+                fail("Should fail")
+            }
     }
 }

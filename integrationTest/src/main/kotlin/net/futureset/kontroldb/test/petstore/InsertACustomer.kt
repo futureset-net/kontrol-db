@@ -1,8 +1,8 @@
 package net.futureset.kontroldb.test.petstore
 
 import net.futureset.kontroldb.Refactoring
-import net.futureset.kontroldb.modelchange.delete
-import net.futureset.kontroldb.modelchange.insert
+import net.futureset.kontroldb.modelchange.deleteRows
+import net.futureset.kontroldb.modelchange.insertRows
 import org.koin.core.annotation.Single
 
 @Single
@@ -13,9 +13,9 @@ class InsertACustomer : Refactoring(
     },
     forward = changes {
 
-        insert {
+        insertRows {
             table("CUSTOMER")
-            values {
+            row {
                 value("CUST_ID", 1)
                 value("FIRSTNAME", "Ben")
                 value("LASTNAME", "Riley")
@@ -27,7 +27,7 @@ class InsertACustomer : Refactoring(
         }
     },
     rollback = changes {
-        delete {
+        deleteRows {
             table("CUSTOMER")
             where {
                 col("CUST_ID") eq 1

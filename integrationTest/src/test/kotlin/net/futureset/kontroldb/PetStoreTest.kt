@@ -1,19 +1,22 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import org.koin.ksp.generated.module
+import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.readLines
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
 
+@ExtendWith(DatabaseProvision::class)
 internal class PetStoreTest {
 
     @Test
-    fun `Can generate a sql script and then execute it on empty db`(@TempDir sqlOutputDir: Path) {
-        dsl {
+    fun `can generate a sql script and then execute it on empty db`(@TempDir sqlOutputDir: Path, @DialectName dialect: String) {
+        KontrolDbEngineBuilder.dsl {
             loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use { engine ->
@@ -24,19 +27,34 @@ internal class PetStoreTest {
 
             assertThat(outputSqlFile).exists()
 
-            engine.sqlExecutor.close()
+            engine.applySqlDirectly.close()
 
-            val readText = outputSqlFile.readLines()
-            println(readText.mapIndexed { index, s -> "$index".padStart(4, '0') + " $s" }.joinToString(separator = "\n"))
-            engine.sqlExecutor.withConnection {
-                engine.effectiveSettings.runScriptAgainstDb(it, outputSqlFile)
+            println(outputSqlFile.toStringWithNumberedLines())
+
+            when (dialect) {
+                "hsqldb" -> engine.applySqlDirectly.withConnection {
+                    engine.effectiveSettings.runScriptAgainstDb(it, outputSqlFile)
+                }
+                "sqlserver" -> {
+                    Files.copy(outputSqlFile, Paths.get("build", "output.sql"), StandardCopyOption.REPLACE_EXISTING)
+                    engine.effectiveSettings.run {
+                        assertThat(
+                            (
+                                "docker exec -i kontrol-sqlserver /opt/mssql-tools/bin/sqlcmd " +
+                                    "-U $username -P $password -e -H localhost -C -i /var/build/output.sql"
+                                )
+                                .executeAsShell(),
+                        ).isZero()
+                    }
+                }
+                else -> throw UnsupportedOperationException("Unsupported dialect $dialect")
             }
         }
     }
 
     @Test
-    fun `Can apply changes directly to the database`() {
-        dsl {
+    fun `can apply changes directly to the database`() {
+        KontrolDbEngineBuilder.dsl {
             loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use {

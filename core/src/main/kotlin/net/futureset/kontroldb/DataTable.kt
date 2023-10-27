@@ -7,7 +7,7 @@ fun <T : Any> Iterable<T>.dataTable(vararg columns: Pair<String, (T) -> String?>
         Pair(heading, max(heading.length, this.maxOf { cellFunction(it)?.length ?: 0 }))
     }
     val horizontalLine =
-        "=".repeat(columnWidths.values.sum() + columnWidths.size * 2 + 4)
+        "=".repeat(columnWidths.values.sum() + columnWidths.size * 3 + 1)
     return (
         listOf(
             horizontalLine,

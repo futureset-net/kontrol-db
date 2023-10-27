@@ -1,16 +1,11 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.modelchange.TableAlias
 import net.futureset.kontroldb.settings.EffectiveSettings
 
 data class SchemaObject(val name: DbIdentifier, val schema: Schema? = null) : SqlString {
 
     override fun toSql(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(schema, name).joinToString(separator = ".") { it.toSql(effectiveSettings) }
-    }
-
-    fun alias(label: String? = null): TableAlias {
-        return TableAlias(label, this)
     }
 }
 

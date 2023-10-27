@@ -6,17 +6,19 @@ import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.delete
+import net.futureset.kontroldb.modelchange.deleteRows
 import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.modelchange.insertOrUpdateRow
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal class InsertUpdateAndDeleteTest {
+@ExtendWith(DatabaseProvision::class)
+internal class InsertRowsUpdateAndDeleteRowsTest {
 
     class CreateATable(param: PredicateBuilder.() -> Unit) : Refactoring(
         executionOrder {
@@ -38,8 +40,9 @@ internal class InsertUpdateAndDeleteTest {
                 primaryKey("TEST_COLUMN")
                 mode(UpdateMode.INSERT)
             }
-            delete {
+            deleteRows {
                 table("fred")
+                alias("B")
                 where(param)
             }
         },
@@ -58,7 +61,7 @@ internal class InsertUpdateAndDeleteTest {
             loadConfig("test-config.yml")
             changeModules(
                 module {
-                    singleOf(InsertUpdateAndDeleteTest::CreateATable).bind(Refactoring::class)
+                    singleOf(InsertRowsUpdateAndDeleteRowsTest::CreateATable).bind(Refactoring::class)
                     single { param.selectQuery }
                 },
             )
@@ -67,7 +70,7 @@ internal class InsertUpdateAndDeleteTest {
             engine.applySql()
 
             assertThat(
-                engine.sqlExecutor.withConnection {
+                engine.applySqlDirectly.withConnection {
                     it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
                         rs.getInt(1)
                     }.first()

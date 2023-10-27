@@ -12,13 +12,14 @@ import net.futureset.kontroldb.StandardColumnTypes.Decimal
 import net.futureset.kontroldb.StandardColumnTypes.INT_16
 import net.futureset.kontroldb.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TemplatePriority
 import net.futureset.kontroldb.modelchange.AddPrimaryKey
 import net.futureset.kontroldb.modelchange.ApplyDsvToTable
-import net.futureset.kontroldb.modelchange.CreateTemporaryTable
-import net.futureset.kontroldb.modelchange.DeleteRow
-import net.futureset.kontroldb.modelchange.Insert
+import net.futureset.kontroldb.modelchange.CreateTable
+import net.futureset.kontroldb.modelchange.DeleteRows
 import net.futureset.kontroldb.modelchange.InsertOrUpdateRow
+import net.futureset.kontroldb.modelchange.InsertRows
 import net.futureset.kontroldb.modelchange.SelectQuery
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.UpdateMode
@@ -88,15 +89,15 @@ class ApplyDsvToTableTemplate(db: EffectiveSettings) :
                         ).build(),
                 )
             } else {
-                changes.add(Insert.InsertBuilder().table(change.table).addRows(values).build())
+                changes.add(InsertRows.InsertRowsBuilder().table(change.table).addRows(values).build())
             }
             if (change.deleteRows) {
-                val tempTable = SchemaObject(name = DbIdentifier("PK_VALUES"))
+                val tempTable = Table(SchemaObject(name = DbIdentifier("PK_VALUES")), TablePersistence.TEMPORARY)
                 changes.add(
-                    CreateTemporaryTable(
+                    CreateTable(
                         table = tempTable,
                         columnDefinitions = emptyList(),
-                        tablePersistence = TablePersistence.TEMPORARY,
+                        tablespace = null,
                         preserveRowsOnCommit = true,
                         primaryKey = AddPrimaryKey(table = tempTable, columnReferences = change.primaryKeys.toList(), clustered = true, inline = true),
                         fromSelect = SelectQuery(
@@ -107,11 +108,11 @@ class ApplyDsvToTableTemplate(db: EffectiveSettings) :
                     ),
                 )
                 changes.add(
-                    Insert.InsertBuilder().table(tempTable)
+                    InsertRows.InsertRowsBuilder().table(tempTable)
                         .addRows(values.map { it.filter { it.key in change.primaryKeys } }).build(),
                 )
                 changes.add(
-                    DeleteRow.DeleteRowBuilder()
+                    DeleteRows.DeleteRowsBuilder()
                         .tableWithAlias(change.table, "A")
                         .where {
                             not {

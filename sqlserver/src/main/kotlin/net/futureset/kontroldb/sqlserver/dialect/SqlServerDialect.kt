@@ -1,21 +1,19 @@
 package net.futureset.kontroldb.sqlserver.dialect
 
 import net.futureset.kontroldb.AnsiDialect
+import net.futureset.kontroldb.DbIdentifier
+import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Singleton
 import java.nio.file.Path
 import java.sql.Connection
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Singleton(binds = [DbDialect::class])
 class SqlServerDialect : AnsiDialect {
 
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/mm/yyyy HH:mm:ss")
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/mm/yyyy")
-
-    override val supportsTablespace: Boolean = true
+    override val supportsTablespace: Boolean = false
     override val supportsCatalogs: Boolean = true
 
     override val openQuote = "["
@@ -25,12 +23,10 @@ class SqlServerDialect : AnsiDialect {
     override val nullableByDefault = true
     override val ddlInTransactions = true
     override val databaseName = "sqlserver"
-
-    override fun closeHook(): (Connection) -> Unit {
-        return { }
-    }
-
-    override fun now(): String {
+    override val literalTrue: String = "1"
+    override val literalFalse: String = "0"
+    override val order: Int = 10
+    override fun dbNowTimestamp(): String {
         return "CURRENT_TIMESTAMP"
     }
 
@@ -42,15 +38,15 @@ class SqlServerDialect : AnsiDialect {
         return "COMMIT TRAN"
     }
 
-    override fun literalDatetime(date: LocalDateTime): String {
-        return "TO_TIMESTAMP('${date.format(dateTimeFormatter)}','DD/MM/YYYY HH:MI:SS')"
+    override fun tempTable(table: Table): Table {
+        return when (table.tablePersistence) {
+            TablePersistence.TEMPORARY -> table.copy(schemaObject = SchemaObject(name = DbIdentifier("#" + (table.schemaObject.name.name.trimStart('#')))))
+            TablePersistence.GLOBAL_TEMPORARY -> table.copy(schemaObject = SchemaObject(name = DbIdentifier("##" + (table.schemaObject.name.name.trimStart('#')))))
+            else -> table
+        }
     }
 
     override fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
         TODO("Not yet implemented")
-    }
-
-    override fun literalDate(date: LocalDate): String {
-        return "TO_DATE('${date.format(dateFormatter)}','DD/MM/YYYY')"
     }
 }

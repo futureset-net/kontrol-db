@@ -5,10 +5,11 @@ import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 
 data class AddForeignKey(
-    val table: SchemaObject?,
+    val table: Table?,
     val foreignTable: SchemaObject,
     val columnMap: Map<DbIdentifier, DbIdentifier>,
     override val constraintName: DbIdentifier?,
@@ -16,11 +17,11 @@ data class AddForeignKey(
 
     data class AddForeignKeyBuilder(
         private var constraintName: DbIdentifier? = null,
-        var foreignTable: SchemaObject? = null,
-        var columnMap: MutableMap<DbIdentifier, DbIdentifier> = mutableMapOf(),
+        private var foreignTable: SchemaObject? = null,
+        private var columnMap: MutableMap<DbIdentifier, DbIdentifier> = mutableMapOf(),
     ) : TableBuilder<AddForeignKeyBuilder, AddForeignKey> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
 
         fun foreignTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
             foreignTable(SchemaObjectBuilder().apply { name?.let(::name) }.apply(block).build())

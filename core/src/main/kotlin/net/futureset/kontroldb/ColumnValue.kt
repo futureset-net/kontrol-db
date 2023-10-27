@@ -35,6 +35,8 @@ data class ColumnValue(
             return effectiveSettings.literalDate(value)
         } else if (value is LocalDateTime) {
             return effectiveSettings.literalDatetime(value)
+        } else if (value is Boolean) {
+            return if (value) effectiveSettings.literalTrue else effectiveSettings.literalFalse
         }
         return (value?.toString() ?: "NULL").let { if (quoted) "'$it'" else it }
     }

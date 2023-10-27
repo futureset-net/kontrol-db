@@ -1,9 +1,10 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ModelChange
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 
+@Suppress("UNCHECKED_CAST")
 interface TableAliasBuilder<B : TableBuilder<B, T>, T : ModelChange> : TableBuilder<B, T> {
     var alias: String?
 
@@ -11,13 +12,13 @@ interface TableAliasBuilder<B : TableBuilder<B, T>, T : ModelChange> : TableBuil
         this.alias = alias
     } as B
 
-    fun tableWithAlias(table: SchemaObject, alias: String): B {
+    fun tableWithAlias(table: Table, alias: String): B {
         alias(alias)
         return super.table(table)
     }
 
     fun tableWithAlias(table: String, alias: String): B {
         alias(alias)
-        return super.table(table)
+        return super.table(table) {}
     }
 }

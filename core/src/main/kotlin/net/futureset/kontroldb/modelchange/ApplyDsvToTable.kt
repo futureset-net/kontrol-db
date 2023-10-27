@@ -6,11 +6,12 @@ import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.Resource
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.ResourceResolver
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 
 data class ApplyDsvToTable(
-    val table: SchemaObject,
+    val table: Table,
     val file: Resource,
     val useDbLoadingTool: Boolean,
     val headerMappings: Map<String, ColumnDefinition>,
@@ -21,6 +22,10 @@ data class ApplyDsvToTable(
     val insertRows: Boolean,
     val ignoreInsertViolations: Boolean,
 ) : ModelChange {
+
+    override fun checksum(resourceResolver: ResourceResolver): Int {
+        return super.checksum(resourceResolver) + resourceResolver.resourceHash(file)
+    }
 
     init {
         require(updateRows || insertRows || deleteRows) { "Must set at least one of deleteRows,updateRows or insertRows" }
@@ -36,7 +41,7 @@ data class ApplyDsvToTable(
 
     class ApplyDsvToTableBuilder : TableBuilder<ApplyDsvToTableBuilder, ApplyDsvToTable> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
         private var useDbLoadingTool = false
         private var headerMappings = mutableListOf<Pair<String, ColumnDefinition>>()
         private var primaryKeys = mutableSetOf<DbIdentifier>()

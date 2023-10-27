@@ -1,0 +1,11 @@
+dialect: sqlserver
+modules:
+  - 'net.futureset.kontroldb.sqlserver.SqlserverModule'
+  - 'net.futureset.kontroldb.sqlserver.TestModule'
+targetSettings:
+  jdbcUrl : 'jdbc:sqlserver://localhost:1433;trustServerCertificate=true;databaseName=TEST_DB'
+  username : deploymentUser
+  password : APasswordForTesting123
+  defaultCatalog: TEST_DB
+  defaultSchema: dbo
+  

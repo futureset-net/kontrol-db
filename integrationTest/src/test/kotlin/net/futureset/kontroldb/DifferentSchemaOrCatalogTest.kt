@@ -3,15 +3,19 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+@ExtendWith(DatabaseProvision::class)
 class DifferentSchemaOrCatalogTest {
 
     @Test
-    fun `run in different default schema`() {
+    fun `run in different default schema`(@DialectName dialect: String) {
+        assumeTrue(dialect == "hsqldb")
         dsl {
             loadConfig("test-config.yml")
             dbSettings {
@@ -28,7 +32,8 @@ class DifferentSchemaOrCatalogTest {
     }
 
     @Test
-    fun `run in different default catalog`() {
+    fun `run in different default catalog`(@DialectName dialect: String) {
+        assumeTrue(dialect == "hsqldb")
         dsl {
             loadConfig("test-config.yml")
             dbSettings {
@@ -45,7 +50,8 @@ class DifferentSchemaOrCatalogTest {
     }
 
     @Test
-    fun `run in different default catalog and schema`() {
+    fun `run in different default catalog and schema`(@DialectName dialect: String) {
+        assumeTrue(dialect == "hsqldb")
         dsl {
             loadConfig("test-config.yml")
             dbSettings {

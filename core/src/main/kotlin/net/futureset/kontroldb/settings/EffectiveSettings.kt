@@ -1,6 +1,7 @@
 package net.futureset.kontroldb.settings
 
 import net.futureset.kontroldb.KontrolDbState
+import net.futureset.kontroldb.ResourceResolver
 import net.futureset.kontroldb.TemplateResolver
 
 class EffectiveSettings(
@@ -11,6 +12,7 @@ class EffectiveSettings(
 
     val migrationRunId: Long = System.currentTimeMillis()
     lateinit var templateResolver: TemplateResolver
+    val resourceResolver: ResourceResolver = ResourceResolver(externalFileRoot)
     var startState: KontrolDbState? = null
     override val isOutputTablespace = (dbDialect.supportsTablespace && executionSettings.isOutputTablespace)
     override val isOutputCatalog = executionSettings.isOutputCatalog && dbDialect.supportsCatalogs

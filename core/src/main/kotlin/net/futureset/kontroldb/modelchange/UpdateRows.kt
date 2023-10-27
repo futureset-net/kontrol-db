@@ -5,22 +5,21 @@ import net.futureset.kontroldb.ColumnValue
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 
-data class Update(
+data class UpdateRows(
     val table: TableAlias,
     val columnValues: List<ColumnAndValue>,
     val predicate: SqlPredicate,
 ) : ModelChange {
 
-    override fun isDdl() = false
-    data class UpdateBuilder(
+    data class UpdateRowsBuilder(
         override var alias: String? = null,
         private var columnValues: MutableMap<DbIdentifier, ColumnValue> = mutableMapOf(),
         private var predicate: SqlPredicate = AllOf(emptyList()),
-    ) : TableAliasBuilder<UpdateBuilder, Update> {
+    ) : TableAliasBuilder<UpdateRowsBuilder, UpdateRows> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
 
         fun where(lambda: PredicateBuilder.() -> Unit) = apply {
             predicate = PredicateBuilder().apply(lambda).build()
@@ -29,8 +28,8 @@ data class Update(
         fun set(value: Pair<String, ColumnValue>) {
             columnValues[DbIdentifier(value.first)] = value.second
         }
-        override fun build(): Update {
-            return Update(
+        override fun build(): UpdateRows {
+            return UpdateRows(
                 TableAlias(alias, table),
                 columnValues = columnValues.map { ColumnAndValue(it.key, it.value, separator = "=") },
                 predicate = predicate,
@@ -38,12 +37,12 @@ data class Update(
         }
 
         companion object {
-            fun updateRow(block: UpdateBuilder.() -> Unit): Update {
-                return UpdateBuilder().apply(block).build()
+            fun updateRows(block: UpdateRowsBuilder.() -> Unit): UpdateRows {
+                return UpdateRowsBuilder().apply(block).build()
             }
         }
     }
 }
 
-fun ModelChangesBuilder.update(block: Update.UpdateBuilder.() -> Unit): Update =
-    Update.UpdateBuilder.updateRow(block).apply(changes::add)
+fun ModelChangesBuilder.updateRows(block: UpdateRows.UpdateRowsBuilder.() -> Unit): UpdateRows =
+    UpdateRows.UpdateRowsBuilder.updateRows(block).apply(changes::add)

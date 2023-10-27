@@ -1,12 +1,12 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ColumnAlias
 import net.futureset.kontroldb.ColumnAndValue
 import net.futureset.kontroldb.ColumnValue
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.Table
 
 data class SelectQuery(
     val columns: List<ColumnAndValue>,
@@ -16,35 +16,22 @@ data class SelectQuery(
 
 ) : ModelChange {
 
-    override fun isDdl() = false
-
     @KontrolDbDslMarker
     data class SelectQueryBuilder(
-        var columns: MutableList<ColumnAndValue> = mutableListOf(),
+        private val columns: MutableList<ColumnAndValue> = mutableListOf(),
         private var includeData: Boolean = true,
         private var predicate: SqlPredicate? = null,
         override var alias: String? = null,
     ) : TableAliasBuilder<SelectQueryBuilder, SelectQuery> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
 
         fun column(columnName: String, expression: String? = null) = apply {
             columns.add(ColumnAndValue(DbIdentifier(columnName), expression?.let(ColumnValue::expression)))
         }
 
-        fun columnReference(columnName: String, alias: String? = null) =
-            ColumnAlias(DbIdentifier(columnName), alias)
-
-        fun excludeData() = apply {
-            this.includeData = false
-        }
-
         fun where(lambda: PredicateBuilder.() -> Unit) = apply {
             predicate = PredicateBuilder().apply(lambda).build()
-        }
-
-        fun includeData() = apply {
-            this.includeData = true
         }
 
         override fun build(): SelectQuery =
@@ -55,4 +42,8 @@ data class SelectQuery(
                 includeData = this.includeData,
             )
     }
+}
+
+fun ModelChangesBuilder.select(lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
+    changes.add(SelectQuery.SelectQueryBuilder().apply(lambda).build())
 }

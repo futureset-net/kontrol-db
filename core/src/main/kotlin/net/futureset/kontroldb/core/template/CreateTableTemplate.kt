@@ -17,10 +17,10 @@ class CreateTableTemplate(private val db: EffectiveSettings) :
 
     override fun convertToSingleStatement(change: CreateTable): String {
         return """
-CREATE TABLE ${change.table.toSql()}${(change.tablespace ?: db.defaultTablespace).toSql { " TABLESPACE $it" }} (
-    ${forEach(change.columnDefinitions, separateBy = ",\n    ")}
-    ${change.primaryKey?.let{ "," + otherTemplate(it) }.orEmpty()}
-)
+        CREATE TABLE ${change.table.toSql()}${(change.tablespace ?: db.defaultTablespace).toSql { " TABLESPACE $it" }} (
+            ${forEach(change.columnDefinitions, separateBy = ",\n    ")}
+            ${change.primaryKey?.let{ "," + otherTemplate(it) }.orEmpty()}
+        )
         """.trimIndent()
     }
 }

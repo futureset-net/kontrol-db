@@ -3,17 +3,20 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.TablePersistence
-import net.futureset.kontroldb.modelchange.createTemporaryTable
-import net.futureset.kontroldb.modelchange.executeQuery
+import net.futureset.kontroldb.modelchange.createTable
+import net.futureset.kontroldb.modelchange.exportData
+import net.futureset.kontroldb.modelchange.insertRows
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+@ExtendWith(DatabaseProvision::class)
 internal class CreateTemporaryTableTest {
 
     class CreateATemporaryTable(tableType: TablePersistence) : Refactoring(
@@ -22,17 +25,41 @@ internal class CreateTemporaryTableTest {
             author("ben")
         },
         forward = changes {
-            createTemporaryTable {
-                table("fred")
-                tableType(tableType)
+            createTable {
+                when (tableType) {
+                    TablePersistence.GLOBAL_TEMPORARY -> globalTemporaryTable("fred")
+                    TablePersistence.TEMPORARY -> localTemporaryTable("fred")
+                    TablePersistence.NORMAL -> table("fred")
+                }
                 column("TEST_COLUMN", Varchar(256))
+            }
+            insertRows {
+                when (tableType) {
+                    TablePersistence.GLOBAL_TEMPORARY -> globalTemporaryTable("fred")
+                    TablePersistence.TEMPORARY -> localTemporaryTable("fred")
+                    TablePersistence.NORMAL -> table("fred")
+                }
+                row {
+                    value("TEST_COLUMN", "HELLO")
+                }
+            }
+            exportData {
+                query {
+                    when (tableType) {
+                        TablePersistence.GLOBAL_TEMPORARY -> globalTemporaryTable("fred")
+                        TablePersistence.TEMPORARY -> localTemporaryTable("fred")
+                        TablePersistence.NORMAL -> table("fred")
+                    }
+                    column("TEST_COLUMN")
+                }
+                outputFile("text.dsv")
             }
         },
         rollback = emptyList(),
     )
 
     @ParameterizedTest
-    @EnumSource(TablePersistence::class)
+    @EnumSource(value = TablePersistence::class, mode = EnumSource.Mode.EXCLUDE, names = ["NORMAL"])
     fun `Can create a temporary table`(tableType: TablePersistence) {
         dsl {
             loadConfig("test-config.yml")
@@ -45,14 +72,8 @@ internal class CreateTemporaryTableTest {
         }.use { engine ->
 
             engine.applySql()
-
-            assertThat(
-                engine.sqlExecutor.withConnection {
-                    it.executeQuery("""SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES where table_name='fred'""") { rs ->
-                        rs.getInt(1)
-                    }.first()
-                },
-            ).isEqualTo(if (tableType == TablePersistence.GLOBAL_TEMPORARY) 1 else 0)
+            val testCsv = engine.effectiveSettings.externalFileRoot.resolve("text.dsv")
+            assertThat(testCsv.readDsvToMapList()).hasSize(1)
         }
     }
 
@@ -62,14 +83,28 @@ internal class CreateTemporaryTableTest {
             author("ben")
         },
         forward = changes {
-            createTemporaryTable {
-                table("fred")
-                tableType(TablePersistence.GLOBAL_TEMPORARY)
+            createTable {
+                globalTemporaryTable("fred")
                 column("TEST_COLUMN", Varchar(256))
                 fromQuery {
                     column("TEST_COLUMN", "ID")
                     table("KONTROL_DB_VERSIONING")
                 }
+            }
+            exportData {
+                query {
+                    globalTemporaryTable("fred")
+                    column("TEST_COLUMN")
+                }
+                separator("|")
+                outputFile("text.dsv")
+            }
+            exportData {
+                query {
+                    globalTemporaryTable("fred")
+                    column("TEST_COLUMN")
+                }
+                separator("|")
             }
         },
         rollback = emptyList(),
@@ -89,13 +124,8 @@ internal class CreateTemporaryTableTest {
 
             engine.applySql()
 
-            assertThat(
-                engine.sqlExecutor.withConnection {
-                    it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
-                        rs.getInt(1)
-                    }.first()
-                },
-            ).isEqualTo(0)
+            val testCsv = engine.effectiveSettings.externalFileRoot.resolve("text.dsv")
+            assertThat(testCsv.readDsvToMapList()).hasSize(3)
         }
     }
 }

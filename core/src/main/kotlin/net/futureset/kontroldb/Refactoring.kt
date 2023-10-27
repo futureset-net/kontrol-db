@@ -15,10 +15,6 @@ abstract class Refactoring(
         }
     }
 
-    open fun containsDdl(): Boolean {
-        return forward.any { it.isDdl() }
-    }
-
     override fun compareTo(other: Refactoring): Int {
         return Comparator.comparing(Refactoring::executionOrder).thenComparing(Refactoring::id).compare(this, other)
     }
@@ -27,8 +23,8 @@ abstract class Refactoring(
         return requireNotNull(this::class.qualifiedName) { "Refactoring must be a normal class" }
     }
 
-    open fun checkSum(): String {
-        return forward.map(ModelChange::checksum).sum().absoluteValue.toString(16)
+    open fun checkSum(resourceResolver: ResourceResolver): String {
+        return forward.map { it.checksum(resourceResolver) }.sum().absoluteValue.toString(16)
     }
 
     companion object {

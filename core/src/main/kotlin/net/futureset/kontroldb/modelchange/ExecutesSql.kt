@@ -6,26 +6,37 @@ import java.sql.Connection
 import java.sql.ResultSet
 
 val sqlLogger: Logger = LoggerFactory.getLogger("SQL")
-fun Connection.executeSql(sql: String) {
+fun Connection.executeSql(sql: String, resultSetHandler: ((ResultSet) -> Unit)? = null) {
     var success = false
     try {
-        createStatement().use {
-            sqlLogger.info("\n$sql")
-            if (it.execute(sql)) {
-                sqlLogger.info("Affected ${it.updateCount} rows")
+        createStatement().use { stmt ->
+            if (stmt.execute(sql)) {
+                sqlLogger.info("connection <$this> \n$sql")
+                if (stmt.updateCount >= 0) {
+                    sqlLogger.info("connection <$this> Affected ${stmt.updateCount} rows")
+                }
+            } else {
+                sqlLogger.info("connection <$this> \n$sql")
+            }
+            if (resultSetHandler != null) {
+                do {
+                    stmt.resultSet?.use { rs ->
+                        resultSetHandler.invoke(rs)
+                    }
+                } while (stmt.moreResults)
             }
         }
         success = true
     } finally {
         if (!success) {
-            sqlLogger.error("Failed\n$sql")
+            sqlLogger.error("connection <$this> Failed\n$sql")
         }
     }
 }
 
 inline fun <reified T> Connection.executeQuery(sql: String, block: (ResultSet) -> T): List<T> {
     return createStatement().use {
-        sqlLogger.info(sql)
+        sqlLogger.info("connection <$this> $sql")
         var success = false
         try {
             it.executeQuery(sql)?.use { rs ->
@@ -33,13 +44,13 @@ inline fun <reified T> Connection.executeQuery(sql: String, block: (ResultSet) -
                 while (rs.next()) {
                     results.add(block(rs))
                 }
-                sqlLogger.info("returned ${results.size} rows")
+                sqlLogger.info("connection <$this> returned ${results.size} rows")
                 success = true
                 results.toList()
             } ?: emptyList<T>()
         } finally {
             if (!success) {
-                sqlLogger.error("Failed\n$sql")
+                sqlLogger.error("connection <$this> Failed\n$sql")
             }
         }
     }

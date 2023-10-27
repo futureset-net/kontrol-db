@@ -1,0 +1,4 @@
+dialect: hsqldb
+modules:
+  - 'net.futureset.kontroldb.hsqldb.HsqldbModule'
+  - 'net.futureset.kontroldb.hsqldb.TestModule'

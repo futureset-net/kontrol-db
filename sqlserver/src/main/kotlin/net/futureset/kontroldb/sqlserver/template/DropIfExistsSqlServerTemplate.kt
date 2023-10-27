@@ -14,4 +14,8 @@ class DropIfExistsSqlServerTemplate(db: EffectiveSettings) : DbAwareTemplate<Dro
 
     override fun convertToSingleStatement(change: DropIfExists): String? =
         """DROP ${change.objectType} IF EXISTS ${change.objectName.toSql()}"""
+
+    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean {
+        return effectiveSettings.databaseName == "sqlserver"
+    }
 }

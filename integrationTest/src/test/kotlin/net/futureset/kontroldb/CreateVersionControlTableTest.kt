@@ -6,15 +6,18 @@ import net.futureset.kontroldb.refactoring.CreateVersionControlTable
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.io.path.readText
 
+@ExtendWith(DatabaseProvision::class)
 internal class CreateVersionControlTableTest {
 
     @Test
     fun `Create a version control table`() {
         dsl {
+            loadConfig("test-config.yml")
         }.use { result ->
             assertThat(result).isNotNull
             assertThat(result.refactorings).hasSize(1)
@@ -22,6 +25,7 @@ internal class CreateVersionControlTableTest {
             assertThat(result.refactorings.first() as CreateVersionControlTable)
                 .extracting { x -> x.forward.first() as CreateTable }
                 .extracting(CreateTable::table)
+                .extracting(Table::schemaObject)
                 .extracting(SchemaObject::name)
                 .extracting(DbIdentifier::name)
                 .isEqualTo(DEFAULT_VERSION_CONTROL_TABLE)
@@ -32,6 +36,7 @@ internal class CreateVersionControlTableTest {
     fun `Check has a version control table with custom name`(@TempDir tempDir: Path) {
         val customName = "HELLO"
         dsl {
+            loadConfig("test-config.yml")
             dbSettings {
                 versionControlTable {
                     name(customName)
@@ -48,6 +53,7 @@ internal class CreateVersionControlTableTest {
             assertThat(result.refactorings.first() as CreateVersionControlTable)
                 .extracting { x -> x.forward.first() as CreateTable }
                 .extracting(CreateTable::table)
+                .extracting(Table::schemaObject)
                 .extracting(SchemaObject::name)
                 .extracting(DbIdentifier::name)
                 .isEqualTo(customName)
@@ -57,7 +63,9 @@ internal class CreateVersionControlTableTest {
             assertThat(script).exists()
             val scriptText = script.readText()
             println(scriptText)
-            assertThat(scriptText).contains("""CREATE TABLE "PUBLIC"."PUBLIC"."HELLO"""")
+            val openQuote = result.effectiveSettings.openQuote
+            val closeQuote = result.effectiveSettings.closeQuote
+            assertThat(scriptText).contains("""CREATE TABLE ${openQuote}PUBLIC$closeQuote.${openQuote}PUBLIC$closeQuote.${openQuote}HELLO$closeQuote""")
         }
     }
 }

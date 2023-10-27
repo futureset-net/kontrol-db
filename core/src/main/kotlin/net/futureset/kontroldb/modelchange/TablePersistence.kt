@@ -4,4 +4,5 @@ enum class TablePersistence {
 
     TEMPORARY,
     GLOBAL_TEMPORARY,
+    NORMAL,
 }

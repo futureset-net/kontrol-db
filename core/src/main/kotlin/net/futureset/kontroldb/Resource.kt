@@ -1,47 +1,19 @@
 package net.futureset.kontroldb
 
-import java.io.BufferedReader
-import java.io.InputStream
-import java.nio.file.Files
+import com.fasterxml.jackson.annotation.JsonValue
+import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.Objects
-import kotlin.io.path.inputStream
 
-data class Resource(private val path: String) {
-
-    val lazyHashCode: Int by lazy {
-        inputStream()?.use {
-            var c: Int
-            var result = 0
-            while (true) {
-                c = it.read()
-                if (c == -1) break
-                result = 31 * result + c
-            }
-            result
-        } ?: 0
-    }
+data class Resource(@JsonValue val path: String) {
 
     companion object {
-        fun resource(input: String) =
-            Resource(
-                input.replace("\\", "/"),
-            )
-    }
+        fun resource(path: Path): Resource {
+            require(!path.isAbsolute) { "Path $path must be relative" }
+            return Resource(path.toString().replace("\\", "/"))
+        }
 
-    override fun hashCode() = Objects.hash(this.path, lazyHashCode)
-
-    private fun inputStream(): InputStream? {
-        return Paths.get(this.path).takeIf(Files::exists)?.inputStream()
-            ?: this::class.java.getResource("/" + path.trimStart('/'))
-                ?.openStream()
-    }
-
-    fun reader(): BufferedReader {
-        return requireNotNull(inputStream()).bufferedReader()
-    }
-
-    fun text(): String {
-        return reader().readText()
+        fun resource(path: String): Resource {
+            return resource(Paths.get(path))
+        }
     }
 }

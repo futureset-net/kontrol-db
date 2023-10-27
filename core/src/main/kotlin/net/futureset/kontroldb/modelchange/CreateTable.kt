@@ -6,16 +6,17 @@ import net.futureset.kontroldb.ColumnType
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 import net.futureset.kontroldb.Tablespace
 
 data class CreateTable(
-    val table: SchemaObject,
+    val table: Table,
     val columnDefinitions: List<ColumnDefinition>,
     val tablespace: Tablespace?,
     val primaryKey: AddPrimaryKey?,
     val fromSelect: SelectQuery?,
+    val preserveRowsOnCommit: Boolean,
 ) : ModelChange {
 
     @KontrolDbDslMarker
@@ -24,9 +25,10 @@ data class CreateTable(
         private val columns: MutableList<ColumnDefinition> = mutableListOf(),
         private var primaryKey: AddPrimaryKey? = null,
         private var fromSelect: SelectQuery? = null,
+        private var preserveRowsOnCommit: Boolean = true,
     ) : TableBuilder<CreateTableBuilder, CreateTable> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
 
         fun tablespace(tablespace: String) = apply {
             this.tablespace = tablespace
@@ -51,6 +53,7 @@ data class CreateTable(
                 columnDefinitions = columns,
                 fromSelect = fromSelect,
                 primaryKey = primaryKey,
+                preserveRowsOnCommit = preserveRowsOnCommit,
             )
         }
     }

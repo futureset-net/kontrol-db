@@ -6,14 +6,18 @@ import net.futureset.kontroldb.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.executeQuery
-import net.futureset.kontroldb.modelchange.insert
+import net.futureset.kontroldb.modelchange.insertRows
+import net.futureset.kontroldb.modelchange.select
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+@ExtendWith(DatabaseProvision::class)
 internal class SelectQueryTest {
 
     class CreateATable(param: PredicateBuilder.() -> Unit) : Refactoring(
@@ -25,12 +29,14 @@ internal class SelectQueryTest {
             createTable {
                 table("fred")
                 column("TEST_COLUMN", INT_32)
-                column("STRING_COLUMN", Varchar(5))
+                column("STRING_COLUMN", Varchar(5)) {
+                    notNull()
+                }
             }
-            insert {
+            insertRows {
                 table("fred")
                 for (i in 1..100) {
-                    values {
+                    row {
                         value("TEST_COLUMN", i)
                         value("STRING_COLUMN", ('A' + (i % 10)).toString())
                     }
@@ -38,10 +44,12 @@ internal class SelectQueryTest {
             }
             createTable {
                 table("results")
-                column("TEST_COLUMN", Varchar(256))
+                column("TEST_COLUMN", Varchar(256)) {
+                    nullable()
+                }
                 column("STRING_COLUMN", Varchar(5))
             }
-            insert {
+            insertRows {
                 table("results")
 
                 fromQuery {
@@ -76,12 +84,45 @@ internal class SelectQueryTest {
             engine.applySql()
 
             assertThat(
-                engine.sqlExecutor.withConnection {
+                engine.applySqlDirectly.withConnection {
                     it.executeQuery("""SELECT COUNT(*) FROM "results"""") { rs ->
                         rs.getInt(1)
                     }.first()
                 },
             ).isEqualTo(param.expectedResultCount)
+        }
+    }
+
+    class SelectResults : Refactoring(
+        executionOrder {
+            ymd(2023, 10, 27)
+            author("ben")
+        },
+        forward = changes {
+            select {
+                table("results")
+                column("STRING_COLUMN")
+                column("TEST_COLUMN")
+                column("ANOTHER", "TEST_COLUMN")
+            }
+        },
+        rollback = emptyList(),
+    )
+
+    @Test
+    fun `select results into a console`() {
+        val selectQuery: PredicateBuilder.() -> Unit = {}
+        dsl {
+            loadConfig("test-config.yml")
+            changeModules(
+                module {
+                    singleOf(SelectQueryTest::CreateATable).bind(Refactoring::class)
+                    singleOf(SelectQueryTest::SelectResults).bind(Refactoring::class)
+                    single { selectQuery }
+                },
+            )
+        }.use { engine ->
+            engine.applySql()
         }
     }
 
@@ -145,6 +186,12 @@ internal class SelectQueryTest {
             },
             Param(0) {
                 true.literal() eq false
+            },
+            Param(9) {
+                allOf {
+                    "TEST_COLUMN".column() gt 10
+                    "TEST_COLUMN".column() lt 20
+                }
             },
             Param(100) {
                 anyOf {

@@ -22,7 +22,7 @@ class CreateCustomerSaleTable : Refactoring(
             column("SALES_ID", INT_32)
             column("CUST_ID", INT_32)
             column("TOTAL_ITEM_AMOUNT", Decimal(10, 2))
-            column("TAX_AMOUNT", Decimal(210, 25))
+            column("TAX_AMOUNT", Decimal(10, 2))
             column("TOTAL_SALE_AMOUNT", Decimal(10, 2))
             column("SALES_DATE", LOCALDATE)
             column("SHIPPING_HANDLING_FEE", Decimal(5, 2))

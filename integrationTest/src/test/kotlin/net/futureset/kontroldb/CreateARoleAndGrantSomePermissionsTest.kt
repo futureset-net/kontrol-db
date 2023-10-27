@@ -6,10 +6,12 @@ import net.futureset.kontroldb.modelchange.dropRole
 import net.futureset.kontroldb.modelchange.grantPermissions
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+@ExtendWith(DatabaseProvision::class)
 internal class CreateARoleAndGrantSomePermissionsTest {
 
     class CreateARoleCalledFred : Refactoring(

@@ -4,11 +4,13 @@ import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.test.petstore.PetStore
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.io.TempDir
 import org.koin.ksp.generated.module
 import java.nio.file.Path
 import kotlin.io.path.readText
 
+@ExtendWith(DatabaseProvision::class)
 class GenerateARollbackScriptTest {
 
     @Test
@@ -23,7 +25,6 @@ class GenerateARollbackScriptTest {
             }
             dbSettings {
                 defaultSchema("dbo")
-                jdbcUrl("jdbc:hsqldb:mem:testdb;sql.syntax_mss=true")
                 defaultTablespace("MY_TABLESPACE")
                 defaultIndexTablespace("MY_INDEX_TABLESPACE")
             }

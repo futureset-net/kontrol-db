@@ -4,12 +4,12 @@ import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 import net.futureset.kontroldb.Tablespace
 
 data class CreateIndex(
-    val table: SchemaObject,
+    val table: Table,
     val columnReferences: List<DbIdentifier>,
     val clustered: Boolean,
     val unique: Boolean,
@@ -25,7 +25,7 @@ data class CreateIndex(
         private var unique: Boolean = false,
         private val columns: MutableList<DbIdentifier> = mutableListOf(),
     ) : TableBuilder<CreateIndexBuilder, CreateIndex> {
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
         fun indexName(indexName: String) = apply {
             this.indexName = DbIdentifier(indexName)
         }

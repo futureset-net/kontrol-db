@@ -3,6 +3,7 @@ import com.diffplug.gradle.spotless.SpotlessExtension
 plugins {
     kotlin("jvm") version libs.versions.kotlin.get()
     alias(libs.plugins.spotless)
+    id("jacoco-report-aggregation")
 }
 
 group = "net.futureset"
@@ -92,6 +93,43 @@ subprojects {
             exclude(group = "org.hamcrest")
         }
     }
+}
+
+val databasesubprojects = listOf(project(":hsqldb"), project(":sqlserver"))
+dependencies {
+    databasesubprojects.forEach(::jacocoAggregation)
+}
+
+reporting {
+    reports {
+        val integrationTestCodeCoverageReport by creating(JacocoCoverageReport::class) {
+            testType = TestSuiteType.INTEGRATION_TEST
+        }
+    }
+}
+
+val integrationTestCodeCoverageReport = tasks.named<JacocoReport>("integrationTestCodeCoverageReport")
+val integrationTestCoverageLimit: String by project
+
+val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
+    group = "verification"
+    executionData(*databasesubprojects.map { it.tasks.named("integrationTest").get() }.toTypedArray())
+    sourceSets(*(databasesubprojects.map { it.sourceSets["main"] } + project(":core").sourceSets["main"]).toTypedArray())
+    doFirst {
+        println(integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().toString() + "index.html")
+    }
+    violationRules {
+        rule {
+            limit {
+                minimum = integrationTestCoverageLimit.toBigDecimal().divide(BigDecimal.valueOf(100)).setScale(2)
+            }
+        }
+    }
+    mustRunAfter(integrationTestCodeCoverageReport)
+}
+
+tasks.check {
+    dependsOn(integrationTestCodeCoverageReport, jacocoIntegrationTestCoverageVerification)
 }
 
 val verGradle: String by project

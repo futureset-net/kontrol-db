@@ -5,13 +5,13 @@ import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.ExecuteMode.ONCE
 import net.futureset.kontroldb.ExecuteMode.ON_CHANGE
-import net.futureset.kontroldb.modelchange.ChangeToDefaultSchema
+import net.futureset.kontroldb.modelchange.ChangeToDefaultCatalogAndSchema
 import net.futureset.kontroldb.modelchange.Comment
 import net.futureset.kontroldb.modelchange.CommentMarker
 import net.futureset.kontroldb.modelchange.InitCatalog
 import net.futureset.kontroldb.modelchange.InitSchema
-import net.futureset.kontroldb.modelchange.Insert.InsertBuilder.Companion.insertRow
-import net.futureset.kontroldb.modelchange.Update.UpdateBuilder.Companion.updateRow
+import net.futureset.kontroldb.modelchange.InsertRows.InsertRowsBuilder.Companion.insertRows
+import net.futureset.kontroldb.modelchange.UpdateRows.UpdateRowsBuilder.Companion.updateRows
 import net.futureset.kontroldb.modelchange.executeQuery
 import net.futureset.kontroldb.modelchange.sqlLogger
 import net.futureset.kontroldb.refactoring.AStartEndMarker
@@ -42,13 +42,13 @@ data class KontrolDbEngine(
     private val allRefactoring: List<Refactoring>,
     val effectiveSettings: EffectiveSettings,
     private val templateResolver: TemplateResolver,
-    val sqlExecutor: ApplyDirectlyMigrationHandler,
-    val applyToScript: WriteChangesToFileMigrationHandler,
+    val applySqlDirectly: ApplyDirectlyMigrationHandler,
+    val applySqlToScript: WriteChangesToFileMigrationHandler,
 ) : KontrolDbCommands, AutoCloseable {
 
     val refactorings = allRefactoring.toSortedSet()
 
-    var dontClose: Boolean = false
+    private val resourceResolver = ResourceResolver(effectiveSettings.externalFileRoot)
 
     init {
         effectiveSettings.templateResolver = templateResolver
@@ -60,17 +60,17 @@ data class KontrolDbEngine(
     private val logger = LoggerFactory.getLogger(KontrolDbEngine::class.java)
 
     override fun generateSql(outputDirectory: Path) {
-        applyToScript.outputDirectory = outputDirectory
-        generateChanges(applyToScript, false)
+        applySqlToScript.outputDirectory = outputDirectory
+        generateChanges(applySqlToScript, false)
     }
 
     override fun generateSqlRollback(outputDirectory: Path) {
-        applyToScript.outputDirectory = outputDirectory
-        generateChanges(applyToScript, true)
+        applySqlToScript.outputDirectory = outputDirectory
+        generateChanges(applySqlToScript, true)
     }
 
     override fun applySql(): Int {
-        return generateChanges(sqlExecutor, false).size
+        return generateChanges(applySqlDirectly, false).size
     }
 
     override fun getNextRefactorings(): List<Refactoring> {
@@ -81,10 +81,10 @@ data class KontrolDbEngine(
         listOfNotNull(
             effectiveSettings.defaultCatalog?.let(::InitCatalog),
             effectiveSettings.defaultSchema?.let(::InitSchema),
-            effectiveSettings.defaultSchema?.let { ChangeToDefaultSchema() },
+            effectiveSettings.defaultSchema?.let { ChangeToDefaultCatalogAndSchema() },
         ).onEach { modelChange ->
             val t = templateResolver.findTemplate(modelChange)
-            sqlExecutor.executeModelChange(modelChange, t?.convert(modelChange)?.filterNotNull().orEmpty())
+            applySqlDirectly.executeModelChange(modelChange, t?.convert(modelChange)?.filterNotNull().orEmpty())
         }
     }
 
@@ -107,6 +107,7 @@ data class KontrolDbEngine(
         val index = indexOfFirst { theType.isInstance(it) }
         add(if (index < 0) 0 else index + 1, aRefactoring)
     }
+
     private fun <T : Refactoring, U : Refactoring> MutableList<Refactoring>.addLastButBeforeRefactoringOfType(
         theType: KClass<T>,
         aRefactoring: U,
@@ -114,6 +115,7 @@ data class KontrolDbEngine(
         val index = indexOfLast { theType.isInstance(it) }
         add(if (index < 0) this.size else index, aRefactoring)
     }
+
     private fun generateChanges(migrationHandler: MigrationHandler, rollback: Boolean): List<String> {
         val state = calculateState()
         migrationHandler.start()
@@ -143,6 +145,7 @@ data class KontrolDbEngine(
                                         refactoring.forward
                                     }
                                     ) +
+                                ChangeToDefaultCatalogAndSchema() +
                                 listOfNotNull(
                                     logInVersionControl(
                                         i + state.lastExecutionSequence,
@@ -159,7 +162,12 @@ data class KontrolDbEngine(
                         migrationHandler.executeRefactoring(refactoring)
                         modelChanges.fold(mutableListOf(), this::moveCommentTextOntoNextChange)
                             .flatMap { (modelChange, l) ->
-                                l.also { lines -> migrationHandler.executeModelChange(modelChange, lines) }
+                                l.also { lines ->
+                                    migrationHandler.executeModelChange(
+                                        modelChange,
+                                        lines.map { "$it${effectiveSettings.statementSeparator}" },
+                                    )
+                                }
                             }
                     }
                 }.also {
@@ -168,14 +176,26 @@ data class KontrolDbEngine(
         }
     }
 
-    private fun moveCommentTextOntoNextChange(acc: MutableList<Pair<ModelChange, List<String>>>, model: ModelChange): MutableList<Pair<ModelChange, List<String>>> {
+    private fun moveCommentTextOntoNextChange(
+        acc: MutableList<Pair<ModelChange, List<String>>>,
+        model: ModelChange,
+    ): MutableList<Pair<ModelChange, List<String>>> {
         if (acc.size > 0 && acc.last().first is CommentMarker) {
             val comment = acc.last()
             acc.add(
                 Pair(
                     model,
                     model.lines()
-                        .mapIndexed { index, s -> if (index == 0) comment.second.joinToString(separator = "\n", postfix = "\n") + s else s },
+                        .mapIndexed { index, s ->
+                            if (index == 0) {
+                                comment.second.joinToString(
+                                    separator = "\n",
+                                    postfix = "\n",
+                                ) + s
+                            } else {
+                                s
+                            }
+                        },
                 ),
             )
             acc[acc.size - 2] = Pair(comment.first, emptyList())
@@ -184,9 +204,10 @@ data class KontrolDbEngine(
         }
         return acc
     }
+
     override fun getAppliedRefactorings(): SortedSet<AppliedRefactoring> {
         try {
-            return sqlExecutor.withConnection {
+            return applySqlDirectly.withConnection {
                 it.executeQuery<AppliedRefactoring>(
                     "SELECT " +
                         listOf(EXECUTION_ORDER, ID_COLUMN, CHECK_SUM, EXECUTED_SEQUENCE, ROLLED_BACK)
@@ -223,15 +244,21 @@ data class KontrolDbEngine(
             }
 
             ONCE -> {
-                check(previousExecution.checksum == refactoring.checkSum() || previousExecution.rolledback) {
-                    "Checksum mismatch for ${refactoring.id()} checksum ${refactoring.checkSum()}!=${previousExecution.checksum}"
+                check(previousExecution.checksum == refactoring.checkSum(resourceResolver) || previousExecution.rolledback) {
+                    "Checksum mismatch for ${refactoring.id()} checksum ${refactoring.checkSum(resourceResolver)}!=${previousExecution.checksum}"
                 }
                 previousExecution.rolledback
             }
 
             ON_CHANGE -> when {
-                previousExecution.checksum != refactoring.checkSum() -> {
-                    logger.info("Checksum changed from/to '${previousExecution.checksum}/${refactoring.checkSum()}' so re-running ${refactoring.id()}")
+                previousExecution.checksum != refactoring.checkSum(resourceResolver) -> {
+                    logger.info(
+                        "Checksum changed from/to '${previousExecution.checksum}/${
+                            refactoring.checkSum(
+                                resourceResolver,
+                            )
+                        }' so re-running ${refactoring.id()}",
+                    )
                     true
                 }
 
@@ -247,9 +274,9 @@ data class KontrolDbEngine(
         rollback: Boolean,
     ): ModelChange {
         return if (appliedRefactoring != null || rollback) {
-            updateRow {
+            updateRows {
                 table(effectiveSettings.versionControlTable)
-                set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.now()))
+                set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.dbNowTimestamp()))
                 set(
                     EXECUTION_COUNT to ColumnValue.expression(
                         column(EXECUTION_COUNT).toSql(effectiveSettings) +
@@ -264,19 +291,19 @@ data class KontrolDbEngine(
                 }
             }
         } else {
-            insertRow {
+            insertRows {
                 table(effectiveSettings.versionControlTable)
-                values {
+                row {
                     value(ID_COLUMN, refactoring.id())
                     value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
-                    valueExpression(FIRST_APPLIED, effectiveSettings.now())
-                    valueExpression(LAST_APPLIED, effectiveSettings.now())
+                    valueExpression(FIRST_APPLIED, effectiveSettings.dbNowTimestamp())
+                    valueExpression(LAST_APPLIED, effectiveSettings.dbNowTimestamp())
                     value(EXECUTION_ORDER, refactoring.executionOrder.toSingleValue())
                     value(MIGRATION_RUN_ID, effectiveSettings.migrationRunId)
                     value(EXECUTED_SEQUENCE, index)
                     value(ROLLED_BACK, false)
                     value(EXECUTION_COUNT, 1)
-                    value(CHECK_SUM, refactoring.checkSum())
+                    value(CHECK_SUM, refactoring.checkSum(resourceResolver))
                 }
             }
         }
@@ -287,9 +314,10 @@ data class KontrolDbEngine(
     }
 
     override fun close() {
-        if (!dontClose) {
-            sqlExecutor.close()
+        try {
+            applySqlDirectly.close()
+        } finally {
+            stopKoin()
         }
-        stopKoin()
     }
 }

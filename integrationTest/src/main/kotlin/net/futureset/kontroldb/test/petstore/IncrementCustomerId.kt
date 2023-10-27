@@ -5,7 +5,7 @@ import net.futureset.kontroldb.ColumnValue.Companion.value
 import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ExecuteMode
 import net.futureset.kontroldb.Refactoring
-import net.futureset.kontroldb.modelchange.update
+import net.futureset.kontroldb.modelchange.updateRows
 import org.koin.core.annotation.Single
 
 @Single
@@ -17,7 +17,7 @@ class IncrementCustomerId : Refactoring(
     },
     executeMode = ExecuteMode.ON_CHANGE,
     forward = changes {
-        update {
+        updateRows {
             table("CUSTOMER")
             set("CUST_ID" to expression("CUST_ID+1"))
             where {
@@ -26,7 +26,7 @@ class IncrementCustomerId : Refactoring(
         }
     },
     rollback = changes {
-        update {
+        updateRows {
             table("CUSTOMER")
             set("CUST_ID" to expression("CUST_ID-1"))
             where {

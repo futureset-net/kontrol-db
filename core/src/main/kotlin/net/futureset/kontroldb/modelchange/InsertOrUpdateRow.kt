@@ -5,7 +5,7 @@ import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 
 enum class UpdateMode {
@@ -14,7 +14,7 @@ enum class UpdateMode {
     UPDATE_AND_INSERT,
 }
 data class InsertOrUpdateRow(
-    val table: SchemaObject,
+    val table: Table,
     val columnValues: List<Map<DbIdentifier, ColumnValue>>,
     val primaryKeys: Set<DbIdentifier>,
     val updateMode: UpdateMode,
@@ -28,7 +28,7 @@ data class InsertOrUpdateRow(
         private var updateMode: UpdateMode = UpdateMode.UPDATE_AND_INSERT,
     ) : TableBuilder<InsertOrUpdateRowBuilder, InsertOrUpdateRow> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
         fun values(lambda: ValuesBuilder.() -> Unit) = apply {
             columnValues.add(ValuesBuilder().apply(lambda).build())
         }

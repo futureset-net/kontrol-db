@@ -2,16 +2,16 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
+import net.futureset.kontroldb.Table
 import net.futureset.kontroldb.TableBuilder
 
 data class DropTable(
-    val table: SchemaObject,
+    val table: Table,
 ) : ModelChange {
 
     class DropTableBuilder : TableBuilder<DropTableBuilder, DropTable> {
 
-        override lateinit var table: SchemaObject
+        override lateinit var table: Table
 
         override fun build(): DropTable {
             return DropTable(

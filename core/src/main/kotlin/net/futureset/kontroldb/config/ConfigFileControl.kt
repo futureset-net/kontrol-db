@@ -24,8 +24,8 @@ class ConfigFileControl {
             SimpleModule("pathToString").addSerializer(Path::class.java, ToStringSerializer())
                 .addDeserializer(Path::class.java, NioPathDeserializer()),
         )
-        .registerKotlinModule()
         .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+        .registerKotlinModule()
 
     fun configFile(file: Path, currentConfig: KontrolDbConfig): KontrolDbConfig {
         val inputStream: InputStream =

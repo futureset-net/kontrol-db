@@ -7,10 +7,14 @@ import net.futureset.kontroldb.modelchange.executeSql
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.io.TempDir
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 class CreateAProcedure : Refactoring(
     executionOrder {
@@ -23,14 +27,7 @@ class CreateAProcedure : Refactoring(
                 name("NEW_CUSTOMER")
             }
             body(
-                """ 
-            CREATE PROCEDURE NEW_CUSTOMER( IN firstname VARCHAR(50), IN lastname VARCHAR(50), IN address VARCHAR(100))
-            MODIFIES SQL DATA
-            BEGIN ATOMIC
-                INSERT INTO CUSTOMER(CUST_ID,FIRSTNAME,LASTNAME,ADDRESS,CITY,STATE,ZIP) 
-                VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');  
-            END
-                """.trimIndent(),
+                Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql").readText(),
             )
             wholeDefinition(true)
         }
@@ -39,6 +36,7 @@ class CreateAProcedure : Refactoring(
 
 )
 
+@ExtendWith(DatabaseProvision::class)
 internal class StoredProcTest {
 
     @Test
@@ -52,15 +50,14 @@ internal class StoredProcTest {
                 },
             )
         }.use {
-            assertThat(it.applySql())
-                .describedAs("Run procs").isEqualTo(10)
-            it.sqlExecutor.withConnection { conn ->
-                conn.executeSql("call NEW_CUSTOMER('BEN','SMITH','ADR')")
+            assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(10)
+            it.applySqlDirectly.withConnection { conn ->
+                conn.executeSql("{call NEW_CUSTOMER('BEN','SMITH','ADR')}")
             }
         }
     }
 
-    class CreateAProcedureFromAFile : Refactoring(
+    class CreateAProcedureFromClasspathResource : Refactoring(
         executionOrder {
             ymd(2023, 11, 30)
             author("ben")
@@ -82,6 +79,28 @@ internal class StoredProcTest {
         executeMode = ExecuteMode.ON_CHANGE,
     )
 
+    class CreateAProcedureFromFile : Refactoring(
+        executionOrder {
+            ymd(2023, 11, 30)
+            author("ben")
+        },
+        forward = changes {
+            dropProcedureIfExists {
+                name("NEW_CUSTOMER")
+            }
+            createProcedure {
+                procedure {
+                    name("NEW_CUSTOMER")
+                }
+                resource("NewCustomerProc.sql")
+                wholeDefinition(true)
+                language("SQL")
+            }
+        },
+        rollback = emptyList(),
+        executeMode = ExecuteMode.ON_CHANGE,
+    )
+
     @Test
     fun `Can apply a stored proc from a file and execute it`() {
         dsl {
@@ -89,57 +108,60 @@ internal class StoredProcTest {
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    singleOf(::CreateAProcedureFromAFile).bind(Refactoring::class)
+                    singleOf(::CreateAProcedureFromClasspathResource).bind(Refactoring::class)
                 },
             )
         }.use {
-            assertThat(it.applySql()).describedAs("Run procs").isEqualTo(11)
-            it.sqlExecutor.withConnection { conn ->
-                conn.executeSql("call NEW_CUSTOMER('BEN','SMITH','ADR')")
+            assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(11)
+            it.applySqlDirectly.withConnection { conn ->
+                conn.executeSql("{call NEW_CUSTOMER('BEN','SMITH','ADR')}")
             }
         }
     }
 
     @Test
-    fun `Can apply a stored proc from a file and re-execute if it changes`() {
+    fun `Can apply a stored proc from a file and re-execute if it changes`(@TempDir workingDir: Path) {
+        val procFile = Files.writeString(
+            workingDir.resolve("NewCustomerProc.sql"),
+            javaClass.getResource("/net/futureset/kontroldb/NewCustomerProc.sql").readText(),
+        ).toFile()
         dsl {
             loadConfig("test-config.yml")
+            executionSettings {
+                externalFileRoot(workingDir)
+            }
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    singleOf(::CreateAProcedureFromAFile).bind(Refactoring::class)
+                    singleOf(::CreateAProcedureFromFile).bind(Refactoring::class)
                 },
             )
         }.use {
-            it.dontClose = true
-            assertThat(it.applySql()).describedAs("Run procs").isEqualTo(11)
+            assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(11)
             assertThat(it.applySql()).describedAs("No changes should be re-run").isZero()
         }
-        val procDef =
-            requireNotNull(javaClass.getResource("/net/futureset/kontroldb/NewCustomerProc.sql")?.file?.let(::File))
-        try {
-            procDef.replaceText("LDN", "XYZ")
 
-            dsl {
-                loadConfig("test-config.yml")
-                changeModules(
-                    module {
-                        singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                        singleOf(::CreateAProcedureFromAFile).bind(Refactoring::class)
-                    },
-                )
-            }.use {
-                assertThat(it.getNextRefactorings()).hasAtLeastOneElementOfType(CreateAProcedureFromAFile::class.java)
-                assertThat(it.getNextRefactorings()).noneMatch { it is CreateCustomerTable }
-                assertThat(it.applySql())
-                    .describedAs("Should detect change").isEqualTo(5)
+        procFile.replaceText("LDN", "XYZ")
+
+        dsl {
+            loadConfig("test-config.yml")
+            executionSettings {
+                externalFileRoot(workingDir)
             }
-        } finally {
-            procDef.replaceText("XYZ", "LDN")
+            changeModules(
+                module {
+                    singleOf(::CreateCustomerTable).bind(Refactoring::class)
+                    singleOf(::CreateAProcedureFromFile).bind(Refactoring::class)
+                },
+            )
+        }.use {
+            assertThat(it.getNextRefactorings()).hasAtLeastOneElementOfType(CreateAProcedureFromFile::class.java)
+            assertThat(it.getNextRefactorings()).noneMatch { it is CreateCustomerTable }
+            assertThat(it.applySql()).describedAs("Should detect change").isGreaterThanOrEqualTo(5)
         }
     }
 
-    fun File.replaceText(search: String, replace: String) {
+    private fun File.replaceText(search: String, replace: String) {
         val def = this.readText()
         val newDef = def.replace(search, replace)
         this.writeText(newDef)

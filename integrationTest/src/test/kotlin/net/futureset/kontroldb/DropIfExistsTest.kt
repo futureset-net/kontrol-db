@@ -7,10 +7,12 @@ import net.futureset.kontroldb.modelchange.dropTableIfExists
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+@ExtendWith(DatabaseProvision::class)
 internal class DropIfExistsTest {
 
     class CreateACustomerIndexAndDropEverything : Refactoring(
@@ -25,7 +27,8 @@ internal class DropIfExistsTest {
                 table("CUSTOMER")
             }
             dropIndexIfExists {
-                name("IX_LASTNAME")
+                index("IX_LASTNAME")
+                table("CUSTOMER")
             }
             dropTableIfExists {
                 name("CUSTOMER")

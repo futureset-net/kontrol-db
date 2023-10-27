@@ -34,11 +34,11 @@ data class ExecutionOrder(
         }
     }
 
-    fun beforeThis(): ExecutionOrder {
+    fun justBefore(): ExecutionOrder {
         return copy(seq = (this.seq + 10).toShort())
     }
 
-    fun afterThis(): ExecutionOrder {
+    fun justAfter(): ExecutionOrder {
         return copy(seq = (this.seq + 10).toShort())
     }
 

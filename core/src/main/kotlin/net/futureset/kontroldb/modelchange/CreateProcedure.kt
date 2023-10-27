@@ -4,8 +4,10 @@ import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.Resource
+import net.futureset.kontroldb.ResourceResolver
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
+import java.nio.file.Paths
 
 data class CreateProcedure(
     val procedure: SchemaObject,
@@ -13,41 +15,46 @@ data class CreateProcedure(
     val path: Resource?,
     val wholeDefinition: Boolean,
     val language: String?,
-) : ModelChange
+) : ModelChange {
 
-class CreateProcedureBuilder : Builder<CreateProcedureBuilder, CreateProcedure> {
-    private lateinit var procedure: SchemaObject
-    private var body: String? = null
-    private var resource: Resource? = null
-    private var wholeDefinition: Boolean = false
-    private var language: String? = null
-
-    fun procedure(lambda: SchemaObjectBuilder.() -> Unit) = apply {
-        procedure = SchemaObjectBuilder().apply(lambda).build()
+    override fun checksum(resourceResolver: ResourceResolver): Int {
+        return super.checksum(resourceResolver) + if (path != null) resourceResolver.resourceHash(path) else 0
     }
 
-    fun body(body: String) = apply {
-        this.body = body
-    }
+    class CreateProcedureBuilder : Builder<CreateProcedureBuilder, CreateProcedure> {
+        private lateinit var procedure: SchemaObject
+        private var body: String? = null
+        private var resource: Resource? = null
+        private var wholeDefinition: Boolean = false
+        private var language: String? = null
 
-    fun language(language: String) = apply {
-        this.language = language
-    }
+        fun procedure(lambda: SchemaObjectBuilder.() -> Unit) = apply {
+            procedure = SchemaObjectBuilder().apply(lambda).build()
+        }
 
-    fun wholeDefinition(wholeDefinition: Boolean) = apply {
-        this.wholeDefinition = wholeDefinition
-    }
+        fun body(body: String) = apply {
+            this.body = body
+        }
 
-    fun resource(path: String) = apply {
-        this.resource = Resource.resource(path)
-    }
+        fun language(language: String) = apply {
+            this.language = language
+        }
 
-    override fun build(): CreateProcedure {
-        require((body != null) xor (resource != null))
-        return CreateProcedure(procedure, body, resource, wholeDefinition, language)
+        fun wholeDefinition(wholeDefinition: Boolean) = apply {
+            this.wholeDefinition = wholeDefinition
+        }
+
+        fun resource(path: String) = apply {
+            this.resource = Resource.resource(Paths.get(path))
+        }
+
+        override fun build(): CreateProcedure {
+            require((body != null) xor (resource != null))
+            return CreateProcedure(procedure, body, resource, wholeDefinition, language)
+        }
     }
 }
 
-fun ModelChangesBuilder.createProcedure(lambda: CreateProcedureBuilder.() -> Unit) = apply {
-    changes.add(CreateProcedureBuilder().apply(lambda).build())
+fun ModelChangesBuilder.createProcedure(lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) = apply {
+    changes.add(CreateProcedure.CreateProcedureBuilder().apply(lambda).build())
 }
