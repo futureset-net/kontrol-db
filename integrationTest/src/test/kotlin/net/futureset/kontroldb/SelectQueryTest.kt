@@ -16,6 +16,8 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @ExtendWith(DatabaseProvision::class)
 internal class SelectQueryTest {
@@ -186,6 +188,18 @@ internal class SelectQueryTest {
             },
             Param(0) {
                 true.literal() eq false
+            },
+            Param(9) {
+                allOf {
+                    "TEST_COLUMN".column() gt "1+9".expression()
+                    "TEST_COLUMN".column() lt "15+5".expression()
+                }
+            },
+            Param(100) {
+                allOf {
+                    LocalDate.of(2023, 10, 1).literal() gt LocalDate.of(2023, 9, 1)
+                    LocalDateTime.of(2023, 10, 1, 22, 0).literal() gt LocalDateTime.of(2023, 9, 1, 22, 0)
+                }
             },
             Param(9) {
                 allOf {

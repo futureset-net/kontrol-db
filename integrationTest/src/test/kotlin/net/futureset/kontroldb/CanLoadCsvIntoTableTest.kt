@@ -1,7 +1,6 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.Resource.Companion.resource
 import net.futureset.kontroldb.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.StandardColumnTypes.Char
 import net.futureset.kontroldb.StandardColumnTypes.DATE
@@ -102,7 +101,7 @@ internal class CanLoadCsvIntoTableTest {
         forward = changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
-                file(resource(csvFile))
+                file(csvFile.toString())
                 insertRows(insertRows)
                 deleteRows(deleteRows)
                 updateRows(updateRows)
@@ -141,7 +140,7 @@ internal class CanLoadCsvIntoTableTest {
         forward = changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
-                file(resource(csvFile.toString()))
+                file(csvFile.toString())
                 insertRows(insertRows)
                 deleteRows(deleteRows)
                 updateRows(updateRows)
@@ -233,22 +232,22 @@ internal class CanLoadCsvIntoTableTest {
         fun errorScenarios() = listOf<ErrorScenario>(
             ErrorScenario("Path /afile must be relative") {
                 table("fred")
-                file(resource("/afile"))
+                file("/afile")
             },
             ErrorScenario("Must specify primary key for insert or updates") {
                 table("fred")
-                file(resource("afile.dsv"))
+                file("afile.dsv")
             },
             ErrorScenario("Must specify primary key for insert or updates") {
                 table("fred")
-                file(resource("afile.dsv"))
+                file("afile.dsv")
                 columnMapping("TEST_COLUMN", Varchar(20), "TEST", primaryKey = false)
                 updateRows(true)
                 insertRows(false)
             },
             ErrorScenario("Cannot ignore insert violations if insert rows is not set") {
                 table("fred")
-                file(resource("afile.dsv"))
+                file("afile.dsv")
                 columnMapping("TEST_COLUMN", Varchar(20), "TEST", primaryKey = true)
                 ignoreInsertViolations(true)
                 insertRows(false)

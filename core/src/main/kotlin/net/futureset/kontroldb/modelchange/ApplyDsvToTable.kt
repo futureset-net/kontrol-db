@@ -52,8 +52,8 @@ data class ApplyDsvToTable(
         private var ignoreInsertViolations = true
         private lateinit var file: Resource
 
-        fun file(file: Resource) = apply {
-            this.file = file
+        fun file(file: String) = apply {
+            this.file = Resource.resource(file)
         }
 
         fun useDbLoadingTool(useDbLoadingTool: Boolean) = apply { this.useDbLoadingTool = useDbLoadingTool }

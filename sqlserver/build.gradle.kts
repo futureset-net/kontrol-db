@@ -3,6 +3,7 @@ import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
 
 plugins {
     alias(libs.plugins.ksp)
@@ -23,6 +24,11 @@ dependencies {
 
 val sqlServerContainerName = "kontrol-sqlserver"
 
+val downloadImage by tasks.registering(DockerPullImage::class) {
+    group = "docker"
+    image = "mcr.microsoft.com/mssql/server:2022-latest"
+}
+
 tasks.register<DockerCreateContainer>("create-server") {
     group = "docker"
     containerName = sqlServerContainerName
@@ -34,6 +40,7 @@ tasks.register<DockerCreateContainer>("create-server") {
     hostConfig.binds.put(project.layout.buildDirectory.get().toString(), "/var/build")
     hostConfig.autoRemove = true
     exposePorts("tcp", listOf(1433))
+    dependsOn(downloadImage)
 }
 
 tasks.register<DockerRemoveContainer>("remove-server") {

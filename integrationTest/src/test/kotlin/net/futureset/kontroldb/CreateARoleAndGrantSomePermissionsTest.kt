@@ -24,7 +24,8 @@ internal class CreateARoleAndGrantSomePermissionsTest {
                 roleName("FRED")
             }
             grantPermissions {
-                on(DEFAULT_VERSION_CONTROL_TABLE)
+                on("KONTROL_DB_VERSIONING") {
+                }
                 objectType(DbObjectType.TABLE)
                 permissions("INSERT", "UPDATE", "DELETE")
                 to("FRED")

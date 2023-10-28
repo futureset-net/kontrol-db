@@ -4,10 +4,10 @@ import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.Resource.Companion.resource
 import net.futureset.kontroldb.SupportsResultSetHandler
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.sql.ResultSet
 
 data class ExportQuery(
@@ -21,7 +21,7 @@ data class ExportQuery(
         } else {
             return { rs ->
                 val headings = IntRange(1, rs.metaData.columnCount).map(rs.metaData::getColumnName)
-                Files.newBufferedWriter(effectiveSettings.externalFileRoot.resolve(path))
+                Files.newBufferedWriter(effectiveSettings.outputDirectory.resolve(path))
                     .use { file ->
                         file.write(headings.joinToString(separator = separator))
                         file.newLine()
@@ -48,9 +48,7 @@ class ExportQueryBuilder : Builder<ExportQueryBuilder, ExportQuery> {
     }
 
     fun outputFile(path: String) {
-        val convertedPath = Paths.get(path)
-        require(!convertedPath.isAbsolute)
-        this.path = convertedPath.toString().replace("\\", "/")
+        this.path = resource(path).path
     }
     fun separator(separator: String) = apply {
         this.separator = separator
