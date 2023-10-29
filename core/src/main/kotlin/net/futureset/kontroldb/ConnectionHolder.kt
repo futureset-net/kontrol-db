@@ -19,14 +19,18 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
             success = true
             return result
         } finally {
-            cleanUp(success)
+            if (autoCommit) {
+                cleanUp(success)
+            }
         }
     }
 
     private fun startTransaction() {
         if (autoCommit) {
             cachedConnection().autoCommit = false
+            cachedConnection()
             autoCommit = false
+            logger.info("START TRANSACTION")
         }
         transactionDepth++
     }
@@ -36,9 +40,11 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
             val currentConnection = connection
             if (currentConnection != null) {
                 if (success) {
+                    logger.info("COMMIT TRANSACTION")
                     currentConnection.commit()
                     currentConnection.autoCommit = false
                 } else {
+                    logger.info("ROLLBACK TRANSACTION")
                     ignorePossibleSqlError(currentConnection::rollback)
                     close()
                 }

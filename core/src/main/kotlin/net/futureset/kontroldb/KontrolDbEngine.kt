@@ -170,9 +170,9 @@ data class KontrolDbEngine(
                                 }
                             }
                     }
-                }.also {
-                    migrationHandler.end()
                 }
+        }.also {
+            migrationHandler.end()
         }
     }
 

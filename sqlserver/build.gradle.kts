@@ -80,6 +80,9 @@ tasks.register<DockerLogsContainer>("log-container") {
 tasks.register<DockerStopContainer>("stop-server") {
     group = "docker"
     targetContainerId(sqlServerContainerName)
+    onError {
+        println("Stopped already")
+    }
 }
 
 testing {
@@ -111,6 +114,9 @@ testing {
     }
 }
 
+tasks.named("clean") {
+    dependsOn("stop-server")
+}
 val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
     group = "verification"
     dependsOn("integrationTest")
