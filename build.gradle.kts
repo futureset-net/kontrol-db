@@ -116,7 +116,7 @@ val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverag
     executionData(*databasesubprojects.map { it.tasks.named("integrationTest").get() }.toTypedArray())
     sourceSets(*(databasesubprojects.map { it.sourceSets["main"] } + project(":core").sourceSets["main"]).toTypedArray())
     doFirst {
-        println(integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().toString() + "index.html")
+        println("file://" + integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().path + "index.html")
     }
     violationRules {
         rule {

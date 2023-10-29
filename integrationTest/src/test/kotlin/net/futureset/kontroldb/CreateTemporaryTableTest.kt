@@ -10,11 +10,13 @@ import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.io.TempDir
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.nio.file.Path
 
 @ExtendWith(DatabaseProvision::class)
 internal class CreateTemporaryTableTest {
@@ -60,9 +62,12 @@ internal class CreateTemporaryTableTest {
 
     @ParameterizedTest
     @EnumSource(value = TablePersistence::class, mode = EnumSource.Mode.EXCLUDE, names = ["NORMAL"])
-    fun `Can create a temporary table`(tableType: TablePersistence) {
+    fun `Can create a temporary table`(tableType: TablePersistence, @TempDir outputDir: Path) {
         dsl {
             loadConfig("test-config.yml")
+            executionSettings {
+                outputDirectory(outputDir)
+            }
             changeModules(
                 module {
                     singleOf(::CreateATemporaryTable).bind(Refactoring::class)
@@ -72,7 +77,7 @@ internal class CreateTemporaryTableTest {
         }.use { engine ->
 
             engine.applySql()
-            val testCsv = engine.effectiveSettings.externalFileRoot.resolve("text.dsv")
+            val testCsv = outputDir.resolve("text.dsv")
             assertThat(testCsv.readDsvToMapList()).hasSize(1)
         }
     }
@@ -111,9 +116,12 @@ internal class CreateTemporaryTableTest {
     )
 
     @Test
-    fun `Create a temporary table from a query`() {
+    fun `Create a temporary table from a query`(@TempDir outputDir: Path) {
         dsl {
             loadConfig("test-config.yml")
+            executionSettings {
+                outputDirectory(outputDir)
+            }
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
@@ -124,7 +132,7 @@ internal class CreateTemporaryTableTest {
 
             engine.applySql()
 
-            val testCsv = engine.effectiveSettings.externalFileRoot.resolve("text.dsv")
+            val testCsv = outputDir.resolve("text.dsv")
             assertThat(testCsv.readDsvToMapList()).hasSize(3)
         }
     }

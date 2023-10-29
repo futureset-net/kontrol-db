@@ -6,8 +6,8 @@ enum class OperatingSystem(val lineSeparator: String) {
     MAC("\n"),
     AUTO(
         when {
-            "win" in System.getProperty("os.name", "") -> WINDOWS.lineSeparator
-            "mac" in System.getProperty("os.name", "") -> MAC.lineSeparator
+            "win" in System.getProperty("os.name", "").lowercase() -> WINDOWS.lineSeparator
+            "mac" in System.getProperty("os.name", "").lowercase() -> MAC.lineSeparator
             else -> LINUX.lineSeparator
         },
     ),
@@ -16,8 +16,8 @@ enum class OperatingSystem(val lineSeparator: String) {
     companion object {
         fun current(): OperatingSystem =
             when {
-                "win" in System.getProperty("os.name", "") -> WINDOWS
-                "mac" in System.getProperty("os.name", "") -> MAC
+                "win" in System.getProperty("os.name", "").lowercase() -> WINDOWS
+                "mac" in System.getProperty("os.name", "").lowercase() -> MAC
                 else -> LINUX
             }
     }

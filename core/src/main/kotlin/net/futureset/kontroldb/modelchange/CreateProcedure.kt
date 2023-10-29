@@ -7,7 +7,6 @@ import net.futureset.kontroldb.Resource
 import net.futureset.kontroldb.ResourceResolver
 import net.futureset.kontroldb.SchemaObject
 import net.futureset.kontroldb.SchemaObjectBuilder
-import java.nio.file.Paths
 
 data class CreateProcedure(
     val procedure: SchemaObject,
@@ -45,7 +44,7 @@ data class CreateProcedure(
         }
 
         fun resource(path: String) = apply {
-            this.resource = Resource.resource(Paths.get(path))
+            this.resource = Resource.resource(path)
         }
 
         override fun build(): CreateProcedure {
