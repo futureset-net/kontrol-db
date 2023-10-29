@@ -176,7 +176,7 @@ internal class CanLoadCsvIntoTableTest {
                 1,
             ) { it + 1 }.takeWhile { it <= createCount }
                 .map {
-                    "$it,Ben$it,Riley$it,A,3.14,${it.let { r -> r % 2 }},$it,1974-10-26,${
+                    "$it,Ben$it,Riley$it,A,3.14,${it % 2},$it,1974-10-26,${
                         LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
                     }".split(",").joinToString(separator = delimiter)
                 },
@@ -265,7 +265,7 @@ internal class CanLoadCsvIntoTableTest {
                 1,
             ) { it + 1 }.takeWhile { it <= createCount }
                 .map {
-                    "$it,Ben$it,Riley$it,C,3.14,${it.let { r -> r % 2 }},$it,1974-10-26,${
+                    "$it,Ben$it,Riley$it,C,3.14,${it % 2},$it,1974-10-26,${
                         LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
                     }"
                 },

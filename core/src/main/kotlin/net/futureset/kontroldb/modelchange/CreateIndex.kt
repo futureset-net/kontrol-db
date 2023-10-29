@@ -34,10 +34,6 @@ data class CreateIndex(
             this.tablespace = tablespace
         }
 
-        fun clustered(clustered: Boolean) = apply {
-            this.clustered = clustered
-        }
-
         fun unique(unique: Boolean) = apply {
             this.unique = unique
         }

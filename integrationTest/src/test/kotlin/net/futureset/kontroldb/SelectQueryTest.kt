@@ -211,6 +211,24 @@ internal class SelectQueryTest {
                 anyOf {
                     "TEST_COLUMN".column() gt 10
                     "TEST_COLUMN".column() lt 20
+                    allOf {}
+                }
+            },
+            Param(100) {
+                anyOf {}
+            },
+            Param(1) {
+                anyOf { "TEST_COLUMN".column() eq 99 }
+            },
+            Param(3) {
+                allOf {
+                    anyOf {
+                        "TEST_COLUMN".column() eq 10
+                        "TEST_COLUMN".column() eq 20
+                        anyOf { "TEST_COLUMN".column() eq 21 }
+                    }
+                    "TEST_COLUMN".column() lt 30
+                    anyOf {}
                 }
             },
         )

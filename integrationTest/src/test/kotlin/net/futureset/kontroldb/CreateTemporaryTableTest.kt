@@ -82,7 +82,7 @@ internal class CreateTemporaryTableTest {
         }
     }
 
-    class CreateATemporaryTableFromAQuery() : Refactoring(
+    class CreateATemporaryTableFromAQuery : Refactoring(
         executionOrder {
             ymd(2023, 9, 24)
             author("ben")

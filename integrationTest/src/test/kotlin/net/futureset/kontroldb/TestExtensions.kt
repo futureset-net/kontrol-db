@@ -5,6 +5,8 @@ import java.nio.file.Path
 import java.util.SortedSet
 import kotlin.concurrent.thread
 import kotlin.io.path.readLines
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 fun String.executeAsShell() = run {
     println(this)
@@ -18,7 +20,7 @@ fun String.executeAsShell() = run {
         }
         .start().also {
             thread(start = true, isDaemon = true) {
-                it.inputReader().useLines { seq ->
+                it.inputStream.reader().useLines { seq ->
                     seq.forEach(::println)
                 }
             }
@@ -43,4 +45,9 @@ fun List<Refactoring>.simpleNames(): List<String> {
 
 fun SortedSet<AppliedRefactoring>.simpleNames(): List<String> {
     return this.map { it.id.split(".").last() }
+}
+fun Path.replaceText(search: String, replace: String) {
+    val def = this.readText()
+    val newDef = def.replace(search, replace)
+    this.writeText(newDef)
 }
