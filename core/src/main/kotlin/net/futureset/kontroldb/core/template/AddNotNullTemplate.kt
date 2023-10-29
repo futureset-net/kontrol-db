@@ -9,7 +9,7 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class AddNotNullTemplate(private val db: EffectiveSettings) : DbAwareTemplate<AddNotNull>(db, TemplatePriority.DEFAULT) {
+class AddNotNullTemplate(db: EffectiveSettings) : DbAwareTemplate<AddNotNull>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<AddNotNull> {
         return AddNotNull::class
     }

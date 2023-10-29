@@ -3,7 +3,6 @@ package net.futureset.kontroldb.sqlserver.template
 import net.futureset.kontroldb.DbAwareTemplate
 import net.futureset.kontroldb.SqlTemplate
 import net.futureset.kontroldb.TemplatePriority
-import net.futureset.kontroldb.TemplateResolver
 import net.futureset.kontroldb.modelchange.ChangeToDefaultCatalogAndSchema
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
@@ -13,7 +12,6 @@ import kotlin.reflect.KClass
 class ChangeToDefaultCatalogAndSchemaTemplate(val db: EffectiveSettings) :
     DbAwareTemplate<ChangeToDefaultCatalogAndSchema>(db, TemplatePriority.DATABASE) {
 
-    override lateinit var templateResolver: TemplateResolver
     override fun type(): KClass<ChangeToDefaultCatalogAndSchema> = ChangeToDefaultCatalogAndSchema::class
     override fun convert(change: ChangeToDefaultCatalogAndSchema): List<String> {
         return listOfNotNull(

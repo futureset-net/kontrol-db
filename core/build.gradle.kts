@@ -1,5 +1,5 @@
 plugins {
-    `application`
+    application
     alias(libs.plugins.ksp)
 }
 dependencies {

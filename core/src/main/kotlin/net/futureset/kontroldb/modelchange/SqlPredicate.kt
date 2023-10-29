@@ -24,7 +24,9 @@ data class AllOf(val predicates: List<SqlPredicate>) : SqlPredicate {
     override fun isEmpty() = predicates.isEmpty()
 
     override fun plus(predicate: SqlPredicate) =
-        if (predicate is AllOf) {
+        if (predicate.isEmpty()) {
+            this
+        } else if (predicate is AllOf) {
             this.copy(predicates = predicates.toMutableList() + predicate.predicates)
         } else {
             this.copy(predicates = predicates.toMutableList().apply { add(predicate) })
@@ -45,7 +47,9 @@ data class AnyOf(val predicates: List<SqlPredicate>) : SqlPredicate {
 
     override fun isEmpty() = predicates.isEmpty()
     override fun plus(predicate: SqlPredicate) =
-        if (predicate is AnyOf) {
+        if (predicate.isEmpty()) {
+            this
+        } else if (predicate is AnyOf) {
             this.copy(predicates = predicates.toMutableList() + predicate.predicates)
         } else {
             this.copy(predicates = predicates.toMutableList().apply { add(predicate) })

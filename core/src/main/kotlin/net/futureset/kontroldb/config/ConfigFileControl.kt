@@ -2,7 +2,6 @@ package net.futureset.kontroldb.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ext.NioPathDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -38,17 +37,6 @@ class ConfigFileControl {
             }
         inputStream.use {
             return mapper.readerForUpdating(currentConfig).readValue(it, KontrolDbConfig::class.java)
-        }
-    }
-
-    inline fun <reified T> merge(first: T, second: T?): T {
-        return if (second == null) {
-            first
-        } else {
-            val a = mapper.valueToTree<JsonNode>(first)
-            val b = mapper.valueToTree<JsonNode>(second)
-            val x = mapper.readerForUpdating(a).readValue<JsonNode>(b)
-            return mapper.convertValue(x, T::class.java)
         }
     }
 }

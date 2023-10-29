@@ -12,9 +12,8 @@ import org.junit.jupiter.api.io.TempDir
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import java.io.File
-import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.writeText
 
 class CreateAProcedure : Refactoring(
     executionOrder {
@@ -27,7 +26,7 @@ class CreateAProcedure : Refactoring(
                 name("NEW_CUSTOMER")
             }
             body(
-                Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql").readText(),
+                Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql")!!.readText(),
             )
             wholeDefinition(true)
         }
@@ -121,10 +120,9 @@ internal class StoredProcTest {
 
     @Test
     fun `Can apply a stored proc from a file and re-execute if it changes`(@TempDir workingDir: Path) {
-        val procFile = Files.writeString(
-            workingDir.resolve("NewCustomerProc.sql"),
-            javaClass.getResource("/net/futureset/kontroldb/NewCustomerProc.sql").readText(),
-        ).toFile()
+        val procFile = workingDir.resolve("NewCustomerProc.sql")
+        procFile.writeText(javaClass.getResource("/net/futureset/kontroldb/NewCustomerProc.sql")!!.readText())
+
         dsl {
             loadConfig("test-config.yml")
             executionSettings {
@@ -159,11 +157,5 @@ internal class StoredProcTest {
             assertThat(it.getNextRefactorings()).noneMatch { it is CreateCustomerTable }
             assertThat(it.applySql()).describedAs("Should detect change").isGreaterThanOrEqualTo(5)
         }
-    }
-
-    private fun File.replaceText(search: String, replace: String) {
-        val def = this.readText()
-        val newDef = def.replace(search, replace)
-        this.writeText(newDef)
     }
 }

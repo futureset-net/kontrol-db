@@ -33,10 +33,6 @@ data class AddPrimaryKey(
             this.inline = true
         }
 
-        fun clustered(clustered: Boolean) = apply {
-            this.clustered = clustered
-        }
-
         fun column(name: String) {
             columns.add(DbIdentifier(name))
         }

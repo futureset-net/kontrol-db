@@ -13,7 +13,7 @@ interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
     }
 
     fun <U : ModelChange> template(t: U): SqlTemplate<U>? {
-        return requireNotNull(templateResolver).findTemplate(t)
+        return templateResolver.findTemplate(t)
     }
     fun canApply() = true
 

@@ -9,7 +9,7 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class AddForeignKeyTemplate(private val db: EffectiveSettings) : DbAwareTemplate<AddForeignKey>(
+class AddForeignKeyTemplate(db: EffectiveSettings) : DbAwareTemplate<AddForeignKey>(
     db,
     TemplatePriority.DEFAULT,
 ) {

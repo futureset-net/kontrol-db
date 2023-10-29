@@ -1,5 +1,6 @@
 
 import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerLogsContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
@@ -53,14 +54,35 @@ tasks.register<DockerStartContainer>("start-server") {
     group = "docker"
     dependsOn("create-server")
     targetContainerId(sqlServerContainerName)
-    doLast {
-        Thread.sleep(20000)
+    onNext {
+    }
+}
+
+tasks.register<DockerLogsContainer>("log-container") {
+    outputs.upToDateWhen { false }
+    dependsOn("start-server")
+    targetContainerId(sqlServerContainerName)
+    follow = true
+    tailAll = true
+    stdErr = false
+    onNext {
+        if (this.toString().contains("SQL Server is now ready for client connections")) {
+            throw StopActionException("Started OK")
+        }
+    }
+    onError {
+        if (message != "Started OK") {
+            throw this
+        }
     }
 }
 
 tasks.register<DockerStopContainer>("stop-server") {
     group = "docker"
     targetContainerId(sqlServerContainerName)
+    onError {
+        println("Stopped already")
+    }
 }
 
 testing {
@@ -83,7 +105,7 @@ testing {
             targets {
                 all {
                     testTask.configure {
-                        dependsOn("start-server")
+                        dependsOn("log-container")
                         finalizedBy("stop-server", "jacocoIntegrationTestReport")
                     }
                 }
@@ -92,6 +114,9 @@ testing {
     }
 }
 
+tasks.named("clean") {
+    dependsOn("stop-server")
+}
 val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
     group = "verification"
     dependsOn("integrationTest")
