@@ -32,11 +32,8 @@ data class GrantPermissions(
         }
 
         fun on(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
-            on(SchemaObjectBuilder().apply { name?.let(::name) }.apply(block).build())
-        }
-
-        fun on(targetObject: SchemaObject) = apply {
-            this.targetObject = targetObject
+            this.targetObject = (this.targetObject?.let(::SchemaObjectBuilder) ?: SchemaObjectBuilder())
+                .apply { name?.let(::name) }.apply(block).build()
         }
 
         fun objectType(objectType: String) = apply {
