@@ -24,7 +24,7 @@ data class KontrolDbConfig(
             return clazz.kotlin.createInstance() as KontrolModule
         }
         val generatedClass = "org.koin.ksp.generated." + clazz.simpleName + "Gen" + (
-            clazz.packageName.lowercase().replace(".", "_")
+            clazz.`package`.name.lowercase().replace(".", "_")
             ) + "Kt"
         return Class.forName(generatedClass).getMethod("getModule", clazz)
             .invoke(null, clazz.kotlin.createInstance()) as KontrolModule

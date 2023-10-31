@@ -2,8 +2,10 @@ package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.createIndex
+import net.futureset.kontroldb.modelchange.createView
 import net.futureset.kontroldb.modelchange.dropIndexIfExists
 import net.futureset.kontroldb.modelchange.dropTableIfExists
+import net.futureset.kontroldb.modelchange.dropViewIfExists
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
@@ -27,9 +29,17 @@ internal class DropIfExistsTest {
                 column("LASTNAME")
                 table("CUSTOMER")
             }
+            createView {
+                viewName("MY_VIEW")
+                body("""CREATE VIEW MY_VIEW AS SELECT LASTNAME FROM CUSTOMER""")
+                wholeDefinition(true)
+            }
             dropIndexIfExists {
                 index("IX_LASTNAME")
                 table("CUSTOMER")
+            }
+            dropViewIfExists {
+                name("MY_VIEW")
             }
             dropTableIfExists {
                 name("CUSTOMER")

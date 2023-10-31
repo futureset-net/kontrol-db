@@ -36,6 +36,26 @@ class CreateAProcedure : Refactoring(
 
 )
 
+class CreateAProcedurePartialDefinition : Refactoring(
+    executionOrder {
+        ymd(2023, 11, 30)
+        author("ben")
+    },
+    forward = changes {
+        createProcedure {
+            procedure {
+                name("NEW_CUSTOMER")
+            }
+            body(
+                Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql")!!.readText().replace("CREATE ", ""),
+            )
+            wholeDefinition(false)
+        }
+    },
+    rollback = emptyList(),
+
+)
+
 @ExtendWith(DatabaseProvision::class)
 internal class StoredProcTest {
 
@@ -47,6 +67,24 @@ internal class StoredProcTest {
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
                     singleOf(::CreateAProcedure).bind(Refactoring::class)
+                },
+            )
+        }.use {
+            assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(10)
+            it.applySqlDirectly.withConnection { conn ->
+                conn.executeSql("{call NEW_CUSTOMER('BEN','SMITH','ADR')}")
+            }
+        }
+    }
+
+    @Test
+    fun `Can apply a stored proc and execute it with partial definition`() {
+        dsl {
+            loadConfig("test-config.yml")
+            changeModules(
+                module {
+                    singleOf(::CreateCustomerTable).bind(Refactoring::class)
+                    singleOf(::CreateAProcedurePartialDefinition).bind(Refactoring::class)
                 },
             )
         }.use {

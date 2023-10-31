@@ -1,9 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.DbObjectType
-import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.modelchange.createRole
 import net.futureset.kontroldb.modelchange.dropRole
 import net.futureset.kontroldb.modelchange.grantPermissions
@@ -35,7 +33,7 @@ internal class CreateARoleAndGrantSomePermissionsTest {
                 to("FRED")
             }
             grantPermissions {
-                on(SchemaObject(DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)))
+                on(DEFAULT_VERSION_CONTROL_TABLE)
                 objectType("TABLE")
                 permissions("SELECT")
                 to("FRED")
