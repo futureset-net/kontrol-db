@@ -1,12 +1,10 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.Table
-import net.futureset.kontroldb.TableBuilder
-import net.futureset.kontroldb.Tablespace
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.Table
+import net.futureset.kontroldb.model.Tablespace
 
 data class CreateIndex(
     val table: Table,

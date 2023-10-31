@@ -1,8 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ModelChange
-import net.futureset.kontroldb.SqlString
-import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.model.SqlString
+import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.settings.EffectiveSettings
 
 data class TableAlias(

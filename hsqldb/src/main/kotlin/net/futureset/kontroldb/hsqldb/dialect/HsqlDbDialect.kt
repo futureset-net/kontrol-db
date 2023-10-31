@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.hsqldb.dialect
 
-import net.futureset.kontroldb.AnsiDialect
+import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
 import org.hsqldb.cmdline.SqlFile
 import org.koin.core.annotation.Singleton

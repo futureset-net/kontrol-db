@@ -1,9 +1,17 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.config.ConfigFileControl
+import net.futureset.kontroldb.config.KontrolDbConfig
 import net.futureset.kontroldb.core.CoreModule
+import net.futureset.kontroldb.migration.ApplyDirectlyMigrationHandler
+import net.futureset.kontroldb.migration.WriteChangesToFileMigrationHandler
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.Table
+import net.futureset.kontroldb.modelchange.ModelChange
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.settings.DbDialect
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.settings.ExecutionSettings
@@ -12,6 +20,8 @@ import net.futureset.kontroldb.settings.IExecutionSettings
 import net.futureset.kontroldb.settings.ITargetSettings
 import net.futureset.kontroldb.settings.TargetSettings
 import net.futureset.kontroldb.settings.TargetSettingsBuilder
+import net.futureset.kontroldb.template.SqlTemplate
+import net.futureset.kontroldb.template.TemplateResolver
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module

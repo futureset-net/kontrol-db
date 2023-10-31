@@ -1,10 +1,9 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.model.DbIdentifier
 
 data class CreateRole(
     val roleName: DbIdentifier,

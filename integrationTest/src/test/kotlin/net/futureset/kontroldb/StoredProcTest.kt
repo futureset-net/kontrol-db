@@ -3,7 +3,8 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.createProcedure
 import net.futureset.kontroldb.modelchange.dropProcedureIfExists
-import net.futureset.kontroldb.modelchange.executeSql
+import net.futureset.kontroldb.refactoring.ExecuteMode
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

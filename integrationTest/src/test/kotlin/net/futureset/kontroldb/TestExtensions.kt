@@ -4,6 +4,8 @@ import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
+import net.futureset.kontroldb.refactoring.AppliedRefactoring
+import net.futureset.kontroldb.refactoring.Refactoring
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path

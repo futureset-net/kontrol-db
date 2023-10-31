@@ -1,8 +1,8 @@
 package net.futureset.kontroldb.test.petstore
 
-import net.futureset.kontroldb.Refactoring
 import net.futureset.kontroldb.modelchange.deleteRows
 import net.futureset.kontroldb.modelchange.insertRows
+import net.futureset.kontroldb.refactoring.Refactoring
 import org.koin.core.annotation.Single
 
 @Single

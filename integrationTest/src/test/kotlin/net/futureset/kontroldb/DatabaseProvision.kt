@@ -1,7 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.config.ConfigFileControl
-import net.futureset.kontroldb.modelchange.executeSql
+import net.futureset.kontroldb.config.KontrolDbConfig
 import net.futureset.kontroldb.settings.ExecutionSettings
 import net.futureset.kontroldb.settings.TargetSettingsBuilder
 import org.junit.jupiter.api.extension.AfterEachCallback
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback
 import org.junit.jupiter.api.extension.ExtensionContext
 import org.junit.jupiter.api.extension.ParameterContext
 import org.junit.jupiter.api.extension.ParameterResolver
-import java.nio.file.Path
+import java.nio.file.Paths
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -17,7 +17,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
 
     val config: KontrolDbConfig by lazy {
         ConfigFileControl().configFile(
-            Path.of("test-config.yml"),
+            Paths.get("test-config.yml"),
             KontrolDbConfig(
                 dialect = "default",
                 modules = listOf(),

@@ -1,14 +1,13 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.ColumnValue.Companion.column
-import net.futureset.kontroldb.ColumnValue.Companion.expression
-import net.futureset.kontroldb.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.modelchange.executeQuery
-import net.futureset.kontroldb.modelchange.executeSql
+import net.futureset.kontroldb.model.ColumnValue.Companion.column
+import net.futureset.kontroldb.model.ColumnValue.Companion.expression
 import net.futureset.kontroldb.modelchange.insertRows
 import net.futureset.kontroldb.modelchange.updateRows
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
+import net.futureset.kontroldb.refactoring.ExecuteMode.ALWAYS
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateProductTable
 import net.futureset.kontroldb.test.petstore.IncrementCustomerId
 import net.futureset.kontroldb.test.petstore.PetStore

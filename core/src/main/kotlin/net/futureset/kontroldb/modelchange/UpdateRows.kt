@@ -1,11 +1,10 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ColumnAndValue
-import net.futureset.kontroldb.ColumnValue
-import net.futureset.kontroldb.DbIdentifier
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.model.ColumnAndValue
+import net.futureset.kontroldb.model.ColumnValue
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.Table
 
 data class UpdateRows(
     val table: TableAlias,

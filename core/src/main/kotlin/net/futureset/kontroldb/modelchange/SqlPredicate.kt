@@ -1,10 +1,9 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ColumnValue
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.SqlString
-import net.futureset.kontroldb.SqlValueFactory
+import net.futureset.kontroldb.model.ColumnValue
+import net.futureset.kontroldb.model.SqlString
 import net.futureset.kontroldb.settings.EffectiveSettings
 
 interface SqlPredicate : SqlString {

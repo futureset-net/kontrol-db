@@ -1,6 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assumptions.assumeTrue

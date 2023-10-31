@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.settings
 
-import net.futureset.kontroldb.ColumnType
-import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.model.ColumnType
+import net.futureset.kontroldb.model.Table
 import java.nio.file.Path
 import java.sql.Connection
 import java.time.LocalDate

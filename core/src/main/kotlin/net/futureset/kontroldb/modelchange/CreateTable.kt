@@ -1,14 +1,12 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ColumnDefinition
-import net.futureset.kontroldb.ColumnDefinition.ColumnDefinitionBuilder
-import net.futureset.kontroldb.ColumnType
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.Table
-import net.futureset.kontroldb.TableBuilder
-import net.futureset.kontroldb.Tablespace
+import net.futureset.kontroldb.model.ColumnDefinition
+import net.futureset.kontroldb.model.ColumnDefinition.ColumnDefinitionBuilder
+import net.futureset.kontroldb.model.ColumnType
+import net.futureset.kontroldb.model.Table
+import net.futureset.kontroldb.model.Tablespace
 
 data class CreateTable(
     val table: Table,

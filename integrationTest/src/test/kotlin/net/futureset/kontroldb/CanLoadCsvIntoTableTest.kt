@@ -1,14 +1,14 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.StandardColumnTypes.BOOLEAN
-import net.futureset.kontroldb.StandardColumnTypes.Char
-import net.futureset.kontroldb.StandardColumnTypes.DATE
-import net.futureset.kontroldb.StandardColumnTypes.Decimal
-import net.futureset.kontroldb.StandardColumnTypes.INT_16
-import net.futureset.kontroldb.StandardColumnTypes.INT_64
-import net.futureset.kontroldb.StandardColumnTypes.LOCALDATETIME
-import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
+import net.futureset.kontroldb.model.StandardColumnTypes.Char
+import net.futureset.kontroldb.model.StandardColumnTypes.DATE
+import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
+import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
+import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
+import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.ApplyDsvToTable
 import net.futureset.kontroldb.modelchange.addNotNull
 import net.futureset.kontroldb.modelchange.addPrimaryKey
@@ -16,7 +16,7 @@ import net.futureset.kontroldb.modelchange.applyDsvToTable
 import net.futureset.kontroldb.modelchange.createIndex
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable
-import net.futureset.kontroldb.modelchange.executeQuery
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail

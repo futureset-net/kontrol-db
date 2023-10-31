@@ -1,8 +1,6 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ModelChange
-import net.futureset.kontroldb.Table
-import net.futureset.kontroldb.TableBuilder
+import net.futureset.kontroldb.model.Table
 
 @Suppress("UNCHECKED_CAST")
 interface TableAliasBuilder<B : TableBuilder<B, T>, T : ModelChange> : TableBuilder<B, T> {

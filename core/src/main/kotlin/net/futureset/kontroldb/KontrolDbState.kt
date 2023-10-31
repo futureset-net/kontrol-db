@@ -1,5 +1,8 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.refactoring.AppliedRefactoring
+import net.futureset.kontroldb.refactoring.Refactoring
+
 data class KontrolDbState(
     val refactoringsInSourceControl: List<Refactoring>,
     val refactoringsToApply: List<Refactoring>,
