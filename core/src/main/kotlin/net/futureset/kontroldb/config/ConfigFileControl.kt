@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import net.futureset.kontroldb.KontrolDbConfig
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path

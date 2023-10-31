@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.core.dialect
 
-import net.futureset.kontroldb.AnsiDialect
+import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Singleton
 import java.nio.file.Path

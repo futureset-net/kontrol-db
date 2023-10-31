@@ -1,10 +1,10 @@
 package net.futureset.kontroldb.sqlserver.dialect
 
-import net.futureset.kontroldb.AnsiDialect
-import net.futureset.kontroldb.DbIdentifier
-import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.modelchange.TablePersistence
+import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Singleton
 import java.nio.file.Path

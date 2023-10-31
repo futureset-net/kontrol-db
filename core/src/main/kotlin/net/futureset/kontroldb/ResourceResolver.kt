@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.model.Resource
 import java.io.BufferedReader
 import java.nio.file.Path
 import kotlin.io.path.inputStream

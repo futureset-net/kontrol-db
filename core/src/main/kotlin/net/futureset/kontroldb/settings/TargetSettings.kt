@@ -1,10 +1,10 @@
 package net.futureset.kontroldb.settings
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.DbIdentifier
-import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
-import net.futureset.kontroldb.Table
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.SchemaObjectBuilder
+import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 

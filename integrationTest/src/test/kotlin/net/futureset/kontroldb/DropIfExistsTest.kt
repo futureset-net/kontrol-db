@@ -4,6 +4,7 @@ import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.modelchange.createIndex
 import net.futureset.kontroldb.modelchange.dropIndexIfExists
 import net.futureset.kontroldb.modelchange.dropTableIfExists
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

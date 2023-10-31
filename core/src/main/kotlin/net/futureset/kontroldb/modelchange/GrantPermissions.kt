@@ -1,13 +1,12 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.DbIdentifier
-import net.futureset.kontroldb.DbObjectType
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.DbObjectType
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.SchemaObjectBuilder
 
 data class GrantPermissions(
     val grantees: Set<DbIdentifier>,

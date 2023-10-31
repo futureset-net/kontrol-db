@@ -1,6 +1,9 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.refactoring.CreateVersionControlTable
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE

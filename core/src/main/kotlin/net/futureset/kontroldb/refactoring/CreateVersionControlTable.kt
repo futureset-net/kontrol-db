@@ -1,13 +1,11 @@
 package net.futureset.kontroldb.refactoring
 
-import net.futureset.kontroldb.EARLIEST_CHANGE
-import net.futureset.kontroldb.Refactoring
-import net.futureset.kontroldb.StandardColumnTypes.BOOLEAN
-import net.futureset.kontroldb.StandardColumnTypes.INT_16
-import net.futureset.kontroldb.StandardColumnTypes.INT_32
-import net.futureset.kontroldb.StandardColumnTypes.INT_64
-import net.futureset.kontroldb.StandardColumnTypes.LOCALDATETIME
-import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
+import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
+import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
+import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.addPrimaryKey
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable

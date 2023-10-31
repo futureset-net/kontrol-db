@@ -1,10 +1,10 @@
 package net.futureset.kontroldb.core.template
 
-import net.futureset.kontroldb.DbAwareTemplate
-import net.futureset.kontroldb.SqlTemplate
 import net.futureset.kontroldb.modelchange.InsertOrUpdateRow
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.settings.EffectiveSettings
+import net.futureset.kontroldb.template.DbAwareTemplate
+import net.futureset.kontroldb.template.SqlTemplate
 import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 

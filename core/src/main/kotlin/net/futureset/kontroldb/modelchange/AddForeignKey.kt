@@ -1,12 +1,10 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ConstraintModelChange
-import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
-import net.futureset.kontroldb.Table
-import net.futureset.kontroldb.TableBuilder
+import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.SchemaObjectBuilder
+import net.futureset.kontroldb.model.Table
 
 data class AddForeignKey(
     val table: Table?,

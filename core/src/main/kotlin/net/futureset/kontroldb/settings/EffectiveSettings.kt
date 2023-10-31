@@ -2,7 +2,7 @@ package net.futureset.kontroldb.settings
 
 import net.futureset.kontroldb.KontrolDbState
 import net.futureset.kontroldb.ResourceResolver
-import net.futureset.kontroldb.TemplateResolver
+import net.futureset.kontroldb.template.TemplateResolver
 
 class EffectiveSettings(
     private val dbDialect: DbDialect,

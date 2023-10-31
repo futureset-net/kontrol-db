@@ -1,9 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.Table
-import net.futureset.kontroldb.TableBuilder
+import net.futureset.kontroldb.model.Table
 
 data class DropTable(
     val table: Table,

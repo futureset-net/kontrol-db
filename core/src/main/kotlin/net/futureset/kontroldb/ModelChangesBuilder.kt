@@ -1,5 +1,7 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.modelchange.ModelChange
+
 @KontrolDbDslMarker
 data class ModelChangesBuilder(
     val changes: MutableList<ModelChange> = mutableListOf(),

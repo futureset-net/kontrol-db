@@ -1,11 +1,12 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.StandardColumnTypes.Varchar
+import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.exportData
 import net.futureset.kontroldb.modelchange.insertRows
+import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

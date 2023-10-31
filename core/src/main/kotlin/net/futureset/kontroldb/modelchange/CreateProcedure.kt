@@ -1,12 +1,11 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ModelChange
 import net.futureset.kontroldb.ModelChangesBuilder
-import net.futureset.kontroldb.Resource
 import net.futureset.kontroldb.ResourceResolver
-import net.futureset.kontroldb.SchemaObject
-import net.futureset.kontroldb.SchemaObjectBuilder
+import net.futureset.kontroldb.model.Resource
+import net.futureset.kontroldb.model.SchemaObject
+import net.futureset.kontroldb.model.SchemaObjectBuilder
 
 data class CreateProcedure(
     val procedure: SchemaObject,

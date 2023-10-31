@@ -1,10 +1,10 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ColumnValue
-import net.futureset.kontroldb.ColumnValue.Companion.value
-import net.futureset.kontroldb.DbIdentifier
 import net.futureset.kontroldb.KontrolDbDslMarker
+import net.futureset.kontroldb.model.ColumnValue
+import net.futureset.kontroldb.model.ColumnValue.Companion.value
+import net.futureset.kontroldb.model.DbIdentifier
 import java.time.LocalDate
 import java.time.LocalDateTime
 
