@@ -173,7 +173,10 @@ data class KontrolDbEngine(
                                 l.also { lines ->
                                     migrationHandler.executeModelChange(
                                         modelChange,
-                                        lines.map { "$it${effectiveSettings.statementSeparator}" },
+                                        lines.map {
+                                            it.trim() + effectiveSettings.statementSeparator
+                                        },
+
                                     )
                                 }
                             }
