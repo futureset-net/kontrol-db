@@ -22,10 +22,7 @@ class CreateAProcedure : Refactoring(
         author("ben")
     },
     forward = changes {
-        createProcedure {
-            procedure {
-                name("NEW_CUSTOMER")
-            }
+        createProcedure("NEW_CUSTOMER") {
             body(
                 Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql")!!.readText(),
             )
@@ -42,10 +39,7 @@ class CreateAProcedurePartialDefinition : Refactoring(
         author("ben")
     },
     forward = changes {
-        createProcedure {
-            procedure {
-                name("NEW_CUSTOMER")
-            }
+        createProcedure("NEW_CUSTOMER") {
             body(
                 Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql")!!.readText().replace("CREATE ", ""),
             )
@@ -101,13 +95,8 @@ internal class StoredProcTest {
             author("ben")
         },
         forward = changes {
-            dropProcedureIfExists {
-                name("NEW_CUSTOMER")
-            }
-            createProcedure {
-                procedure {
-                    name("NEW_CUSTOMER")
-                }
+            dropProcedureIfExists("NEW_CUSTOMER")
+            createProcedure("NEW_CUSTOMER") {
                 resource("net/futureset/kontroldb/NewCustomerProc.sql")
                 wholeDefinition(true)
                 language("SQL")
@@ -123,13 +112,8 @@ internal class StoredProcTest {
             author("ben")
         },
         forward = changes {
-            dropProcedureIfExists {
-                name("NEW_CUSTOMER")
-            }
-            createProcedure {
-                procedure {
-                    name("NEW_CUSTOMER")
-                }
+            dropProcedureIfExists("NEW_CUSTOMER")
+            createProcedure("NEW_CUSTOMER") {
                 resource("NewCustomerProc.sql")
                 wholeDefinition(true)
                 language("SQL")

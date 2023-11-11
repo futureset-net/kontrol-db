@@ -15,13 +15,10 @@ class DropMistakeTable : Refactoring(
         sequence(2)
     },
     forward = changes {
-        dropTable {
-            table("MISTAKE")
-        }
+        dropTable("MISTAKE")
     },
     rollback = changes {
-        createTable {
-            table("MISTAKE")
+        createTable("MISTAKE") {
             column("ID", INT_32)
             tablespace("ANOTHER_TS")
         }

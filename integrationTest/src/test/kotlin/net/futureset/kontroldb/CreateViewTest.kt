@@ -88,13 +88,8 @@ internal class CreateViewTest {
             author("ben")
         },
         forward = changes {
-            dropViewIfExists {
-                name("NEW_CUSTOMER")
-            }
-            createView {
-                view {
-                    name("NEW_CUSTOMER")
-                }
+            dropViewIfExists("NEW_CUSTOMER")
+            createView("NEW_CUSTOMER") {
                 resource("net/futureset/kontroldb/NewCustomerView.sql")
                 wholeDefinition(true)
                 language("SQL")
@@ -110,10 +105,7 @@ internal class CreateViewTest {
             author("ben")
         },
         forward = changes {
-            createView {
-                view {
-                    name("NEW_CUSTOMER")
-                }
+            createView("NEW_CUSTOMER") {
                 body(
                     Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerView.sql")!!.readText().replace("CREATE ", ""),
                 )
@@ -131,10 +123,7 @@ internal class CreateViewTest {
             author("ben")
         },
         forward = changes {
-            createProcedure {
-                procedure {
-                    name("NEW_CUSTOMER")
-                }
+            createProcedure("NEW_CUSTOMER") {
                 body(
                     Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerView.sql")!!.readText(),
                 )

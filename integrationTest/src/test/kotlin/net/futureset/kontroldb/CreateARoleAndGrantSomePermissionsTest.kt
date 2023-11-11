@@ -22,20 +22,17 @@ internal class CreateARoleAndGrantSomePermissionsTest {
             author("ben")
         },
         forward = changes {
-            createRole {
-                roleName("FRED")
-            }
-            grantPermissions {
+            createRole("FRED")
+            grantPermissions("INSERT", "UPDATE") {
                 on("KONTROL_DB_VERSIONING") {
                 }
+                permissions("DELETE")
                 objectType(DbObjectType.TABLE)
-                permissions("INSERT", "UPDATE", "DELETE")
                 to("FRED")
             }
-            grantPermissions {
+            grantPermissions("SELECT") {
                 on(DEFAULT_VERSION_CONTROL_TABLE)
                 objectType("TABLE")
-                permissions("SELECT")
                 to("FRED")
             }
         },

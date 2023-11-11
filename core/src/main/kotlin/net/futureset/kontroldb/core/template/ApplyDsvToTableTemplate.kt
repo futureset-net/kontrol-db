@@ -76,7 +76,8 @@ class ApplyDsvToTableTemplate(db: EffectiveSettings) :
             val changes = mutableListOf<ModelChange>()
             if (change.updateRows || change.ignoreInsertViolations) {
                 changes.add(
-                    InsertOrUpdateRow.InsertOrUpdateRowBuilder().primaryKey(*change.primaryKeys.map(DbIdentifier::name).toTypedArray())
+                    InsertOrUpdateRow.InsertOrUpdateRowBuilder(change.table.schemaObject.name.name)
+                        .primaryKey(*change.primaryKeys.map(DbIdentifier::name).toTypedArray())
                         .table(change.table).addRows(values)
                         .mode(
                             if (change.updateRows && change.insertRows) {

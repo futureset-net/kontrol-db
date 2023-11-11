@@ -53,5 +53,8 @@ data class CreateIndex(
     }
 }
 
-fun ModelChangesBuilder.createIndex(lambda: CreateIndex.CreateIndexBuilder.() -> Unit): CreateIndex =
-    CreateIndex.CreateIndexBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.createIndex(
+    indexName: String,
+    lambda: CreateIndex.CreateIndexBuilder.() -> Unit,
+): CreateIndex =
+    CreateIndex.CreateIndexBuilder().indexName(indexName).apply(lambda).build().apply(changes::add)

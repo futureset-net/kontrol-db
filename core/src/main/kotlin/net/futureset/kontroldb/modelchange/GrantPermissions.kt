@@ -27,8 +27,8 @@ data class GrantPermissions(
             this.grantees.addAll(grantees.map(::DbIdentifier))
         }
 
-        fun permissions(vararg permissions: String) = apply {
-            this.permissions.addAll(permissions)
+        fun permissions(permission: String, vararg permissions: String) = apply {
+            this.permissions.addAll(arrayListOf(permission, *permissions))
         }
 
         fun on(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
@@ -55,5 +55,7 @@ data class GrantPermissions(
     }
 }
 
-fun ModelChangesBuilder.grantPermissions(lambda: GrantPermissions.GrantPermissionBuilder.() -> Unit): GrantPermissions =
-    GrantPermissions.GrantPermissionBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.grantPermissions(permission: String, vararg permissions: String, lambda: GrantPermissions.GrantPermissionBuilder.() -> Unit): GrantPermissions =
+    GrantPermissions.GrantPermissionBuilder()
+        .permissions(permission, *permissions)
+        .apply(lambda).build().apply(changes::add)

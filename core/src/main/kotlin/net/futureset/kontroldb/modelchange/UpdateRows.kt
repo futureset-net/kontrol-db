@@ -36,12 +36,12 @@ data class UpdateRows(
         }
 
         companion object {
-            fun updateRows(block: UpdateRowsBuilder.() -> Unit): UpdateRows {
-                return UpdateRowsBuilder().apply(block).build()
+            fun updateRowsOf(table: Table, block: UpdateRowsBuilder.() -> Unit): UpdateRows {
+                return UpdateRowsBuilder().apply(block).table(table).build()
             }
         }
     }
 }
 
-fun ModelChangesBuilder.updateRows(block: UpdateRows.UpdateRowsBuilder.() -> Unit): UpdateRows =
-    UpdateRows.UpdateRowsBuilder.updateRows(block).apply(changes::add)
+fun ModelChangesBuilder.updateRowsOf(tableName: String, block: UpdateRows.UpdateRowsBuilder.() -> Unit): UpdateRows =
+    UpdateRows.UpdateRowsBuilder().apply(block).table(tableName).build().apply(changes::add)

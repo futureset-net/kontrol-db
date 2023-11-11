@@ -12,12 +12,17 @@ data class DropTable(
         override lateinit var table: Table
 
         override fun build(): DropTable {
-            return DropTable(
-                table = table,
-            )
+            return DropTable(table = table)
         }
     }
 }
 
-fun ModelChangesBuilder.dropTable(lambda: (DropTable.DropTableBuilder.() -> Unit)): DropTable =
-    DropTable.DropTableBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.dropTable(
+    tableName: String,
+    lambda: DropTable.DropTableBuilder.() -> Unit = {},
+): DropTable =
+    DropTable.DropTableBuilder().table(tableName).apply(lambda).build().apply(changes::add)
+
+fun ModelChangesBuilder.dropTable(
+    table: Table,
+): DropTable = DropTable.DropTableBuilder().table(table).build().apply(changes::add)

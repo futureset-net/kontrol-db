@@ -47,5 +47,5 @@ data class AddPrimaryKey(
     }
 }
 
-fun ModelChangesBuilder.addPrimaryKey(lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit): AddPrimaryKey =
-    AddPrimaryKey.AddPrimaryKeyBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.addPrimaryKey(constraintName: String, lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit): AddPrimaryKey =
+    AddPrimaryKey.AddPrimaryKeyBuilder().apply(lambda).constraintName(constraintName).build().apply(changes::add)

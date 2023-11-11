@@ -24,29 +24,20 @@ internal class DropIfExistsTest {
             ymd(2023, 10, 1)
         },
         forward = changes {
-            createIndex {
-                indexName("IX_LASTNAME")
+            createIndex("IX_LASTNAME") {
                 column("LASTNAME")
                 table("CUSTOMER")
             }
-            createView {
-                viewName("MY_VIEW")
+            createView("MY_VIEW") {
                 body("""CREATE VIEW MY_VIEW AS SELECT LASTNAME FROM CUSTOMER""")
                 wholeDefinition(true)
             }
-            dropIndexIfExists {
-                index("IX_LASTNAME")
+            dropIndexIfExists("IX_LASTNAME") {
                 table("CUSTOMER")
             }
-            dropViewIfExists {
-                name("MY_VIEW")
-            }
-            dropTableIfExists {
-                name("CUSTOMER")
-            }
-            dropTableIfExists {
-                name("NON_EXISTENT")
-            }
+            dropViewIfExists("MY_VIEW")
+            dropTableIfExists("CUSTOMER")
+            dropTableIfExists("NON_EXISTENT")
         },
         rollback = emptyList(),
     )

@@ -22,7 +22,7 @@ data class CreateTable(
         private var tablespace: String? = null,
         private val columns: MutableList<ColumnDefinition> = mutableListOf(),
         private var primaryKey: AddPrimaryKey? = null,
-        private var fromSelect: SelectQuery? = null,
+        private var selectFrom: SelectQuery? = null,
         private var preserveRowsOnCommit: Boolean = true,
     ) : TableBuilder<CreateTableBuilder, CreateTable> {
 
@@ -32,16 +32,17 @@ data class CreateTable(
             this.tablespace = tablespace
         }
 
-        fun fromQuery(lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
-            fromSelect = SelectQuery.SelectQueryBuilder().apply(lambda).build()
+        fun selectFrom(name: String, lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
+            selectFrom = SelectQuery.SelectQueryBuilder().table(name).apply(lambda).build()
         }
 
         fun column(name: String, type: ColumnType, block: ColumnDefinitionBuilder.() -> Unit = { }) = apply {
             ColumnDefinitionBuilder(name, type).apply(block).build().apply(columns::add)
         }
 
-        fun primaryKey(lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit) = apply {
-            primaryKey = AddPrimaryKey.AddPrimaryKeyBuilder().inline().table(this.table).apply(lambda).build()
+        fun primaryKey(constraintName: String, lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit) = apply {
+            primaryKey = AddPrimaryKey.AddPrimaryKeyBuilder().inline().table(this.table).apply(lambda)
+                .constraintName(constraintName).build()
         }
 
         override fun build(): CreateTable {
@@ -49,7 +50,7 @@ data class CreateTable(
                 table = table,
                 tablespace = tablespace?.let(::Tablespace),
                 columnDefinitions = columns,
-                fromSelect = fromSelect,
+                fromSelect = selectFrom,
                 primaryKey = primaryKey,
                 preserveRowsOnCommit = preserveRowsOnCommit,
             )
@@ -57,5 +58,8 @@ data class CreateTable(
     }
 }
 
-fun ModelChangesBuilder.createTable(lambda: CreateTable.CreateTableBuilder.() -> Unit): CreateTable =
-    CreateTable.CreateTableBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.createTable(tableName: String, lambda: CreateTable.CreateTableBuilder.() -> Unit): CreateTable =
+    CreateTable.CreateTableBuilder().table(tableName).apply(lambda).build().apply(changes::add)
+
+fun ModelChangesBuilder.createTable(table: Table, lambda: CreateTable.CreateTableBuilder.() -> Unit): CreateTable =
+    CreateTable.CreateTableBuilder().table(table).apply(lambda).build().apply(changes::add)

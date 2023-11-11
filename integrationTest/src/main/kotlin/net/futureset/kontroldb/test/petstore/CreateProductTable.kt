@@ -22,8 +22,7 @@ class CreateProductTable : Refactoring(
         sequence(2)
     },
     forward = changes {
-        createTable {
-            table("PRODUCT")
+        createTable("PRODUCT") {
             column("ID", INT_32)
             column("PRODUCT_NAME", Varchar(30))
             column("PACKAGE_ID", INT_64)
@@ -34,15 +33,12 @@ class CreateProductTable : Refactoring(
             column("UPDATED_BY_USER", Varchar(30))
             column("PET_FLAG", BOOLEAN)
         }
-        addPrimaryKey {
+        addPrimaryKey("PRODUCT_PK") {
             table("PRODUCT")
             column("ID")
-            constraintName("PRODUCT_PK")
         }
     },
     rollback = changes {
-        dropTable {
-            table("PRODUCT")
-        }
+        dropTable("PRODUCT")
     },
 )

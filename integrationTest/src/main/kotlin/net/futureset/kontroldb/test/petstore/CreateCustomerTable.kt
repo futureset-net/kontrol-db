@@ -15,8 +15,7 @@ class CreateCustomerTable : Refactoring(
         author("ben")
     },
     forward = changes {
-        createTable {
-            table("CUSTOMER")
+        createTable("CUSTOMER") {
             column("CUST_ID", INT_32)
             column("FIRSTNAME", Varchar(20))
             column("LASTNAME", Varchar(25))
@@ -24,9 +23,8 @@ class CreateCustomerTable : Refactoring(
             column("CITY", Varchar(20))
             column("STATE", Varchar(2))
             column("ZIP", Varchar(9))
-            primaryKey {
+            primaryKey("CUSTOMER_PK") {
                 column("CUST_ID")
-                constraintName("CUSTOMER_PK")
             }
         }
         addNotNull {
@@ -37,8 +35,6 @@ class CreateCustomerTable : Refactoring(
         }
     },
     rollback = changes {
-        dropTable {
-            table("CUSTOMER")
-        }
+        dropTable("CUSTOMER")
     },
 )

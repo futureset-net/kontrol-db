@@ -6,8 +6,8 @@ import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.deleteRows
-import net.futureset.kontroldb.modelchange.insertOrUpdateRow
+import net.futureset.kontroldb.modelchange.deleteRowsFrom
+import net.futureset.kontroldb.modelchange.insertOrUpdateRowsOf
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith
@@ -26,22 +26,19 @@ internal class InsertRowsUpdateAndDeleteRowsTest {
             author("ben")
         },
         forward = changes {
-            createTable {
-                table("fred")
+            createTable("fred") {
                 column("TEST_COLUMN", INT_32)
             }
-            insertOrUpdateRow {
-                table("fred")
+            insertOrUpdateRowsOf("fred") {
                 for (i in 1..100) {
-                    values {
+                    row {
                         value("TEST_COLUMN", i)
                     }
                 }
                 primaryKey("TEST_COLUMN")
                 mode(UpdateMode.INSERT)
             }
-            deleteRows {
-                table("fred")
+            deleteRowsFrom("fred") {
                 alias("B")
                 where(param)
             }

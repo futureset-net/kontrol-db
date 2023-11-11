@@ -5,7 +5,7 @@ import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.insertRows
+import net.futureset.kontroldb.modelchange.insertRowsInto
 import net.futureset.kontroldb.modelchange.select
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.assertj.core.api.Assertions.assertThat
@@ -28,15 +28,13 @@ internal class SelectQueryTest {
             author("ben")
         },
         forward = changes {
-            createTable {
-                table("fred")
+            createTable("fred") {
                 column("TEST_COLUMN", INT_32)
                 column("STRING_COLUMN", Varchar(5)) {
                     notNull()
                 }
             }
-            insertRows {
-                table("fred")
+            insertRowsInto("fred") {
                 for (i in 1..100) {
                     row {
                         value("TEST_COLUMN", i)
@@ -44,16 +42,13 @@ internal class SelectQueryTest {
                     }
                 }
             }
-            createTable {
-                table("results")
+            createTable("results") {
                 column("TEST_COLUMN", Varchar(256)) {
                     nullable()
                 }
                 column("STRING_COLUMN", Varchar(5))
             }
-            insertRows {
-                table("results")
-
+            insertRowsInto("results") {
                 fromQuery {
                     table("fred")
                     column("TEST_COLUMN")

@@ -42,8 +42,8 @@ class ExportQueryBuilder : Builder<ExportQueryBuilder, ExportQuery> {
     private var path: String? = null
     private var separator: String = "|"
 
-    fun query(lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
-        selectQuery = SelectQuery.SelectQueryBuilder().apply(lambda).build()
+    fun selectFrom(from: String, lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
+        selectQuery = SelectQuery.SelectQueryBuilder().table(from).apply(lambda).build()
     }
 
     fun outputFile(path: String) {

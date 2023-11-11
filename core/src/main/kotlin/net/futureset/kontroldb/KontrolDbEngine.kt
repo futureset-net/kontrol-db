@@ -12,9 +12,9 @@ import net.futureset.kontroldb.modelchange.Comment
 import net.futureset.kontroldb.modelchange.CommentMarker
 import net.futureset.kontroldb.modelchange.InitCatalog
 import net.futureset.kontroldb.modelchange.InitSchema
-import net.futureset.kontroldb.modelchange.InsertRows.InsertRowsBuilder.Companion.insertRows
+import net.futureset.kontroldb.modelchange.InsertRows.InsertRowsBuilder.Companion.insertRowsInto
 import net.futureset.kontroldb.modelchange.ModelChange
-import net.futureset.kontroldb.modelchange.UpdateRows.UpdateRowsBuilder.Companion.updateRows
+import net.futureset.kontroldb.modelchange.UpdateRows.UpdateRowsBuilder.Companion.updateRowsOf
 import net.futureset.kontroldb.refactoring.AStartEndMarker
 import net.futureset.kontroldb.refactoring.AppliedRefactoring
 import net.futureset.kontroldb.refactoring.CHECK_SUM
@@ -285,8 +285,7 @@ data class KontrolDbEngine(
         rollback: Boolean,
     ): ModelChange {
         return if (appliedRefactoring != null || rollback) {
-            updateRows {
-                table(effectiveSettings.versionControlTable)
+            updateRowsOf(effectiveSettings.versionControlTable) {
                 set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.dbNowTimestamp()))
                 set(
                     EXECUTION_COUNT to ColumnValue.expression(
@@ -302,8 +301,7 @@ data class KontrolDbEngine(
                 }
             }
         } else {
-            insertRows {
-                table(effectiveSettings.versionControlTable)
+            insertRowsInto(effectiveSettings.versionControlTable) {
                 row {
                     value(ID_COLUMN, refactoring.id())
                     value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
