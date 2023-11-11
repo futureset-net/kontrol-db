@@ -5,7 +5,7 @@ import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.exportData
-import net.futureset.kontroldb.modelchange.insertRows
+import net.futureset.kontroldb.modelchange.insertRowsInto
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
@@ -28,18 +28,18 @@ internal class CreateTemporaryTableTest {
             author("ben")
         },
         forward = changes {
-            createTable {
+            createTable("fred") {
                 when (tableType) {
-                    TablePersistence.GLOBAL_TEMPORARY -> globalTemporaryTable("fred")
-                    TablePersistence.TEMPORARY -> localTemporaryTable("fred")
+                    TablePersistence.GLOBAL_TEMPORARY -> asGlobalTemporaryTable()
+                    TablePersistence.TEMPORARY -> asLocalTemporaryTable()
                     TablePersistence.NORMAL -> table("fred")
                 }
                 column("TEST_COLUMN", Varchar(256))
             }
-            insertRows {
+            insertRowsInto("fred") {
                 when (tableType) {
-                    TablePersistence.GLOBAL_TEMPORARY -> globalTemporaryTable("fred")
-                    TablePersistence.TEMPORARY -> localTemporaryTable("fred")
+                    TablePersistence.GLOBAL_TEMPORARY -> asGlobalTemporaryTable()
+                    TablePersistence.TEMPORARY -> asLocalTemporaryTable()
                     TablePersistence.NORMAL -> table("fred")
                 }
                 row {
@@ -47,10 +47,10 @@ internal class CreateTemporaryTableTest {
                 }
             }
             exportData {
-                query {
+                selectFrom("fred") {
                     when (tableType) {
-                        TablePersistence.GLOBAL_TEMPORARY -> globalTemporaryTable("fred")
-                        TablePersistence.TEMPORARY -> localTemporaryTable("fred")
+                        TablePersistence.GLOBAL_TEMPORARY -> asGlobalTemporaryTable()
+                        TablePersistence.TEMPORARY -> asLocalTemporaryTable()
                         TablePersistence.NORMAL -> table("fred")
                     }
                     column("TEST_COLUMN")
@@ -89,25 +89,24 @@ internal class CreateTemporaryTableTest {
             author("ben")
         },
         forward = changes {
-            createTable {
-                globalTemporaryTable("fred")
+            createTable("fred") {
+                asGlobalTemporaryTable()
                 column("TEST_COLUMN", Varchar(256))
-                fromQuery {
+                selectFrom("KONTROL_DB_VERSIONING") {
                     column("TEST_COLUMN", "ID")
-                    table("KONTROL_DB_VERSIONING")
                 }
             }
             exportData {
-                query {
-                    globalTemporaryTable("fred")
+                selectFrom("fred") {
+                    asGlobalTemporaryTable()
                     column("TEST_COLUMN")
                 }
                 separator("|")
                 outputFile("text.dsv")
             }
             exportData {
-                query {
-                    globalTemporaryTable("fred")
+                selectFrom("fred") {
+                    asGlobalTemporaryTable()
                     column("TEST_COLUMN")
                 }
                 separator("|")

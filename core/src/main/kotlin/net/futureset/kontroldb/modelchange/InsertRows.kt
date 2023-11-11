@@ -37,12 +37,12 @@ data class InsertRows(
         }
 
         companion object {
-            fun insertRows(block: InsertRowsBuilder.() -> Unit): InsertRows {
-                return InsertRowsBuilder().apply(block).build()
+            fun insertRowsInto(table: Table, block: InsertRowsBuilder.() -> Unit): InsertRows {
+                return InsertRowsBuilder().apply(block).table(table).build()
             }
         }
     }
 }
 
-fun ModelChangesBuilder.insertRows(block: InsertRows.InsertRowsBuilder.() -> Unit): InsertRows =
-    InsertRows.InsertRowsBuilder().apply(block).build().apply(changes::add)
+fun ModelChangesBuilder.insertRowsInto(tableName: String, block: InsertRows.InsertRowsBuilder.() -> Unit): InsertRows =
+    InsertRows.InsertRowsBuilder().table(tableName).apply(block).build().apply(changes::add)

@@ -20,12 +20,9 @@ data class CreateView(
         return super.checksum(resourceResolver) + if (path != null) resourceResolver.resourceHash(path) else 0
     }
 
-    class CreateViewBuilder : Builder<CreateViewBuilder, CreateView> {
-        private var view: CreateView = CreateView(view = SchemaObject(name = DbIdentifier("")), body = null, path = null, wholeDefinition = true, language = "SQL")
+    class CreateViewBuilder(viewName: String) : Builder<CreateViewBuilder, CreateView> {
+        private var view: CreateView = CreateView(view = SchemaObject(name = DbIdentifier(viewName)), body = null, path = null, wholeDefinition = true, language = "SQL")
 
-        fun viewName(viewName: String) = apply {
-            view = view.copy(view = view.view.copy(name = DbIdentifier(viewName)))
-        }
         fun view(lambda: SchemaObjectBuilder.() -> Unit) = apply {
             view = view.copy(view = SchemaObjectBuilder(view.view).apply(lambda).build())
         }
@@ -53,6 +50,6 @@ data class CreateView(
     }
 }
 
-fun ModelChangesBuilder.createView(lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
-    changes.add(CreateView.CreateViewBuilder().apply(lambda).build())
+fun ModelChangesBuilder.createView(name: String, lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
+    changes.add(CreateView.CreateViewBuilder(name).apply(lambda).build())
 }

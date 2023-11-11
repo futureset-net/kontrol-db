@@ -36,8 +36,7 @@ const val ROLLED_BACK = "ROLLED_BACK"
 class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactoring(
     executionOrder = EARLIEST_CHANGE,
     forward = changes {
-        createTable {
-            table(effectiveSettings.versionControlTable)
+        createTable(effectiveSettings.versionControlTable) {
             column(ID_COLUMN, Varchar(120))
             column(EXECUTION_ORDER, Varchar(24))
             column(EXECUTED_SEQUENCE, INT_32)
@@ -49,15 +48,12 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
             column(CHECK_SUM, Varchar(23))
             column(ROLLED_BACK, BOOLEAN)
         }
-        addPrimaryKey {
+        addPrimaryKey(effectiveSettings.versionControlTable.schemaObject.name.name + "_PK") {
             table(effectiveSettings.versionControlTable)
-            constraintName(effectiveSettings.versionControlTable.schemaObject.name.name + "_PK")
             column(ID_COLUMN)
         }
     },
     rollback = changes {
-        dropTable {
-            table(effectiveSettings.versionControlTable)
-        }
+        dropTable(effectiveSettings.versionControlTable)
     },
 )

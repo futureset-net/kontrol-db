@@ -53,6 +53,6 @@ data class CreateProcedure(
     }
 }
 
-fun ModelChangesBuilder.createProcedure(lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) = apply {
-    changes.add(CreateProcedure.CreateProcedureBuilder().apply(lambda).build())
+fun ModelChangesBuilder.createProcedure(name: String, lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) = apply {
+    changes.add(CreateProcedure.CreateProcedureBuilder().procedure { name(name) }.apply(lambda).build())
 }

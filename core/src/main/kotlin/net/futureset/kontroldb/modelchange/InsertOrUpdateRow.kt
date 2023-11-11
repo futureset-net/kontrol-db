@@ -4,6 +4,7 @@ import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnValue
 import net.futureset.kontroldb.model.DbIdentifier
+import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.Table
 
 enum class UpdateMode {
@@ -21,13 +22,14 @@ data class InsertOrUpdateRow(
 
     @KontrolDbDslMarker
     class InsertOrUpdateRowBuilder(
+        tableName: String,
         private var columnValues: MutableList<Map<DbIdentifier, ColumnValue>> = mutableListOf(),
         private var primaryKeys: MutableSet<DbIdentifier> = mutableSetOf(),
         private var updateMode: UpdateMode = UpdateMode.UPDATE_AND_INSERT,
     ) : TableBuilder<InsertOrUpdateRowBuilder, InsertOrUpdateRow> {
 
-        override lateinit var table: Table
-        fun values(lambda: ValuesBuilder.() -> Unit) = apply {
+        override var table: Table = Table(schemaObject = SchemaObject(name = DbIdentifier(tableName)))
+        fun row(lambda: ValuesBuilder.() -> Unit) = apply {
             columnValues.add(ValuesBuilder().apply(lambda).build())
         }
 
@@ -47,5 +49,5 @@ data class InsertOrUpdateRow(
     }
 }
 
-fun ModelChangesBuilder.insertOrUpdateRow(block: InsertOrUpdateRow.InsertOrUpdateRowBuilder.() -> Unit): InsertOrUpdateRow =
-    InsertOrUpdateRow.InsertOrUpdateRowBuilder().apply(block).build().apply(changes::add)
+fun ModelChangesBuilder.insertOrUpdateRowsOf(name: String, block: InsertOrUpdateRow.InsertOrUpdateRowBuilder.() -> Unit): InsertOrUpdateRow =
+    InsertOrUpdateRow.InsertOrUpdateRowBuilder(name).apply(block).build().apply(changes::add)

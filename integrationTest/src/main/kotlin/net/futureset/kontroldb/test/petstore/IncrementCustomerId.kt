@@ -3,7 +3,7 @@ package net.futureset.kontroldb.test.petstore
 import net.futureset.kontroldb.model.ColumnValue.Companion.expression
 import net.futureset.kontroldb.model.ColumnValue.Companion.value
 import net.futureset.kontroldb.model.DbIdentifier
-import net.futureset.kontroldb.modelchange.updateRows
+import net.futureset.kontroldb.modelchange.updateRowsOf
 import net.futureset.kontroldb.refactoring.ExecuteMode
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.koin.core.annotation.Single
@@ -17,8 +17,7 @@ class IncrementCustomerId : Refactoring(
     },
     executeMode = ExecuteMode.ON_CHANGE,
     forward = changes {
-        updateRows {
-            table("CUSTOMER")
+        updateRowsOf("CUSTOMER") {
             set("CUST_ID" to expression("CUST_ID+1"))
             where {
                 DbIdentifier("FIRSTNAME") eq value("ben")
@@ -26,8 +25,7 @@ class IncrementCustomerId : Refactoring(
         }
     },
     rollback = changes {
-        updateRows {
-            table("CUSTOMER")
+        updateRowsOf("CUSTOMER") {
             set("CUST_ID" to expression("CUST_ID-1"))
             where {
                 DbIdentifier("FIRSTNAME") eq value("ben")

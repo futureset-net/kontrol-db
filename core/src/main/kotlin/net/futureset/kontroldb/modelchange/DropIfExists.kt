@@ -13,8 +13,8 @@ class DropIfExistsBuilder : Builder<DropIfExistsBuilder, DropIfExists> {
     private lateinit var objectName: SchemaObject
     private lateinit var objectType: DbObjectType
 
-    fun objectName(lambda: SchemaObjectBuilder.() -> Unit) = apply {
-        objectName = SchemaObjectBuilder().apply(lambda).build()
+    fun objectName(name: String, lambda: SchemaObjectBuilder.() -> Unit) = apply {
+        objectName = SchemaObjectBuilder().name(name).apply(lambda).build()
     }
 
     fun objectType(objectType: DbObjectType) = apply {
@@ -24,13 +24,13 @@ class DropIfExistsBuilder : Builder<DropIfExistsBuilder, DropIfExists> {
     override fun build(): DropIfExists = DropIfExists(objectName, objectType)
 }
 
-fun ModelChangesBuilder.dropProcedureIfExists(lambda: SchemaObjectBuilder.() -> Unit) {
-    changes.add(DropIfExistsBuilder().objectName(lambda).objectType(DbObjectType.PROCEDURE).build())
+fun ModelChangesBuilder.dropProcedureIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
+    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.PROCEDURE).build())
 }
 
-fun ModelChangesBuilder.dropTableIfExists(lambda: SchemaObjectBuilder.() -> Unit) {
-    changes.add(DropIfExistsBuilder().objectName(lambda).objectType(DbObjectType.TABLE).build())
+fun ModelChangesBuilder.dropTableIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
+    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.TABLE).build())
 }
-fun ModelChangesBuilder.dropViewIfExists(lambda: SchemaObjectBuilder.() -> Unit) {
-    changes.add(DropIfExistsBuilder().objectName(lambda).objectType(DbObjectType.VIEW).build())
+fun ModelChangesBuilder.dropViewIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
+    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.VIEW).build())
 }

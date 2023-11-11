@@ -45,8 +45,7 @@ internal class CanLoadCsvIntoTableTest {
             author("ben")
         },
         forward = changes {
-            createTable {
-                table("CUSTOMER")
+            createTable("CUSTOMER") {
                 column("CUST_ID", INT_64)
                 column("FIRSTNAME", Varchar(256))
                 column("LASTNAME", Varchar(256))
@@ -57,30 +56,22 @@ internal class CanLoadCsvIntoTableTest {
                 column("DATE_OF_BIRTH", DATE)
                 column("TIME_RIGHT_NOW", LOCALDATETIME)
             }
-            createIndex {
+            createIndex("UK_FIRSTNAME") {
                 unique(true)
-                indexName("UK_FIRSTNAME")
                 table("CUSTOMER")
                 column("FIRSTNAME")
             }
-            addPrimaryKey {
-                table {
-                    name("CUSTOMER")
-                }
+            addPrimaryKey("CUSTOMER_PK") {
+                table("CUSTOMER")
                 column("CUST_ID")
-                constraintName("CUSTOMER_PK")
             }
             addNotNull {
-                table {
-                    name("CUSTOMER")
-                }
+                table("CUSTOMER")
                 column("LASTNAME", Varchar(25))
             }
         },
         rollback = changes {
-            dropTable {
-                table("CUSTOMER")
-            }
+            dropTable("CUSTOMER")
         },
     )
 

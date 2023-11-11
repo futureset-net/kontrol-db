@@ -32,8 +32,8 @@ data class AddForeignKey(
             this.constraintName = DbIdentifier(constraintName)
         }
 
-        fun columnMap(fromColumn: String, toColumn: String) = apply {
-            columnMap[DbIdentifier(fromColumn)] = DbIdentifier(toColumn)
+        fun referencing(fromAndTo: ReferencingColumn) = apply {
+            columnMap[DbIdentifier(fromAndTo.first)] = DbIdentifier(fromAndTo.second)
         }
 
         override fun build(): AddForeignKey {
@@ -47,5 +47,7 @@ data class AddForeignKey(
     }
 }
 
-fun ModelChangesBuilder.addForeignKey(lambda: AddForeignKey.AddForeignKeyBuilder.() -> Unit): AddForeignKey =
-    AddForeignKey.AddForeignKeyBuilder().apply(lambda).build().apply(changes::add)
+typealias ReferencingColumn = Pair<String, String>
+
+fun ModelChangesBuilder.addForeignKey(constraintName: String, lambda: AddForeignKey.AddForeignKeyBuilder.() -> Unit): AddForeignKey =
+    AddForeignKey.AddForeignKeyBuilder().apply(lambda).constraintName(constraintName).build().apply(changes::add)

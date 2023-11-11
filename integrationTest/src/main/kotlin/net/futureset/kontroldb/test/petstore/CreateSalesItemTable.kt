@@ -18,28 +18,23 @@ class CreateSalesItemTable : Refactoring(
         sequence(1)
     },
     forward = changes {
-        createTable {
-            table("SALES_ITEM")
+        createTable("SALES_ITEM") {
             column("PRODUCT_ID", INT_32)
             column("SALES_ID", INT_32)
             column("SALE_AMOUNT", Decimal(10, 2))
         }
-        addPrimaryKey {
+        addPrimaryKey("SALES_ITEM_PK") {
             table("SALES_ITEM")
-            constraintName("SALES_ITEM_PK")
             column("PRODUCT_ID")
             column("SALES_ID")
         }
-        addForeignKey {
+        addForeignKey("FK_SI_PRODUCT") {
             table("SALES_ITEM")
-            constraintName("FK_SI_PRODUCT")
             foreignTable("PRODUCT")
-            columnMap("PRODUCT_ID", "ID")
+            referencing("PRODUCT_ID" to "ID")
         }
     },
     rollback = changes {
-        dropTable {
-            table("SALES_ITEM")
-        }
+        dropTable("SALES_ITEM")
     },
 )

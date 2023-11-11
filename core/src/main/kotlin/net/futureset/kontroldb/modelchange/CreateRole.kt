@@ -24,5 +24,5 @@ data class CreateRole(
         }
     }
 }
-fun ModelChangesBuilder.createRole(lambda: CreateRole.CreateRoleBuilder.() -> Unit): CreateRole =
-    CreateRole.CreateRoleBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.createRole(roleName: String): CreateRole =
+    CreateRole.CreateRoleBuilder().roleName(roleName).build().apply(changes::add)

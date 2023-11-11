@@ -17,8 +17,7 @@ class CreateCustomerSaleTable : Refactoring(
         author("ben")
     },
     forward = changes {
-        createTable {
-            table("CUSTOMER_SALE")
+        createTable("CUSTOMER_SALE") {
             column("SALES_ID", INT_32)
             column("CUST_ID", INT_32)
             column("TOTAL_ITEM_AMOUNT", Decimal(10, 2))
@@ -26,26 +25,22 @@ class CreateCustomerSaleTable : Refactoring(
             column("TOTAL_SALE_AMOUNT", Decimal(10, 2))
             column("SALES_DATE", LOCALDATE)
             column("SHIPPING_HANDLING_FEE", Decimal(5, 2))
-            primaryKey {
+            primaryKey("CUSTOMER_SALE_PK") {
                 column("SALES_ID")
-                constraintName("CUSTOMER_SALE_PK")
             }
         }
-        createIndex {
+        createIndex("IX_CS_CUST_ID") {
             table("CUSTOMER_SALE")
             column("CUST_ID")
-            indexName("IX_CS_CUST_ID")
             tablespace("MY_INDEX_TS")
         }
-        addForeignKey {
+        addForeignKey("FK_CUSTOMER_SALE") {
             table("CUSTOMER_SALE")
             foreignTable("CUSTOMER")
-            columnMap("CUST_ID", "CUST_ID")
+            referencing("CUST_ID" to "CUST_ID")
         }
     },
     rollback = changes {
-        dropTable {
-            table("CUSTOMER_SALE")
-        }
+        dropTable("CUSTOMER_SALE")
     },
 )

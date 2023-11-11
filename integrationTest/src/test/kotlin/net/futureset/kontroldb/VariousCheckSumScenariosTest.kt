@@ -3,8 +3,8 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
 import net.futureset.kontroldb.model.ColumnValue.Companion.column
 import net.futureset.kontroldb.model.ColumnValue.Companion.expression
-import net.futureset.kontroldb.modelchange.insertRows
-import net.futureset.kontroldb.modelchange.updateRows
+import net.futureset.kontroldb.modelchange.insertRowsInto
+import net.futureset.kontroldb.modelchange.updateRowsOf
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.refactoring.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.refactoring.Refactoring
@@ -89,8 +89,7 @@ internal class VariousCheckSumScenariosTest {
     class InsertIntoProduct : Refactoring(
         executionOrder { ymd(2023, 9, 10) author("ben") },
         forward = changes {
-            insertRows {
-                table("PRODUCT")
+            insertRowsInto("PRODUCT") {
                 row {
                     value("ID", 1)
                     value("PRODUCT_NAME", "PRODUCT NAME")
@@ -111,8 +110,7 @@ internal class VariousCheckSumScenariosTest {
         executionOrder { ymd(2023, 9, 10) author("ben") sequence(2) },
         executeMode = ALWAYS,
         forward = changes {
-            updateRows {
-                table("PRODUCT")
+            updateRowsOf("PRODUCT") {
                 set("CURRENT_INVENTORY_COUNT" to expression("CURRENT_INVENTORY_COUNT+1"))
                 where {
                     column("ID") eq 1

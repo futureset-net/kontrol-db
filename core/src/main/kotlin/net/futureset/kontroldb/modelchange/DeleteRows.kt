@@ -29,5 +29,5 @@ data class DeleteRows(
     }
 }
 
-fun ModelChangesBuilder.deleteRows(block: DeleteRows.DeleteRowsBuilder.() -> Unit): DeleteRows =
-    DeleteRows.DeleteRowsBuilder().apply(block).build().apply(changes::add)
+fun ModelChangesBuilder.deleteRowsFrom(tableName: String, block: DeleteRows.DeleteRowsBuilder.() -> Unit): DeleteRows =
+    DeleteRows.DeleteRowsBuilder().apply(block).table(tableName).build().apply(changes::add)

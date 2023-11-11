@@ -20,22 +20,12 @@ interface TableBuilder<B : TableBuilder<B, T>, T : ModelChange> : Builder<B, T> 
         )
     } as B
 
-    fun localTemporaryTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
-        table = Table(
-            tablePersistence = TablePersistence.TEMPORARY,
-            schemaObject = SchemaObjectBuilder(
-                SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
-            ).apply(block).build(),
-        )
+    fun asLocalTemporaryTable() = apply {
+        table = table.copy(tablePersistence = TablePersistence.TEMPORARY)
     } as B
 
-    fun globalTemporaryTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
-        table = Table(
-            tablePersistence = TablePersistence.GLOBAL_TEMPORARY,
-            schemaObject = SchemaObjectBuilder(
-                SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
-            ).apply(block).build(),
-        )
+    fun asGlobalTemporaryTable() = apply {
+        table = table.copy(tablePersistence = TablePersistence.GLOBAL_TEMPORARY)
     } as B
 
     fun table(table: Table): B {
