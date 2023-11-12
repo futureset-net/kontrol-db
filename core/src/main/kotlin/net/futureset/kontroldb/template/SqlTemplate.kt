@@ -20,3 +20,5 @@ interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
 
     fun convert(change: T): List<String?>
 }
+
+fun String.trimBlankLines() = this.replace(Regex("(?:\\s*\r?\n){2,}"), "\n")
