@@ -1,9 +1,12 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.model.StandardColumnTypes
 import net.futureset.kontroldb.modelchange.createIndex
+import net.futureset.kontroldb.modelchange.createSequence
 import net.futureset.kontroldb.modelchange.createView
 import net.futureset.kontroldb.modelchange.dropIndexIfExists
+import net.futureset.kontroldb.modelchange.dropSequenceIfExists
 import net.futureset.kontroldb.modelchange.dropTableIfExists
 import net.futureset.kontroldb.modelchange.dropViewIfExists
 import net.futureset.kontroldb.refactoring.Refactoring
@@ -32,9 +35,19 @@ internal class DropIfExistsTest {
                 body("""CREATE VIEW MY_VIEW AS SELECT LASTNAME FROM CUSTOMER""")
                 wholeDefinition(true)
             }
+            createSequence("MY_SEQUENCE") {
+                cache(10)
+                minValue(1)
+                maxValue(100)
+                incrementBy(2)
+                startWith(3)
+                columnType(StandardColumnTypes.INT_64)
+                cycle()
+            }
             dropIndexIfExists("IX_LASTNAME") {
                 table("CUSTOMER")
             }
+            dropSequenceIfExists("MY_SEQUENCE")
             dropViewIfExists("MY_VIEW")
             dropTableIfExists("CUSTOMER")
             dropTableIfExists("NON_EXISTENT")
