@@ -37,10 +37,10 @@ tasks.register<DockerCreateContainer>("create-server") {
     envVars.put("ACCEPT_EULA", "Y")
     envVars.put("MSSQL_SA_PASSWORD", "Th1sIsW0rking")
     imageId = "mcr.microsoft.com/mssql/server:2022-latest"
-    hostConfig.portBindings.add("1433:1433")
+    hostConfig.portBindings.add("6283:1433")
     hostConfig.binds.put(project.layout.buildDirectory.get().toString(), "/var/build")
     hostConfig.autoRemove = true
-    exposePorts("tcp", listOf(1433))
+    exposePorts("tcp", listOf(6283))
     dependsOn(downloadImage)
 }
 
