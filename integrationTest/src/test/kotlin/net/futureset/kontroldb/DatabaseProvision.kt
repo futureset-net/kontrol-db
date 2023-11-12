@@ -41,7 +41,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
         return when (dialect) {
             "hsqldb" -> DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "sa", "")
             "sqlserver" -> DriverManager.getConnection(
-                "jdbc:sqlserver://localhost:1433;trustServerCertificate=true",
+                "jdbc:sqlserver://localhost:6283;trustServerCertificate=true",
                 "SA",
                 "Th1sIsW0rking",
             )
