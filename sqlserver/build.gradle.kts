@@ -23,14 +23,19 @@ dependencies {
     api(libs.sqlserver)
 }
 
+val inCi = System.getenv("CI")=="true"
+val dockerEnabled = !inCi
+
 val sqlServerContainerName = "kontrol-sqlserver"
 
 val downloadImage by tasks.registering(DockerPullImage::class) {
+    enabled = dockerEnabled
     group = "docker"
     image = "mcr.microsoft.com/mssql/server:2022-latest"
 }
 
 tasks.register<DockerCreateContainer>("create-server") {
+    enabled = dockerEnabled
     group = "docker"
     containerName = sqlServerContainerName
     hostName = sqlServerContainerName
@@ -45,12 +50,13 @@ tasks.register<DockerCreateContainer>("create-server") {
 }
 
 tasks.register<DockerRemoveContainer>("remove-server") {
+    enabled = dockerEnabled
     group = "docker"
     targetContainerId(sqlServerContainerName)
-//    containerId= sqlServerContainerId
 }
 
 tasks.register<DockerStartContainer>("start-server") {
+    enabled = dockerEnabled
     group = "docker"
     dependsOn("create-server")
     targetContainerId(sqlServerContainerName)
@@ -59,6 +65,7 @@ tasks.register<DockerStartContainer>("start-server") {
 }
 
 tasks.register<DockerLogsContainer>("log-container") {
+    enabled = dockerEnabled
     outputs.upToDateWhen { false }
     dependsOn("start-server")
     targetContainerId(sqlServerContainerName)
@@ -78,6 +85,7 @@ tasks.register<DockerLogsContainer>("log-container") {
 }
 
 tasks.register<DockerStopContainer>("stop-server") {
+    enabled = dockerEnabled
     group = "docker"
     targetContainerId(sqlServerContainerName)
     onError {
