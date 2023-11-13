@@ -10,6 +10,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.absolutePathString
 
 @ExtendWith(DatabaseProvision::class)
 internal class PetStoreTest {
@@ -36,12 +37,14 @@ internal class PetStoreTest {
                     engine.effectiveSettings.runScriptAgainstDb(it, outputSqlFile)
                 }
                 "sqlserver" -> {
-                    Files.copy(outputSqlFile, Paths.get("build", "output.sql"), StandardCopyOption.REPLACE_EXISTING)
+                    val dir = Paths.get("build", "output.sql")
+                    println("${dir.absolutePathString()}/output.sql")
+                    Files.copy(outputSqlFile, dir, StandardCopyOption.REPLACE_EXISTING)
                     engine.effectiveSettings.run {
                         assertThat(
                             (
                                 "docker exec -i kontrol-sqlserver /opt/mssql-tools/bin/sqlcmd " +
-                                    "-U $username -P $password -e -S localhost,1433 -C -i /git/workspace/sqlserver/build/output.sql"
+                                    "-U $username -P $password -e -S localhost,1433 -C -i /git/workspace/kontrol-db/kontrol-db/sqlserver/build/output.sql"
                                 )
                                 .executeAsShell(),
                         ).isZero()
