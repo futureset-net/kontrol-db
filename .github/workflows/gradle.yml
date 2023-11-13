@@ -41,3 +41,7 @@ jobs:
         uses: gradle/gradle-build-action@v2.9.0
         with:
           arguments: :hsqldb:build
+      - name: Build SQLSERVER
+        uses: gradle/gradle-build-action@v2.9.0
+        with:
+          arguments: :sqlserver:build

@@ -23,7 +23,7 @@ dependencies {
     api(libs.sqlserver)
 }
 
-val inCi = System.getenv("CI")=="true"
+val inCi = System.getenv("CI") == "true"
 val dockerEnabled = !inCi
 
 val sqlServerContainerName = "kontrol-sqlserver"
@@ -43,7 +43,7 @@ tasks.register<DockerCreateContainer>("create-server") {
     envVars.put("MSSQL_SA_PASSWORD", "Th1sIsW0rking")
     imageId = "mcr.microsoft.com/mssql/server:2022-latest"
     hostConfig.portBindings.add("6283:1433")
-    hostConfig.binds.put(project.layout.buildDirectory.get().toString(), "/var/build")
+    hostConfig.binds.put(rootProject.layout.projectDirectory.toString(), "/git/workspace")
     hostConfig.autoRemove = true
     exposePorts("tcp", listOf(6283))
     dependsOn(downloadImage)

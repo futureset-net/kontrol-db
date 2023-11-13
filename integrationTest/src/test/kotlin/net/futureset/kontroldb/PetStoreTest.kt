@@ -41,7 +41,7 @@ internal class PetStoreTest {
                         assertThat(
                             (
                                 "docker exec -i kontrol-sqlserver /opt/mssql-tools/bin/sqlcmd " +
-                                    "-U $username -P $password -e -H localhost -C -i /var/build/output.sql"
+                                    "-U $username -P $password -e -S localhost,1433 -C -i /git/workspace/sqlserver/build/output.sql"
                                 )
                                 .executeAsShell(),
                         ).isZero()
