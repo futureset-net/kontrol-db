@@ -23,7 +23,7 @@ jobs:
     env:
       CI: true
     services:
-      sqlserver:
+      kontrol-sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
         ports:
           - 6283:1433
