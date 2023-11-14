@@ -115,6 +115,9 @@ testing {
                     testTask.configure {
                         dependsOn("log-container")
                         finalizedBy("stop-server", "jacocoIntegrationTestReport")
+                        testLogging {
+                            showStandardStreams = true
+                        }
                     }
                 }
             }
