@@ -25,6 +25,8 @@ jobs:
     services:
       kontrol-sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
+        options: >-
+          --volume /home/runner/work/kontrol-db/kontrol-db/sqlserver/build:/var/build 
         ports:
           - 6283:1433
         env:
