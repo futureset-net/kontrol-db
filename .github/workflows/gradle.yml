@@ -20,16 +20,32 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    env:
+      CI: true
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        volumes:
+          - /home/runner/work:/var/outputdir
+        options: >-
+          --name mssql
+        ports:
+          - 6283:1433
+        env:
+          ACCEPT_EULA: 'Y'
+          MSSQL_SA_PASSWORD: 'Th1sIsW0rking'
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 20
-      uses: actions/setup-java@v3
-      with:
-        java-version: '20'
-        distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v2.9.0
-
-      with:
-        arguments: :hsqldb:build
+      - uses: actions/checkout@v4
+      - name: Set up JDK 20
+        uses: actions/setup-java@v3
+        with:
+          java-version: '20'
+          distribution: 'temurin'
+      - name: Build HSQLDB
+        uses: gradle/gradle-build-action@v2.9.0
+        with:
+          arguments: :hsqldb:build
+      - name: Build SQLSERVER
+        uses: gradle/gradle-build-action@v2.9.0
+        with:
+          arguments: :sqlserver:build --scan
