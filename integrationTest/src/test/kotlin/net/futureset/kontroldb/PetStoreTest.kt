@@ -44,11 +44,11 @@ internal class PetStoreTest {
                     engine.effectiveSettings.run {
                         assertThat(
                             (
-                                "docker exec -i kontrol-sqlserver /opt/mssql-tools/bin/sqlcmd " +
+                                "docker exec -i mssql /opt/mssql-tools/bin/sqlcmd " +
                                     "-U $username -P $password -e -H localhost -C -i /var/outputdir/output.sql"
                                 )
                                 .executeAsShell(),
-                        ).isZero()
+                        ).describedAs("shell command failed").isZero()
                     }
                 }
                 else -> throw UnsupportedOperationException("Unsupported dialect $dialect")
@@ -62,13 +62,10 @@ internal class PetStoreTest {
             loadConfig("test-config.yml")
             changeModules(PetStore().module)
         }.use {
-            assertThat(it.getAppliedRefactorings())
-                .describedAs("No changes have been applied yet").isEmpty()
-            assertThat(it.applySql())
-                .describedAs("At least two SQLs were executed").isGreaterThan(2)
+            assertThat(it.getAppliedRefactorings()).describedAs("No changes have been applied yet").isEmpty()
+            assertThat(it.applySql()).describedAs("At least two SQLs were executed").isGreaterThan(2)
             val applied = it.getAppliedRefactorings()
-            assertThat(applied)
-                .describedAs("Changes are reported as applied").hasSizeGreaterThan(2)
+            assertThat(applied).describedAs("Changes are reported as applied").hasSizeGreaterThan(2)
             println(applied.toList().joinToString(separator = "\n"))
             assertThat(it.applySql())
                 .describedAs("Re-running will apply no changes because its up to date").isZero()
