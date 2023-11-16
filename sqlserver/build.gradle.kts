@@ -118,7 +118,7 @@ testing {
                         testLogging {
                             showStandardStreams = true
                         }
-                        systemProperty("shareddir", if (inCi) "/home/runner/work/shared/sqlserver" else project.layout.buildDirectory.get().toString())
+                        systemProperty("shareddir", if (inCi) "/home/runner/work" else project.layout.buildDirectory.get().toString())
                     }
                 }
             }
