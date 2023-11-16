@@ -39,6 +39,7 @@ internal class PetStoreTest {
                 "sqlserver" -> {
                     val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
                     println("${destOutputSqlFile.absolutePathString()}")
+                    Files.createDirectories(destOutputSqlFile.parent)
                     Files.copy(outputSqlFile, destOutputSqlFile, StandardCopyOption.REPLACE_EXISTING)
                     engine.effectiveSettings.run {
                         assertThat(
