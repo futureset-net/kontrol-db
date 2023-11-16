@@ -37,14 +37,14 @@ internal class PetStoreTest {
                     engine.effectiveSettings.runScriptAgainstDb(it, outputSqlFile)
                 }
                 "sqlserver" -> {
-                    val dir = Paths.get("build", "output.sql")
-                    println("${dir.absolutePathString()}/output.sql")
-                    Files.copy(outputSqlFile, dir, StandardCopyOption.REPLACE_EXISTING)
+                    val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
+                    println("${destOutputSqlFile.absolutePathString()}")
+                    Files.copy(outputSqlFile, destOutputSqlFile, StandardCopyOption.REPLACE_EXISTING)
                     engine.effectiveSettings.run {
                         assertThat(
                             (
                                 "docker exec -i kontrol-sqlserver /opt/mssql-tools/bin/sqlcmd " +
-                                    "-U $username -P $password -e -S localhost,1433 -C -i /git/workspace/kontrol-db/kontrol-db/sqlserver/build/output.sql"
+                                    "-U $username -P $password -e -H localhost -C -i /var/outputdir/output.sql"
                                 )
                                 .executeAsShell(),
                         ).isZero()
