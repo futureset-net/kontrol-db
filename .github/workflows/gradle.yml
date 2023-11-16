@@ -25,8 +25,8 @@ jobs:
     services:
       kontrol-sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
-        options: >-
-          --volume /home/runner/work/shared/sqlserver:/var/outputdir
+        volumes:
+          - /home/runner/work/shared/sqlserver:/var/outputdir
         ports:
           - 6283:1433
         env:
