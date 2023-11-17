@@ -115,9 +115,6 @@ testing {
                     testTask.configure {
                         dependsOn("log-container")
                         finalizedBy("stop-server", "jacocoIntegrationTestReport")
-                        testLogging {
-                            showStandardStreams = true
-                        }
                         systemProperty("shareddir", if (inCi) "/home/runner/work" else project.layout.buildDirectory.get().toString())
                     }
                 }
