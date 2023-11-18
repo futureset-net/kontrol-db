@@ -5,9 +5,16 @@ updates:
     schedule:
       interval: "weekly"
     rebase-strategy: "disabled"
-
+    groups:
+      dev-dependencies:
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     rebase-strategy: "disabled"
+    groups:
+      github-dependencies:
+        patterns:
+          - "*"
