@@ -26,7 +26,7 @@ dependencies {
 val inCi = System.getenv("CI") == "true"
 val dockerEnabled = !inCi
 
-val sqlServerContainerName = "kontrol-sqlserver"
+val sqlServerContainerName = "mssql"
 
 val downloadImage by tasks.registering(DockerPullImage::class) {
     enabled = dockerEnabled
@@ -43,7 +43,7 @@ tasks.register<DockerCreateContainer>("create-server") {
     envVars.put("MSSQL_SA_PASSWORD", "Th1sIsW0rking")
     imageId = "mcr.microsoft.com/mssql/server:2022-latest"
     hostConfig.portBindings.add("6283:1433")
-    hostConfig.binds.put(rootProject.layout.projectDirectory.toString(), "/git/workspace")
+    hostConfig.binds.put(project.layout.buildDirectory.get().toString(), "/var/outputdir")
     hostConfig.autoRemove = true
     exposePorts("tcp", listOf(6283))
     dependsOn(downloadImage)
@@ -115,7 +115,9 @@ testing {
                     testTask.configure {
                         dependsOn("log-container")
                         finalizedBy("stop-server", "jacocoIntegrationTestReport")
-                        systemProperty("shareddir", if (inCi) "/home/runner/work" else project.layout.buildDirectory.get().toString())
+                        if (inCi) {
+                            systemProperty("shareddir", "/home/runner/work")
+                        }
                     }
                 }
             }
