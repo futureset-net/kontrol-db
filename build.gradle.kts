@@ -9,6 +9,8 @@ plugins {
 group = "net.futureset"
 version = "local-SNAPSHOT"
 
+println("VERSION is $version")
+
 extensions.configure<SpotlessExtension> {
     format("misc") {
         // define the files to apply `misc` to

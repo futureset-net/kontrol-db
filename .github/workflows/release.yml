@@ -15,10 +15,11 @@ jobs:
         with:
           java-version: '20'
           distribution: 'temurin'
-      - name: Publish package
+      - name: Set up gradle
         uses: gradle/gradle-build-action@v2.9.0
-        with:
-          arguments: publish --info -Pversion=$RELEASE_VERSION
+      - name: Publish
+        id: gradle
+        run: ./gradlew publish --info -Pversion=$RELEASE_VERSION
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_VERSION: ${{ github.ref_name }}
