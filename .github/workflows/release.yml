@@ -15,11 +15,9 @@ jobs:
         with:
           java-version: '20'
           distribution: 'temurin'
-      - name: Set environment variable RELEASE_VERSION
-        run: echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})
       - name: Publish package
         uses: gradle/gradle-build-action@v2.9.0
         with:
-          arguments: publish --info -Pversion="$RELEASE_VERSION"
+          arguments: publish --info -Pversion="${{ github.ref }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
