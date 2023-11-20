@@ -24,7 +24,11 @@ extensions.configure<SpotlessExtension> {
         target("**/src/*/kotlin/**/*.kt", "**/*.gradle.kts")
     }
 }
-
+allprojects {
+    tasks.withType<GenerateModuleMetadata> {
+        enabled = false
+    }
+}
 subprojects {
     apply(plugin = "jacoco")
     apply(plugin = "kotlin")
@@ -36,12 +40,17 @@ subprojects {
     java {
         sourceCompatibility = JavaVersion.VERSION_20
         targetCompatibility = JavaVersion.VERSION_20
+        withSourcesJar()
     }
 
     sourceSets {
         getByName("main") {
             kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
         }
+    }
+
+    tasks.withType<PublishToMavenRepository>().configureEach {
+        dependsOn("assemble")
     }
 
     testing {
@@ -88,14 +97,14 @@ subprojects {
         testImplementation(enforcedPlatform(rootProject.libs.mockito.bom))
         testImplementation(enforcedPlatform(rootProject.libs.junit.bom))
 
-        project(":core")
+        project(":kontrol-db-core")
         testImplementation(rootProject.libs.bundles.junit5) {
             exclude(group = "org.hamcrest")
         }
     }
 }
 
-val databasesubprojects = listOf(project(":hsqldb"), project(":sqlserver"))
+val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"))
 dependencies {
     databasesubprojects.forEach(::jacocoAggregation)
 }
@@ -114,7 +123,7 @@ val integrationTestCoverageLimit: String by project
 val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
     group = "verification"
     executionData(*databasesubprojects.map { it.tasks.named("integrationTest").get() }.toTypedArray())
-    sourceSets(*(databasesubprojects.map { it.sourceSets["main"] } + project(":core").sourceSets["main"]).toTypedArray())
+    sourceSets(*(databasesubprojects.map { it.sourceSets["main"] } + project(":kontrol-db-core").sourceSets["main"]).toTypedArray())
     doFirst {
         println("file://" + integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().path + "index.html")
     }

@@ -1,9 +1,12 @@
+import java.net.URI
+
 plugins {
     alias(libs.plugins.ksp)
+    `maven-publish`
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":kontrol-db-core"))
     ksp(libs.koin.compiler)
     api(libs.hsqldb)
     api(libs.hsqldb.tool)
@@ -23,7 +26,7 @@ testing {
                 implementation(rootProject.libs.junit.mockito)
                 implementation(rootProject.libs.assertj)
                 implementation(project(":integrationTest"))
-                implementation(project(":core"))
+                implementation(project(":kontrol-db-core"))
                 implementation(project())
             }
             targets {
@@ -39,13 +42,31 @@ testing {
 
 val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
     group = "verification"
-    this.sourceSets(project.sourceSets["main"], project(":core").sourceSets["main"])
+    this.sourceSets(project.sourceSets["main"], project(":kontrol-db-core").sourceSets["main"])
     executionData(tasks.getByPath("integrationTest"))
 }
 
 val copySharedTests by tasks.registering(Copy::class) {
     from(project(":integrationTest").layout.projectDirectory.dir("src/test/kotlin"))
     into(project.layout.buildDirectory.dir("generated/integrationTest/kotlin"))
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenPublication") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = URI.create("https://maven.pkg.github.com/futureset/kontroldb")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 tasks.whenTaskAdded {

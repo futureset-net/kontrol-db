@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
 
-    implementation(project(":core"))
+    implementation(project(":kontrol-db-core"))
     testImplementation(libs.bundles.junit5)
     testImplementation(libs.assertj)
     ksp(libs.koin.compiler)
