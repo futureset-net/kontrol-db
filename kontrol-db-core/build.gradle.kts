@@ -1,5 +1,8 @@
+import java.net.URI
+
 plugins {
     application
+    `maven-publish`
     alias(libs.plugins.ksp)
 }
 dependencies {
@@ -12,6 +15,24 @@ dependencies {
 }
 
 val unitTestCoverageLimit: String by project
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenPublication") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = URI.create("https://maven.pkg.github.com/futureset/kontroldb")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 
 tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
     executionData(tasks.test.get())

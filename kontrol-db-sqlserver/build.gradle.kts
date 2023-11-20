@@ -5,10 +5,12 @@ import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+import java.net.URI
 
 plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.docker)
+    `maven-publish`
 }
 
 sourceSets {
@@ -19,7 +21,7 @@ sourceSets {
 
 dependencies {
     ksp(libs.koin.compiler)
-    implementation(project(":core"))
+    implementation(project(":kontrol-db-core"))
     api(libs.sqlserver)
 }
 
@@ -34,7 +36,7 @@ val downloadImage by tasks.registering(DockerPullImage::class) {
     image = "mcr.microsoft.com/mssql/server:2022-latest"
 }
 
-tasks.register<DockerCreateContainer>("create-server") {
+val createServer by tasks.registering(DockerCreateContainer::class) {
     enabled = dockerEnabled
     group = "docker"
     containerName = sqlServerContainerName
@@ -49,25 +51,25 @@ tasks.register<DockerCreateContainer>("create-server") {
     dependsOn(downloadImage)
 }
 
-tasks.register<DockerRemoveContainer>("remove-server") {
+val removeServer = tasks.registering(DockerRemoveContainer::class) {
     enabled = dockerEnabled
     group = "docker"
     targetContainerId(sqlServerContainerName)
 }
 
-tasks.register<DockerStartContainer>("start-server") {
+val startServer by tasks.registering(DockerStartContainer::class) {
     enabled = dockerEnabled
     group = "docker"
-    dependsOn("create-server")
+    dependsOn(createServer)
     targetContainerId(sqlServerContainerName)
     onNext {
     }
 }
 
-tasks.register<DockerLogsContainer>("log-container") {
+val logContainer by tasks.registering(DockerLogsContainer::class) {
     enabled = dockerEnabled
     outputs.upToDateWhen { false }
-    dependsOn("start-server")
+    dependsOn(startServer)
     targetContainerId(sqlServerContainerName)
     follow = true
     tailAll = true
@@ -84,7 +86,7 @@ tasks.register<DockerLogsContainer>("log-container") {
     }
 }
 
-tasks.register<DockerStopContainer>("stop-server") {
+val stopServer by tasks.registering(DockerStopContainer::class) {
     enabled = dockerEnabled
     group = "docker"
     targetContainerId(sqlServerContainerName)
@@ -107,14 +109,14 @@ testing {
                 implementation(rootProject.libs.junit.mockito)
                 implementation(rootProject.libs.assertj)
                 implementation(project(":integrationTest"))
-                implementation(project(":core"))
+                implementation(project(":kontrol-db-core"))
                 implementation(project())
             }
             targets {
                 all {
                     testTask.configure {
-                        dependsOn("log-container")
-                        finalizedBy("stop-server", "jacocoIntegrationTestReport")
+                        dependsOn(logContainer)
+                        finalizedBy(stopServer, "jacocoIntegrationTestReport")
                         if (inCi) {
                             systemProperty("shareddir", "/home/runner/work")
                         }
@@ -126,13 +128,32 @@ testing {
 }
 
 tasks.named("clean") {
-    dependsOn("stop-server")
+    dependsOn(stopServer)
 }
+
 val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
     group = "verification"
     dependsOn("integrationTest")
-    this.sourceSets(project.sourceSets["main"], project(":core").sourceSets["main"])
+    this.sourceSets(project.sourceSets["main"], project(":kontrol-db-core").sourceSets["main"])
     executionData(tasks.getByPath("integrationTest"))
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenPublication") {
+            from(components["java"])
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = URI.create("https://maven.pkg.github.com/futureset/kontroldb")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
 
 tasks.check {
