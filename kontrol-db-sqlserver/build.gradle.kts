@@ -147,7 +147,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = URI.create("https://maven.pkg.github.com/futureset/kontroldb")
+            url = URI.create("https://maven.pkg.github.com/futureset/kontrol-db")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
