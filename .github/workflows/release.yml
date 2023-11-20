@@ -18,6 +18,7 @@ jobs:
       - name: Publish package
         uses: gradle/gradle-build-action@v2.9.0
         with:
-          arguments: publish --info -Pversion=${{ github.ref_name }}
+          arguments: publish --info -Pversion=$RELEASE_VERSION
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ github.ref_name }}
