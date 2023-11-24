@@ -5,9 +5,12 @@ plugins {
     `maven-publish`
 }
 
+description = "hsqldb extensions for kontrol-db"
+
 dependencies {
-    implementation(project(":kontrol-db-core"))
     ksp(libs.koin.compiler)
+
+    api(project(":kontrol-db-core"))
     api(libs.hsqldb)
     api(libs.hsqldb.tool)
 }

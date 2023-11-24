@@ -15,6 +15,8 @@ const val DEFAULT_VERSION_CONTROL_TABLE = "KONTROL_DB_VERSIONING"
 
 const val ID_COLUMN = "ID"
 
+const val APPLICATION_VERSION = "APPLICATION_VERSION"
+
 const val EXECUTION_ORDER = "EXECUTION_ORDER"
 
 const val EXECUTED_SEQUENCE = "EXECUTED_SEQUENCE"
@@ -38,6 +40,7 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
     forward = changes {
         createTable(effectiveSettings.versionControlTable) {
             column(ID_COLUMN, Varchar(120))
+            column(APPLICATION_VERSION, Varchar(32))
             column(EXECUTION_ORDER, Varchar(24))
             column(EXECUTED_SEQUENCE, INT_32)
             column(LAST_APPLIED, LOCALDATETIME)

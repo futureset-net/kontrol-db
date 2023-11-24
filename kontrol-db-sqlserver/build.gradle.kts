@@ -13,6 +13,8 @@ plugins {
     `maven-publish`
 }
 
+description = "sqlserver extensions for kontrol-db"
+
 sourceSets {
     getByName("main") {
         kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
@@ -21,7 +23,8 @@ sourceSets {
 
 dependencies {
     ksp(libs.koin.compiler)
-    implementation(project(":kontrol-db-core"))
+
+    api(project(":kontrol-db-core"))
     api(libs.sqlserver)
 }
 

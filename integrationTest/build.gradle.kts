@@ -14,15 +14,3 @@ tasks.test {
     finalizedBy("jacocoTestReport")
     enabled = false
 }
-
-// tasks.jacocoTestReport {
-//    sourceSets(project(":core").sourceSets.getByName("main"))
-// }
-//
-// tasks.jacocoTestCoverageVerification {
-//    sourceSets(project(":core").sourceSets.getByName("main"))
-//    mustRunAfter("jacocoTestReport")
-// }
-
-// val integrationTestCoverageLimit: String by project
-//
