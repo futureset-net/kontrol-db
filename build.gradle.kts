@@ -45,6 +45,16 @@ subprojects {
         withSourcesJar()
     }
 
+    tasks.jar {
+        manifest {
+            attributes(
+                "Implementation-Title" to (project.description ?: project.name),
+                "Implementation-Version" to project.version,
+                "Implementation-Vendor" to "futureset.net",
+            )
+        }
+    }
+
     sourceSets {
         getByName("main") {
             kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))

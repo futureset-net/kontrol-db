@@ -15,6 +15,7 @@ import net.futureset.kontroldb.modelchange.InitSchema
 import net.futureset.kontroldb.modelchange.InsertRows.InsertRowsBuilder.Companion.insertRowsInto
 import net.futureset.kontroldb.modelchange.ModelChange
 import net.futureset.kontroldb.modelchange.UpdateRows.UpdateRowsBuilder.Companion.updateRowsOf
+import net.futureset.kontroldb.refactoring.APPLICATION_VERSION
 import net.futureset.kontroldb.refactoring.AStartEndMarker
 import net.futureset.kontroldb.refactoring.AppliedRefactoring
 import net.futureset.kontroldb.refactoring.CHECK_SUM
@@ -41,9 +42,11 @@ import net.futureset.kontroldb.settings.TransactionScope.REFACTORING
 import net.futureset.kontroldb.template.TemplateResolver
 import org.koin.core.context.stopKoin
 import org.slf4j.LoggerFactory
+import java.net.URI
 import java.nio.file.Path
 import java.sql.SQLException
 import java.util.SortedSet
+import java.util.jar.Manifest
 import kotlin.reflect.KClass
 
 data class KontrolDbEngine(
@@ -55,6 +58,19 @@ data class KontrolDbEngine(
 ) : KontrolDbCommands, AutoCloseable {
 
     val refactorings = allRefactoring.toSortedSet()
+
+    val version by lazy {
+
+        val uri = javaClass.getResource(javaClass.simpleName + ".class")?.toURI()
+        if (uri?.scheme == "jar") {
+            val manifestUrl = URI.create(uri.toASCIIString().split("!").first() + "!/META-INF/MANIFEST.MF").toURL()
+            manifestUrl.openStream().use {
+                Manifest(it).mainAttributes.getValue("Implementation-Version")
+            }
+        } else {
+            "unknown"
+        }
+    }
 
     private val resourceResolver = ResourceResolver(effectiveSettings.externalFileRoot)
 
@@ -304,6 +320,7 @@ data class KontrolDbEngine(
             insertRowsInto(effectiveSettings.versionControlTable) {
                 row {
                     value(ID_COLUMN, refactoring.id())
+                    value(APPLICATION_VERSION, version)
                     value(EXECUTION_FREQUENCY, refactoring.executeMode.name)
                     valueExpression(FIRST_APPLIED, effectiveSettings.dbNowTimestamp())
                     valueExpression(LAST_APPLIED, effectiveSettings.dbNowTimestamp())

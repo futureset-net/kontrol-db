@@ -5,6 +5,9 @@ plugins {
     `maven-publish`
     alias(libs.plugins.ksp)
 }
+
+description = "core engine and default templates for kontrol-db"
+
 dependencies {
     ksp(libs.koin.compiler)
 
