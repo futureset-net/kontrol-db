@@ -101,6 +101,7 @@ internal class VariousCheckSumScenariosTest {
                     value("UPDATED_BY_USER", "me")
                     value("PET_FLAG", true)
                 }
+                tableWithAlias("PRODUCT", "A")
             }
         },
         rollback = listOf(),
@@ -112,6 +113,7 @@ internal class VariousCheckSumScenariosTest {
         forward = changes {
             updateRowsOf("PRODUCT") {
                 set("CURRENT_INVENTORY_COUNT" to expression("CURRENT_INVENTORY_COUNT+1"))
+                tableWithAlias("PRODUCT", "B")
                 where {
                     column("ID") eq 1
                 }

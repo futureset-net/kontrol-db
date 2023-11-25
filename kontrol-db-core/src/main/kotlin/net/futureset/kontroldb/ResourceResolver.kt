@@ -8,7 +8,7 @@ import kotlin.io.path.inputStream
 class ResourceResolver(
     private val externalPath: Path,
     private val classLoader: ClassLoader = Thread.currentThread().contextClassLoader,
-) : AutoCloseable {
+) {
 
     private val checksumCache = mutableMapOf<String, Int>()
 
@@ -30,22 +30,11 @@ class ResourceResolver(
     }
 
     fun resourceText(resource: Resource): String {
-        return inputStream(resource).bufferedReader().readText()
+        return inputStream(resource).bufferedReader().use { it.readText() }
     }
 
     private fun inputStream(resource: Resource) =
         (classLoader.getResourceAsStream(resource.path) ?: externalPath.resolve(resource.path).inputStream())
-
-    fun Resource.checksum(): Int {
-        return resourceHash(this)
-    }
-
-    fun Resource.text(): String {
-        return resourceText(this)
-    }
-    override fun close() {
-        checksumCache.clear()
-    }
 
     fun reader(resource: Resource): BufferedReader {
         return inputStream(resource).bufferedReader()

@@ -4,6 +4,7 @@ import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
 import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATE
 import net.futureset.kontroldb.modelchange.addForeignKey
+import net.futureset.kontroldb.modelchange.comment
 import net.futureset.kontroldb.modelchange.createIndex
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable
@@ -17,6 +18,7 @@ class CreateCustomerSaleTable : Refactoring(
         author("ben")
     },
     forward = changes {
+        comment("A table to store customer sales single line")
         createTable("CUSTOMER_SALE") {
             column("SALES_ID", INT_32)
             column("CUST_ID", INT_32)

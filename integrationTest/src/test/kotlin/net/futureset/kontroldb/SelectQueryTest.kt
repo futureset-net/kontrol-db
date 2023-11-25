@@ -97,7 +97,7 @@ internal class SelectQueryTest {
         },
         forward = changes {
             select {
-                table("results")
+                tableWithAlias("results", "A")
                 column("STRING_COLUMN")
                 column("TEST_COLUMN")
                 column("ANOTHER", "TEST_COLUMN")
