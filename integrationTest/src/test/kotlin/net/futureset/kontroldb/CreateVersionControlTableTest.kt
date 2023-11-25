@@ -1,6 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.config.KontrolDbConfig
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.Table
@@ -36,12 +37,15 @@ internal class CreateVersionControlTableTest {
     }
 
     @Test
-    fun `Check has a version control table with custom name`(@TempDir tempDir: Path) {
+    fun `Check has a version control table with custom name`(@TempDir tempDir: Path, currentConfig: KontrolDbConfig) {
         val customName = "HELLO"
         dsl {
             loadConfig("test-config.yml")
             dbSettings {
                 versionControlTable {
+                    jdbcUrl(currentConfig.targetSettings?.jdbcUrl ?: "")
+                    username(currentConfig.targetSettings?.username ?: "")
+                    password(currentConfig.targetSettings?.password ?: "")
                     name(customName)
                     catalogAndSchema("PUBLIC", "PUBLIC")
                 }

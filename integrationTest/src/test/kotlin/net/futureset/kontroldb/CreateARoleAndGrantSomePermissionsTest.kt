@@ -23,10 +23,9 @@ internal class CreateARoleAndGrantSomePermissionsTest {
         },
         forward = changes {
             createRole("FRED")
-            grantPermissions("INSERT", "UPDATE") {
+            grantPermissions("INSERT", "UPDATE", "DELETE") {
                 on("KONTROL_DB_VERSIONING") {
                 }
-                permissions("DELETE")
                 objectType(DbObjectType.TABLE)
                 to("FRED")
             }
@@ -45,9 +44,7 @@ internal class CreateARoleAndGrantSomePermissionsTest {
             author("ben")
         },
         forward = changes {
-            dropRole {
-                roleName("FRED")
-            }
+            dropRole("FRED")
         },
         rollback = emptyList(),
     )

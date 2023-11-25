@@ -16,28 +16,29 @@ data class GrantPermissions(
 ) : ModelChange {
 
     @KontrolDbDslMarker
-    data class GrantPermissionBuilder(
-        private val grantees: MutableSet<DbIdentifier> = mutableSetOf(),
-        private val permissions: MutableSet<String> = mutableSetOf(),
-        private var targetObject: SchemaObject? = null,
-        private var targetObjectType: String = DbObjectType.TABLE.name,
+    class GrantPermissionBuilder(
+        permissions: Set<String>,
     ) : Builder<GrantPermissionBuilder, GrantPermissions> {
 
+        private var grantPermissions = GrantPermissions(
+            grantees = emptySet(),
+            permissions = permissions,
+            targetObject = SchemaObject(name = DbIdentifier("")),
+            targetObjectType = DbObjectType.TABLE.name,
+        )
         fun to(vararg grantees: String) = apply {
-            this.grantees.addAll(grantees.map(::DbIdentifier))
-        }
-
-        fun permissions(permission: String, vararg permissions: String) = apply {
-            this.permissions.addAll(arrayListOf(permission, *permissions))
+            grantPermissions = grantPermissions.copy(grantees = grantees.map(::DbIdentifier).toSet())
         }
 
         fun on(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
-            this.targetObject = (this.targetObject?.let(::SchemaObjectBuilder) ?: SchemaObjectBuilder())
-                .apply { name?.let(::name) }.apply(block).build()
+            grantPermissions = grantPermissions.copy(
+                targetObject = grantPermissions.targetObject.let(::SchemaObjectBuilder)
+                    .apply { name?.let(::name) }.apply(block).build(),
+            )
         }
 
         fun objectType(objectType: String) = apply {
-            this.targetObjectType = objectType
+            grantPermissions = grantPermissions.copy(targetObjectType = objectType)
         }
 
         fun objectType(objectType: DbObjectType) = apply {
@@ -45,17 +46,11 @@ data class GrantPermissions(
         }
 
         override fun build(): GrantPermissions {
-            return GrantPermissions(
-                grantees = grantees.apply { require(isNotEmpty()) },
-                permissions = permissions.apply { require(isNotEmpty()) },
-                targetObject = requireNotNull(targetObject),
-                targetObjectType = targetObjectType,
-            )
+            return grantPermissions
         }
     }
 }
 
 fun ModelChangesBuilder.grantPermissions(permission: String, vararg permissions: String, lambda: GrantPermissions.GrantPermissionBuilder.() -> Unit): GrantPermissions =
-    GrantPermissions.GrantPermissionBuilder()
-        .permissions(permission, *permissions)
+    GrantPermissions.GrantPermissionBuilder(arrayListOf(permission, *permissions).toSet())
         .apply(lambda).build().apply(changes::add)

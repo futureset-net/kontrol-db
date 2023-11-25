@@ -30,22 +30,26 @@ data class TargetSettings(
     override val defaultCatalog: DbIdentifier? = null,
     override val versionControlTable: Table,
 
-) : ITargetSettings {
-    fun builder() = TargetSettingsBuilder(this)
-}
+) : ITargetSettings
 
 class TargetSettingsBuilder(
 
     private var targetSettings: TargetSettings = TargetSettings(
         jdbcUrl = "jdbc:hsqldb:mem:test",
         username = "sa",
-        versionControlTable = Table(schemaObject = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)), tablePersistence = TablePersistence.NORMAL),
+        versionControlTable = Table(
+            schemaObject = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)),
+            tablePersistence = TablePersistence.NORMAL,
+        ),
     ),
 
 ) : Builder<TargetSettingsBuilder, TargetSettings> {
     fun versionControlTable(block: SchemaObjectBuilder.() -> Unit) = apply {
         targetSettings = targetSettings.copy(
-            versionControlTable = Table(SchemaObjectBuilder(targetSettings.versionControlTable.schemaObject).apply(block).build(), TablePersistence.NORMAL),
+            versionControlTable = Table(
+                SchemaObjectBuilder(targetSettings.versionControlTable.schemaObject).apply(block).build(),
+                TablePersistence.NORMAL,
+            ),
         )
     }
 
