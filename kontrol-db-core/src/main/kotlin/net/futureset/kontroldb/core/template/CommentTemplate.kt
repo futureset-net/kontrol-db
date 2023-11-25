@@ -15,15 +15,15 @@ class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<Comment>(db, Temp
     }
 
     override fun convertToSingleStatement(change: Comment): String {
-        return if (change.text.count { it == '\n' } > 0) {
-            val lines = change.text.split("\n")
+        val text = change.text.trimEnd()
+        return if (text.count { it == '\n' } > 0) {
+            val lines = text.split("\n")
             val maxLineLength = lines.maxOfOrNull { it.length } ?: 0
-            change.text.split("\n")
-                .joinToString(
-                    prefix = "/" + "*".repeat(maxLineLength + 1) + "\n* ",
-                    separator = "\n* ",
-                    postfix = "\n" + "*".repeat(maxLineLength + 1) + "/",
-                )
+            lines.joinToString(
+                prefix = "/" + "*".repeat(maxLineLength + 1) + "\n* ",
+                separator = "\n* ",
+                postfix = "\n" + "*".repeat(maxLineLength + 1) + "/",
+            )
         } else {
             change.text.split("\n").joinToString(prefix = "-- ", separator = "\n-- ")
         }
