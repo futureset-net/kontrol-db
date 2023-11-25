@@ -27,7 +27,7 @@ abstract class Refactoring(
     }
 
     open fun checkSum(resourceResolver: ResourceResolver): String {
-        return forward.map { it.checksum(resourceResolver) }.sum().absoluteValue.toString(16)
+        return forward.sumOf { it.checksum(resourceResolver) }.absoluteValue.toString(16)
     }
 
     companion object {

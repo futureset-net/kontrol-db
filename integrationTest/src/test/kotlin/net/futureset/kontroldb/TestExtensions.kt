@@ -6,6 +6,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
 import net.futureset.kontroldb.refactoring.AppliedRefactoring
 import net.futureset.kontroldb.refactoring.Refactoring
+import org.koin.core.definition.KoinDefinition
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.DefinitionOptions
+import org.koin.core.module.dsl.new
+import org.koin.core.module.dsl.onOptions
+import org.koin.dsl.bind
 import org.slf4j.LoggerFactory
 import java.nio.file.Files
 import java.nio.file.Path
@@ -76,3 +82,13 @@ fun capturingLogEvents(lambda: () -> Unit): List<ILoggingEvent> {
     }
     return listAppender.list
 }
+
+inline fun <reified R : Refactoring> Module.refactoring(
+    crossinline constructor: () -> R,
+    noinline options: DefinitionOptions<R>? = null,
+): KoinDefinition<R> = single { new(constructor) }.onOptions(options).also { it.bind<Refactoring>() }
+
+inline fun <reified R : Refactoring, reified T1> Module.refactoring(
+    crossinline constructor: (T1) -> R,
+    noinline options: DefinitionOptions<R>? = null,
+): KoinDefinition<R> = single { new(constructor) }.onOptions(options).also { it.bind<Refactoring>() }

@@ -85,6 +85,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
         return when {
             parameterContext?.parameter?.type == ConnectionHolder::class.java -> return true
             parameterContext?.parameter?.type == String::class.java && parameterContext.isAnnotated(DialectName::class.java) -> return true
+            parameterContext?.parameter?.type == KontrolDbConfig::class.java -> return true
             else -> false
         }
     }
@@ -93,6 +94,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
         return when (parameterContext?.parameter?.type) {
             ConnectionHolder::class.java -> connectionHolder
             String::class.java -> dialect
+            KontrolDbConfig::class.java -> config
             else -> throw UnsupportedOperationException("Cannot resolve parameter")
         }
     }

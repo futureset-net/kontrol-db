@@ -11,12 +11,12 @@ data class CreateIndex(
     val columnReferences: List<DbIdentifier>,
     val clustered: Boolean,
     val unique: Boolean,
-    var indexName: DbIdentifier? = null,
+    val indexName: DbIdentifier? = null,
     val tablespace: Tablespace? = null,
 ) : ModelChange {
 
     @KontrolDbDslMarker
-    data class CreateIndexBuilder(
+    class CreateIndexBuilder(
         private var indexName: DbIdentifier? = null,
         private var tablespace: String? = null,
         private var clustered: Boolean = false,
@@ -24,9 +24,6 @@ data class CreateIndex(
         private val columns: MutableList<DbIdentifier> = mutableListOf(),
     ) : TableBuilder<CreateIndexBuilder, CreateIndex> {
         override lateinit var table: Table
-        fun indexName(indexName: String) = apply {
-            this.indexName = DbIdentifier(indexName)
-        }
 
         fun tablespace(tablespace: String) = apply {
             this.tablespace = tablespace
@@ -57,4 +54,4 @@ fun ModelChangesBuilder.createIndex(
     indexName: String,
     lambda: CreateIndex.CreateIndexBuilder.() -> Unit,
 ): CreateIndex =
-    CreateIndex.CreateIndexBuilder().indexName(indexName).apply(lambda).build().apply(changes::add)
+    CreateIndex.CreateIndexBuilder(indexName = DbIdentifier(indexName)).apply(lambda).build().apply(changes::add)

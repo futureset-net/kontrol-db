@@ -14,14 +14,13 @@ import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 internal class DropIfExistsTest {
 
-    class CreateACustomerIndexAndDropEverything : Refactoring(
+    class CreateACustomerIndexAndDropEverything(schemaName: String) : Refactoring(
         executionOrder {
             author("ben")
             ymd(2023, 10, 1)
@@ -43,9 +42,15 @@ internal class DropIfExistsTest {
                 startWith(3)
                 columnType(StandardColumnTypes.INT_64)
                 cycle()
+                otherSchema {
+                    schema(schemaName)
+                }
             }
             dropIndexIfExists("IX_LASTNAME") {
                 table("CUSTOMER")
+                index {
+                    schema(schemaName)
+                }
             }
             dropSequenceIfExists("MY_SEQUENCE")
             dropViewIfExists("MY_VIEW")
@@ -56,13 +61,20 @@ internal class DropIfExistsTest {
     )
 
     @Test
-    fun `Can drop a table and index if they exist`() {
+    fun `Can drop a table and index if they exist`(@DialectName dialectName: String) {
         dsl {
             loadConfig("test-config.yml")
             changeModules(
                 module {
-                    singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    singleOf(::CreateACustomerIndexAndDropEverything).bind(Refactoring::class)
+                    refactoring(::CreateCustomerTable)
+                    single {
+                        CreateACustomerIndexAndDropEverything(
+                            when (dialectName) {
+                                "sqlserver" -> "dbo"
+                                else -> "PUBLIC"
+                            },
+                        )
+                    }.bind(Refactoring::class)
                 },
             )
         }.use {

@@ -62,13 +62,13 @@ internal class CreateViewTest {
     }
 
     @Test
-    fun `Can apply a view from a file and select from it, not specifying CREATE or ALTER`() {
+    fun `Can apply a view from a file and select from it, not specifying CREATE or ALTER`(@DialectName dialectName: String) {
         dsl {
             loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    singleOf(::CreateAViewFromClasspathResourceWithoutWholeDefinition).bind(Refactoring::class)
+                    single { CreateAViewFromClasspathResourceWithoutWholeDefinition(if (dialectName == "sqlserver") "dbo" else "PUBLIC") }.bind(Refactoring::class)
                 },
             )
         }.use {
@@ -99,13 +99,16 @@ internal class CreateViewTest {
         executeMode = ExecuteMode.ON_CHANGE,
     )
 
-    class CreateAViewFromClasspathResourceWithoutWholeDefinition : Refactoring(
+    class CreateAViewFromClasspathResourceWithoutWholeDefinition(schemaName: String) : Refactoring(
         executionOrder {
             ymd(2023, 11, 30)
             author("ben")
         },
         forward = changes {
             createView("NEW_CUSTOMER") {
+                view {
+                    schema(schemaName)
+                }
                 body(
                     Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerView.sql")!!.readText().replace("CREATE ", ""),
                 )

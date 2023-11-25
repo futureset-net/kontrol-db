@@ -14,7 +14,7 @@ class CreateSequenceTemplate(db: EffectiveSettings) : DbAwareTemplate<CreateSequ
 
     override fun convertToSingleStatement(change: CreateSequence): String =
         change.run {
-            """CREATE SEQUENCE ${schemaObject.toSql()}
+            """CREATE SEQUENCE ${schemaObject.name.toSql()}
                 ${columnType?.let { "AS ${it.toSql()}" }.orEmpty()}
                 START WITH $startWith
                 ${incrementBy.takeUnless { it == 1L }?.let { "INCREMENT BY $it" }.orEmpty()}
