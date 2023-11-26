@@ -1,7 +1,7 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin.get()
+    kotlin("jvm")
     alias(libs.plugins.spotless)
     id("jacoco-report-aggregation")
 }
@@ -26,24 +26,10 @@ extensions.configure<SpotlessExtension> {
         target("**/src/*/kotlin/**/*.kt", "**/*.gradle.kts")
     }
 }
-allprojects {
-    tasks.withType<GenerateModuleMetadata> {
-        enabled = false
-    }
-}
+
 subprojects {
     apply(plugin = "jacoco")
     apply(plugin = "kotlin")
-
-    extensions.configure<JacocoPluginExtension> {
-        toolVersion = rootProject.libs.versions.jacoco.get()
-    }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_20
-        targetCompatibility = JavaVersion.VERSION_20
-        withSourcesJar()
-    }
 
     tasks.jar {
         manifest {
@@ -53,16 +39,6 @@ subprojects {
                 "Implementation-Vendor" to "futureset.net",
             )
         }
-    }
-
-    sourceSets {
-        getByName("main") {
-            kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
-        }
-    }
-
-    tasks.withType<PublishToMavenRepository>().configureEach {
-        dependsOn("assemble")
     }
 
     testing {
@@ -117,9 +93,6 @@ subprojects {
 }
 
 val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"))
-dependencies {
-    databasesubprojects.forEach(::jacocoAggregation)
-}
 
 reporting {
     reports {

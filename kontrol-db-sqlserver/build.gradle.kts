@@ -5,26 +5,15 @@ import com.bmuschko.gradle.docker.tasks.container.DockerRemoveContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
 import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
 import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
-import java.net.URI
 
 plugins {
-    alias(libs.plugins.ksp)
+    id("kontrol-db.database.setup")
     alias(libs.plugins.docker)
-    `maven-publish`
 }
 
 description = "sqlserver extensions for kontrol-db"
 
-sourceSets {
-    getByName("main") {
-        kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
-    }
-}
-
 dependencies {
-    ksp(libs.koin.compiler)
-
-    api(project(":kontrol-db-core"))
     api(libs.sqlserver)
 }
 
@@ -98,78 +87,14 @@ val stopServer by tasks.registering(DockerStopContainer::class) {
     }
 }
 
-testing {
-    suites {
-        register<JvmTestSuite>("integrationTest") {
-            sources {
-                kotlin {
-                    srcDir(project.layout.buildDirectory.dir("generated/integrationTest/kotlin"))
-                }
-            }
-            useJUnitJupiter(rootProject.libs.versions.junit)
-            testType = TestSuiteType.INTEGRATION_TEST
-            dependencies {
-                implementation(rootProject.libs.junit.mockito)
-                implementation(rootProject.libs.assertj)
-                implementation(project(":integrationTest"))
-                implementation(project(":kontrol-db-core"))
-                implementation(project())
-            }
-            targets {
-                all {
-                    testTask.configure {
-                        dependsOn(logContainer)
-                        finalizedBy(stopServer, "jacocoIntegrationTestReport")
-                        if (inCi) {
-                            systemProperty("shareddir", "/home/runner/work")
-                        }
-                    }
-                }
-            }
-        }
+tasks.named<Test>("integrationTest") {
+    if (inCi) {
+        systemProperty("shareddir", "/home/runner/work")
     }
+    dependsOn(logContainer)
+    finalizedBy(stopServer, "jacocoIntegrationTestReport")
 }
 
 tasks.named("clean") {
     dependsOn(stopServer)
-}
-
-val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
-    group = "verification"
-    dependsOn("integrationTest")
-    this.sourceSets(project.sourceSets["main"], project(":kontrol-db-core").sourceSets["main"])
-    executionData(tasks.getByPath("integrationTest"))
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenPublication") {
-            from(components["java"])
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = URI.create("https://maven.pkg.github.com/futureset/kontrol-db")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-}
-
-tasks.check {
-    dependsOn("integrationTest")
-}
-
-val copySharedTests by tasks.registering(Copy::class) {
-    from(project(":integrationTest").layout.projectDirectory.dir("src/test/kotlin"))
-    into(project.layout.buildDirectory.dir("generated/integrationTest/kotlin"))
-}
-
-tasks.whenTaskAdded {
-    if (name == "kspIntegrationTestKotlin") {
-        dependsOn(copySharedTests)
-    }
 }
