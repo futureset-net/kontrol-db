@@ -40,6 +40,8 @@ koin-annotations = { group = "io.insert-koin", name = "koin-annotations", versio
 koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref = "koin" }
 koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-compiler" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-jvm-plugin = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+ksp-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-plugin" }
 sqlserver = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "sqlserver" }
 
 [bundles]
