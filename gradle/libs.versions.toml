@@ -23,6 +23,7 @@ asciidoc = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoc-plugin"
 docker = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-plugin" }
 
 [libraries]
+docker-remote-plugin = {group="com.bmuschko.docker-remote-api", name="com.bmuschko.docker-remote-api.gradle.plugin",version.ref = "docker-plugin"}
 logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
 mockito-bom = { group = "org.mockito", name = "mockito-bom", version.ref = "mockito" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
