@@ -23,12 +23,12 @@ jobs:
     env:
       CI: true
     services:
-      mssql:
+      kontrol-db-sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
         volumes:
           - /home/runner/work:/var/outputdir
         options: >-
-          --name mssql
+          --name kontrol-db-sqlserver
         ports:
           - 6283:1433
         env:
