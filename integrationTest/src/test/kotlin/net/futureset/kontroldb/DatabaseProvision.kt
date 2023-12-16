@@ -40,6 +40,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
     private fun connection(): Connection {
         return when (dialect) {
             "hsqldb" -> DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "sa", "")
+            "postgres" -> DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "SA", "Th1sIsW0rking")
             "sqlserver" -> DriverManager.getConnection(
                 "jdbc:sqlserver://localhost:6283;trustServerCertificate=true",
                 "SA",
@@ -63,6 +64,11 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
                         END
          """,
             )
+            "postgres" -> executeSql(
+                "DROP DATABASE \"TEST_DB\"",
+                "DROP TABLESPACE \"MY_INDEX_TS\"",
+                "DROP USER \"deploymentUser\"",
+            )
             "hsqldb" -> executeSql("SHUTDOWN")
             else -> println("No way to provision $dialect")
         }
@@ -76,7 +82,15 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
                 "CREATE LOGIN [deploymentUser] WITH PASSWORD = 'APasswordForTesting123', DEFAULT_DATABASE=[TEST_DB]",
                 "ALTER AUTHORIZATION ON DATABASE::[TEST_DB] TO [deploymentUser]",
             )
-
+            "postgres" -> executeSql(
+                """CREATE DATABASE "TEST_DB"""",
+                """CREATE USER "deploymentUser" WITH PASSWORD 'sfnisdofskonm3'""",
+                """CREATE TABLESPACE "MY_INDEX_TS" OWNER "deploymentUser" LOCATION '/var/lib/postgresql/data'""",
+                """GRANT ALL PRIVILEGES on database "TEST_DB" to "deploymentUser"""",
+                """ALTER DATABASE "TEST_DB" OWNER TO "deploymentUser"""",
+                """ALTER USER "deploymentUser" CREATEROLE""",
+//                """GRANT ALL ON SCHEMA "public" TO "deploymentUser"""",
+            )
             else -> println("No DB provision log for $dialect")
         }
     }

@@ -3,14 +3,16 @@ package net.futureset.kontroldb
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.sql.Connection
+import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.sql.Statement
 
 val sqlLogger: Logger = LoggerFactory.getLogger("SQL")
 fun Connection.executeSql(sql: String, resultSetHandler: ((ResultSet) -> Unit)? = null) {
     var success = false
     try {
-        createStatement().use { stmt ->
-            if (stmt.execute(sql)) {
+        createStatementAndExecute(sql) { stmt, result ->
+            if (result) {
                 sqlLogger.info("connection <$this> \n$sql")
                 if (stmt.updateCount >= 0) {
                     sqlLogger.info("connection <$this> Affected ${stmt.updateCount} rows")
@@ -29,7 +31,28 @@ fun Connection.executeSql(sql: String, resultSetHandler: ((ResultSet) -> Unit)? 
         success = true
     } finally {
         if (!success) {
-            sqlLogger.error("connection <$this> Failed\n$sql")
+            sqlLogger.error("connection <$this> Failed\n    $sql".trimIndent())
+        }
+    }
+}
+
+private fun Connection.createStatementAndExecute(sql: String, lambda: (Statement, Boolean) -> Unit) {
+    if ("\\{[?= ]*call ".toRegex().containsMatchIn(sql)) {
+        prepareCall(sql)
+    } else {
+        if (sql.contains("#")) {
+            createStatement()
+        } else {
+            prepareStatement(sql)
+        }.use {
+            lambda(
+                it,
+                if (it is PreparedStatement) {
+                    it.execute()
+                } else {
+                    it.execute(sql)
+                },
+            )
         }
     }
 }

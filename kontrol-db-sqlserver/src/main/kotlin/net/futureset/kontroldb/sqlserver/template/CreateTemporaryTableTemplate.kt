@@ -6,6 +6,7 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.template.DbAwareTemplate
 import net.futureset.kontroldb.template.SqlTemplate
 import net.futureset.kontroldb.template.TemplatePriority
+import net.futureset.kontroldb.template.trimBlankLines
 import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
@@ -26,19 +27,19 @@ class CreateTemporaryTableTemplate(private val db: EffectiveSettings) :
                 if (selectQuery.includeData) {
                     ""
                 } else if (selectQuery.predicate?.isEmpty() != false) {
-                    " WHERE 1=0"
+                    "WHERE 1=0"
                 } else {
                     "AND 1=0"
                 }
         } else {
             """
             CREATE TABLE ${change.table.toSql()} (
-            ${forEach(colNames, separateBy = ",\n    ")}
+                ${forEach(colNames, separateBy = ",\n                ")}
             ${
                 change.primaryKey?.takeIf { change.table.tablePersistence == TablePersistence.NORMAL }
                     ?.let { "," + otherTemplate(it) }.orEmpty()} 
             )
-            """.trimIndent()
+            """.trimIndent().trimBlankLines()
         }
     }
 }

@@ -63,6 +63,8 @@ val logContainer by tasks.registering(DockerLogsContainer::class) {
                 .contains(dockerExtension.waitForStartupLogMessage.get())
         ) {
             throw StopActionException("Started OK")
+        } else {
+            Thread.sleep(10)
         }
     }
     onError {
@@ -94,6 +96,7 @@ tasks.named("clean") {
 }
 
 tasks.register("showgithubcontainerconfig") {
+    group = "docker"
     description = "prints github container service to console"
 
     doLast {

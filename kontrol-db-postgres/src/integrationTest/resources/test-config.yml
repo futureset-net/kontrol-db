@@ -1,0 +1,11 @@
+dialect: postgres
+modules:
+  - 'net.futureset.kontroldb.postgres.PostgresModule'
+  - 'net.futureset.kontroldb.postgres.TestModule'
+targetSettings:
+  jdbcUrl : 'jdbc:postgresql://localhost:5432/TEST_DB'
+  username : deploymentUser
+  password : sfnisdofskonm3
+#  defaultCatalog: TEST_DB
+#  defaultSchema: TEST_DB
+  

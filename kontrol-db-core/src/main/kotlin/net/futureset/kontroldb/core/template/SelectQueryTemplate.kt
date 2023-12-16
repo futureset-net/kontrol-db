@@ -17,8 +17,8 @@ class SelectQueryTemplate(db: EffectiveSettings) :
 
     override fun convertToSingleStatement(change: SelectQuery): String {
         return """
-SELECT
-    ${forEach(change.columns, separateBy = ",\n    ")}
+    SELECT
+        ${forEach(change.columns, separateBy = ",\n        ")}
     ${change.table.toSql {"FROM $it"}}
     ${change.predicate.toSql {"WHERE $it"}}
         """.trimIndent()

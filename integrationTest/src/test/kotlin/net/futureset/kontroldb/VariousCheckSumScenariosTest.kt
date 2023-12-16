@@ -50,13 +50,19 @@ internal class VariousCheckSumScenariosTest {
                 )
 
             result.applySqlDirectly.withConnection {
-                it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${IncrementCustomerId::class.qualifiedName}'")
+                it.executeSql(
+                    result.effectiveSettings
+                        .run { "UPDATE ${quote(DEFAULT_VERSION_CONTROL_TABLE)} SET ${quote("CHECK_SUM")}='INVALID' WHERE ${quote("ID")}='${IncrementCustomerId::class.qualifiedName}'" },
+                )
             }
 
             assertThat(result.applySql()).isGreaterThan(1)
             assertThat(
                 result.applySqlDirectly.withConnection { conn ->
-                    conn.executeQuery("SELECT EXECUTION_COUNT FROM $DEFAULT_VERSION_CONTROL_TABLE WHERE ID='${IncrementCustomerId::class.qualifiedName}'") {
+                    conn.executeQuery(
+                        result.effectiveSettings
+                            .run { "SELECT ${quote("EXECUTION_COUNT")} FROM ${quote(DEFAULT_VERSION_CONTROL_TABLE)} WHERE ${quote("ID")}='${IncrementCustomerId::class.qualifiedName}'" },
+                    ) {
                         it.getInt(1)
                     }.first()
                 },
@@ -78,7 +84,10 @@ internal class VariousCheckSumScenariosTest {
             assertThat(result.getAppliedRefactorings()).describedAs("changes applied").hasSizeGreaterThan(2)
 
             result.applySqlDirectly.withConnection {
-                it.executeSql("UPDATE $DEFAULT_VERSION_CONTROL_TABLE SET CHECK_SUM='INVALID' WHERE ID='${CreateProductTable::class.qualifiedName}'")
+                it.executeSql(
+                    result.effectiveSettings
+                        .run { "UPDATE ${quote(DEFAULT_VERSION_CONTROL_TABLE)} SET ${quote("CHECK_SUM")}='INVALID' WHERE ${quote("ID")}='${CreateProductTable::class.qualifiedName}'" },
+                )
             }
 
             assertThatThrownBy(result::applySql).isInstanceOf(IllegalStateException::class.java)
@@ -112,7 +121,7 @@ internal class VariousCheckSumScenariosTest {
         executeMode = ALWAYS,
         forward = changes {
             updateRowsOf("PRODUCT") {
-                set("CURRENT_INVENTORY_COUNT" to expression("CURRENT_INVENTORY_COUNT+1"))
+                set("CURRENT_INVENTORY_COUNT" to expression("\"CURRENT_INVENTORY_COUNT\"+1"))
                 tableWithAlias("PRODUCT", "B")
                 where {
                     column("ID") eq 1

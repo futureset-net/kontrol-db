@@ -15,7 +15,7 @@ class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<Comment>(db, Temp
     }
 
     override fun convertToSingleStatement(change: Comment): String {
-        val text = change.text.trimEnd()
+        val text = change.text.trim()
         return if (text.count { it == '\n' } > 0) {
             val lines = text.split("\n")
             val maxLineLength = lines.maxOfOrNull { it.length } ?: 0

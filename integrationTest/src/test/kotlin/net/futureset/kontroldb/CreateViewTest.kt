@@ -30,7 +30,7 @@ internal class CreateViewTest {
         }.use {
             assertThat(it.applySql()).describedAs("Create view").isGreaterThanOrEqualTo(10)
             it.applySqlDirectly.withConnection { conn ->
-                conn.executeQuery("SELECT * FROM MY_VIEW") { rs ->
+                conn.executeQuery(it.effectiveSettings.run { "SELECT * FROM ${quote("MY_VIEW")}" }) { rs ->
                     while (rs.next()) {
                         println(rs.getString(1))
                     }
@@ -52,7 +52,7 @@ internal class CreateViewTest {
         }.use {
             assertThat(it.applySql()).describedAs("create view").isGreaterThanOrEqualTo(11)
             it.applySqlDirectly.withConnection { conn ->
-                conn.executeQuery("SELECT * FROM MY_VIEW") { rs ->
+                conn.executeQuery(it.effectiveSettings.run { "SELECT * FROM ${quote("MY_VIEW")}" }) { rs ->
                     while (rs.next()) {
                         println(rs.getString(1))
                     }
@@ -74,7 +74,7 @@ internal class CreateViewTest {
         }.use {
             assertThat(it.applySql()).describedAs("create view").isGreaterThanOrEqualTo(10)
             it.applySqlDirectly.withConnection { conn ->
-                conn.executeQuery("SELECT * FROM MY_VIEW") { rs ->
+                conn.executeQuery(it.effectiveSettings.run { "SELECT * FROM ${quote("MY_VIEW")}" }) { rs ->
                     while (rs.next()) {
                         println(rs.getString(1))
                     }

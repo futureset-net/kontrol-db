@@ -15,6 +15,7 @@ logback = "1.4.14"
 asciidoc-plugin = "3.3.2"
 sqlserver = "12.5.0.jre11-preview"
 docker-plugin = "9.3.7"
+postgres = "42.7.0"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
@@ -43,6 +44,7 @@ koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-jvm-plugin = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
 ksp-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-plugin" }
+postgres = { group = "org.postgresql", name = "postgresql", version.ref = "postgres" }
 sqlserver = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "sqlserver" }
 
 [bundles]

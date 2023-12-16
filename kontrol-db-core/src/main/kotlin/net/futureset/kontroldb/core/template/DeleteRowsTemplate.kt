@@ -16,7 +16,7 @@ class DeleteRowsTemplate(db: EffectiveSettings) : DbAwareTemplate<DeleteRows>(db
 
     override fun convertToSingleStatement(change: DeleteRows): String {
         return """
-        DELETE FROM ${change.table.toSql()}        
+        DELETE FROM ${change.table.toSql()}
         ${change.predicate.toSql {"WHERE $it"}}
         """.trimIndent()
     }

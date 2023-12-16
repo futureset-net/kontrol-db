@@ -45,7 +45,7 @@ class FailedMigrationScenariosTest {
                 }
                 if (versionControlTableExists) {
                     val stage = engine.applySqlDirectly.withConnection {
-                        it.executeQuery("SELECT MAX(STAGE_NUM) FROM TEST") { rs ->
+                        it.executeQuery("SELECT MAX(${engine.effectiveSettings.quote("STAGE_NUM")}) FROM ${engine.effectiveSettings.quote("TEST")}") { rs ->
                             rs.getInt(1)
                         }.first()
                     }
