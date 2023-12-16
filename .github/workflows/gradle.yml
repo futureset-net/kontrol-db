@@ -23,17 +23,28 @@ jobs:
     env:
       CI: true
     services:
-      mssql:
+      kontrol-db-sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
         volumes:
           - /home/runner/work:/var/outputdir
         options: >-
-          --name mssql
+          --name kontrol-db-sqlserver
         ports:
           - 6283:1433
         env:
           ACCEPT_EULA: 'Y'
           MSSQL_SA_PASSWORD: 'Th1sIsW0rking'
+      kontrol-db-postgres:
+        image: postgres:latest
+        volumes:
+          - /home/runner/work:/var/outputdir
+        options: >-
+          --name kontrol-db-postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: 'SA'
+          POSTGRES_PASSWORD: 'Th1sIsW0rking'
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 20

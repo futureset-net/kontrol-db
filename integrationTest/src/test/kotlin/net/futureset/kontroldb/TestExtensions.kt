@@ -21,17 +21,18 @@ import kotlin.io.path.readLines
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
-fun String.executeAsShell() = run {
+fun String.executeAsShell(): Int = run {
     println(this)
     ProcessBuilder()
         .redirectErrorStream(true).apply {
             if (OperatingSystem.current() == OperatingSystem.WINDOWS) {
-                command("cmd.exe", "/c")
+                command("cmd.exe", "/c", this@executeAsShell)
             } else {
                 command("/usr/bin/env", "bash", "-c", this@executeAsShell)
             }
         }
-        .start().also {
+        .start()
+        .also {
             thread(start = true, isDaemon = true) {
                 it.inputStream.reader().useLines { seq ->
                     seq.forEach(::println)

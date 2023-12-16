@@ -31,7 +31,7 @@ internal class DropIfExistsTest {
                 table("CUSTOMER")
             }
             createView("MY_VIEW") {
-                body("""CREATE VIEW MY_VIEW AS SELECT LASTNAME FROM CUSTOMER""")
+                body("CREATE VIEW \"MY_VIEW\" AS SELECT \"LASTNAME\" FROM \"CUSTOMER\"")
                 wholeDefinition(true)
             }
             createSequence("MY_SEQUENCE") {
@@ -71,6 +71,7 @@ internal class DropIfExistsTest {
                         CreateACustomerIndexAndDropEverything(
                             when (dialectName) {
                                 "sqlserver" -> "dbo"
+                                "postgres" -> "public"
                                 else -> "PUBLIC"
                             },
                         )

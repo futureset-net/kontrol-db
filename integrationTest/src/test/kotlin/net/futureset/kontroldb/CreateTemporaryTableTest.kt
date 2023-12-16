@@ -93,7 +93,7 @@ internal class CreateTemporaryTableTest {
                 asGlobalTemporaryTable()
                 column("TEST_COLUMN", Varchar(256))
                 selectFrom("KONTROL_DB_VERSIONING") {
-                    column("TEST_COLUMN", "ID")
+                    column("TEST_COLUMN", "\"ID\"")
                 }
             }
             exportData {

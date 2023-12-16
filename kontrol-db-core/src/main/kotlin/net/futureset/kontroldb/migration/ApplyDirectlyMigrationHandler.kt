@@ -34,11 +34,12 @@ class ApplyDirectlyMigrationHandler(val effectiveSettings: EffectiveSettings) : 
 
     override fun executeModelChange(change: ModelChange, rawChanges: List<String>) {
         withConnection {
-            rawChanges
-                .toList()
-                .forEach { sql ->
-                    it.executeSql(sql, if (change is SupportsResultSetHandler) change.resultSetHandler(effectiveSettings) else consoleResultSetHandler)
-                }
+            rawChanges.forEach { sql ->
+                it.executeSql(
+                    sql,
+                    if (change is SupportsResultSetHandler) change.resultSetHandler(effectiveSettings) else consoleResultSetHandler,
+                )
+            }
         }
     }
 
@@ -60,8 +61,10 @@ class ApplyDirectlyMigrationHandler(val effectiveSettings: EffectiveSettings) : 
     private fun makeConnection(): Connection {
         return DriverManager.getConnection(
             effectiveSettings.jdbcUrl,
-            effectiveSettings.username,
-            effectiveSettings.password,
+            effectiveSettings.connectionProps().apply {
+                effectiveSettings.username?.let { put("user", it) }
+                effectiveSettings.password?.let { put("password", it) }
+            },
         )
     }
 

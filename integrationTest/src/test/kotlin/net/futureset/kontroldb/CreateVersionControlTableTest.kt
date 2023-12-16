@@ -70,9 +70,11 @@ internal class CreateVersionControlTableTest {
             assertThat(script).exists()
             val scriptText = script.readText()
             println(scriptText)
-            val openQuote = result.effectiveSettings.openQuote
-            val closeQuote = result.effectiveSettings.closeQuote
-            assertThat(scriptText).contains("""CREATE TABLE ${openQuote}PUBLIC$closeQuote.${openQuote}PUBLIC$closeQuote.${openQuote}HELLO$closeQuote""")
+            assertThat(scriptText).contains(
+                result.effectiveSettings.run {
+                    """CREATE TABLE ${if (supportsCatalogs) quote("PUBLIC") + "." else ""}${quote("PUBLIC")}.${quote("HELLO")}"""
+                },
+            )
         }
     }
 }

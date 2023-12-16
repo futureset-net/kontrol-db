@@ -18,7 +18,7 @@ class IncrementCustomerId : Refactoring(
     executeMode = ExecuteMode.ON_CHANGE,
     forward = changes {
         updateRowsOf("CUSTOMER") {
-            set("CUST_ID" to expression("CUST_ID+1"))
+            set("CUST_ID" to expression("\"CUST_ID\"+1"))
             where {
                 DbIdentifier("FIRSTNAME") eq value("ben")
             }
@@ -26,7 +26,7 @@ class IncrementCustomerId : Refactoring(
     },
     rollback = changes {
         updateRowsOf("CUSTOMER") {
-            set("CUST_ID" to expression("CUST_ID-1"))
+            set("CUST_ID" to expression("\"CUST_ID\"-1"))
             where {
                 DbIdentifier("FIRSTNAME") eq value("ben")
             }

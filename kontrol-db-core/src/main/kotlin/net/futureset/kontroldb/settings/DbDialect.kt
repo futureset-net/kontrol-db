@@ -7,6 +7,7 @@ import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 val SQL_TIMESTAMP_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 val SQL_DATE_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -32,6 +33,9 @@ interface DbDialect : Comparable<DbDialect> {
     fun literalDate(date: LocalDate): String {
         return "'" + SQL_DATE_FORMAT.format(date) + "'"
     }
+
+    fun connectionProps(): Properties = Properties()
+    fun quote(str: String) = openQuote + str + closeQuote
 
     override fun compareTo(other: DbDialect): Int {
         return compareBy(DbDialect::databaseName).thenBy(DbDialect::order).compare(other, this)

@@ -9,6 +9,7 @@ import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
 import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
 import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
 import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.modelchange.AddPrimaryKey
 import net.futureset.kontroldb.modelchange.ApplyDsvToTable
@@ -22,11 +23,14 @@ import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.modelchange.ValuesBuilder
 import net.futureset.kontroldb.settings.EffectiveSettings
+import net.futureset.kontroldb.settings.SQL_DATE_FORMAT
+import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
 import net.futureset.kontroldb.template.DbAwareTemplate
 import net.futureset.kontroldb.template.SqlTemplate
 import net.futureset.kontroldb.template.TemplatePriority
 import org.koin.core.annotation.Singleton
 import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
@@ -61,7 +65,8 @@ class ApplyDsvToTableTemplate(db: EffectiveSettings) :
                                         value.lowercase() in trueBooleanStrings,
                                     )
                                 }
-                                DATE -> v.value(it.columnName.name, LocalDate.parse(value))
+                                DATE -> v.value(it.columnName.name, LocalDate.parse(value, SQL_DATE_FORMAT))
+                                LOCALDATETIME -> v.value(it.columnName.name, LocalDateTime.parse(value, SQL_TIMESTAMP_FORMAT))
                                 INT_64, INT_32, INT_16 -> v.value(
                                     it.columnName.name,
                                     value.toLong(),

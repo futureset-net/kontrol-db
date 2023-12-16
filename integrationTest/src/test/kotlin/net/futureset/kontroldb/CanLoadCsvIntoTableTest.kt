@@ -188,14 +188,19 @@ internal class CanLoadCsvIntoTableTest {
         }.use { result ->
             result.applySql()
             val customerCount = result.applySqlDirectly.withConnection {
-                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
+                it.executeQuery("SELECT COUNT(*) FROM ${result.effectiveSettings.quote("CUSTOMER")}") { rs ->
                     rs.getInt(1)
                 }.first()
             }
             assertThat(customerCount).isEqualTo(createCount)
             assertThat(
                 result.applySqlDirectly.withConnection {
-                    it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE IS_AN_IDIOT=1") { rs ->
+                    it.executeQuery(
+                        result.effectiveSettings.run {
+                            "SELECT COUNT(*) FROM ${quote("CUSTOMER")} WHERE ${quote("IS_AN_IDIOT")}=$literalTrue"
+                        },
+                    ) { rs ->
+
                         rs.getInt(1)
                     }.first()
                 },
@@ -293,12 +298,12 @@ internal class CanLoadCsvIntoTableTest {
         }.use { result ->
             result.applySql()
             val customerCount = result.applySqlDirectly.withConnection {
-                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER") { rs ->
+                it.executeQuery(result.effectiveSettings.run { "SELECT COUNT(*) FROM ${quote("CUSTOMER")}" }) { rs ->
                     rs.getInt(1)
                 }.first()
             }
             val updateRecordCount = result.applySqlDirectly.withConnection {
-                it.executeQuery("SELECT COUNT(*) FROM CUSTOMER WHERE LASTNAME='RileyChanged'") { rs ->
+                it.executeQuery(result.effectiveSettings.run { "SELECT COUNT(*) FROM ${quote("CUSTOMER")} WHERE ${quote("LASTNAME")}='RileyChanged'" }) { rs ->
                     rs.getInt(1)
                 }.first()
             }

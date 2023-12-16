@@ -28,9 +28,11 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
     private fun startTransaction() {
         if (autoCommit) {
             cachedConnection().autoCommit = false
-            cachedConnection()
             autoCommit = false
-            logger.info("START TRANSACTION")
+        }
+        cachedConnection()
+        if (transactionDepth == 0) {
+            logger.info("START TRANSACTION <connectionId = $connectionId>")
         }
         transactionDepth++
     }
@@ -40,17 +42,18 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
             val currentConnection = connection
             if (currentConnection != null) {
                 if (success) {
-                    logger.info("COMMIT TRANSACTION")
+                    logger.info("COMMIT TRANSACTION <connectionId = $connectionId>")
                     currentConnection.commit()
                     currentConnection.autoCommit = false
                 } else {
-                    logger.info("ROLLBACK TRANSACTION")
+                    logger.info("ROLLBACK TRANSACTION <connectionId = $connectionId>")
                     ignorePossibleSqlError(currentConnection::rollback)
                     close()
                 }
             }
         } else if (transactionDepth < 0) {
-            throw IllegalStateException("endTransaction without startTransaction")
+            transactionDepth = 0
+            logger.warn("endTransaction without startTransaction")
         }
     }
 
@@ -103,7 +106,7 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
     }
 
     class ProtectedConnection(
-        realConnection: Connection,
+        private val realConnection: Connection,
         private val connectionId: Int,
         private val currentAutoCommitState: () -> Boolean,
     ) :

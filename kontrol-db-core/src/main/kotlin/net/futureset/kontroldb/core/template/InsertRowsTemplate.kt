@@ -15,20 +15,18 @@ class InsertRowsTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertRows>(db
     }
 
     override fun convertToSingleStatement(change: InsertRows): String {
-        if (change.fromSelect != null) {
-            return """
-             INSERT INTO ${change.table.toSql()}(
-             ${forEach(change.fromSelect.columns.map { it.columnName })}
-             )      
-             ${otherTemplate(change.fromSelect)} 
+        return if (change.fromSelect != null) {
+            """
+                INSERT INTO ${change.table.toSql()}
+                (${forEach(change.fromSelect.columns.map { it.columnName })})      
+                ${otherTemplate(change.fromSelect)}
             """.trimIndent()
         } else {
-            return """
-            INSERT INTO ${change.table.toSql()}(
-            ${forEach(change.columnValues.first().keys)}
-            )            
-            VALUES
-            ${change.columnValues.joinToString(separator = "),\n(", prefix = "(", postfix = ")") {row -> forEach(row.values) }}
+            """
+                INSERT INTO ${change.table.toSql()}
+                    (${forEach(change.columnValues.first().keys)})            
+                VALUES
+                    ${change.columnValues.joinToString(separator = "),\n                (", prefix = "(", postfix = ")") {row -> forEach(row.values) }}
             """.trimIndent()
         }
     }

@@ -192,7 +192,6 @@ data class KontrolDbEngine(
                                         lines.map {
                                             it.trim() + effectiveSettings.statementSeparator
                                         },
-
                                     )
                                 }
                             }
@@ -204,18 +203,18 @@ data class KontrolDbEngine(
     }
 
     private fun moveCommentTextOntoNextChange(
-        acc: MutableList<Pair<ModelChange, List<String>>>,
-        model: ModelChange,
+        modelToStatementsSoFar: MutableList<Pair<ModelChange, List<String>>>,
+        currentModelChange: ModelChange,
     ): MutableList<Pair<ModelChange, List<String>>> {
-        if (acc.size > 0 && acc.last().first is CommentMarker) {
-            val comment = acc.last()
-            acc.add(
+        val previousStatementIfComment = modelToStatementsSoFar.lastOrNull()?.takeIf { it.first is CommentMarker }
+        if (previousStatementIfComment != null) {
+            modelToStatementsSoFar.add(
                 Pair(
-                    model,
-                    model.lines()
-                        .mapIndexed { index, s ->
-                            if (index == 0) {
-                                comment.second.joinToString(
+                    currentModelChange,
+                    currentModelChange.lines()
+                        .mapIndexed { i, s ->
+                            if (i == 0) {
+                                previousStatementIfComment.second.joinToString(
                                     separator = "\n",
                                     postfix = "\n",
                                 ) + s
@@ -225,11 +224,12 @@ data class KontrolDbEngine(
                         },
                 ),
             )
-            acc[acc.size - 2] = Pair(comment.first, emptyList())
+            modelToStatementsSoFar[modelToStatementsSoFar.size - 2] =
+                Pair(previousStatementIfComment.first, emptyList())
         } else {
-            acc.add(Pair(model, model.lines()))
+            modelToStatementsSoFar.add(Pair(currentModelChange, currentModelChange.lines()))
         }
-        return acc
+        return modelToStatementsSoFar
     }
 
     override fun getAppliedRefactorings(): SortedSet<AppliedRefactoring> {

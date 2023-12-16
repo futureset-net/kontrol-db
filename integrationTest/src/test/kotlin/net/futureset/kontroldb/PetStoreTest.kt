@@ -38,14 +38,29 @@ internal class PetStoreTest {
                 }
                 "sqlserver" -> {
                     val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
-                    println("${destOutputSqlFile.absolutePathString()}")
+                    println(destOutputSqlFile.absolutePathString())
                     Files.createDirectories(destOutputSqlFile.parent)
                     Files.copy(outputSqlFile, destOutputSqlFile, StandardCopyOption.REPLACE_EXISTING)
                     engine.effectiveSettings.run {
                         assertThat(
                             (
-                                "docker exec -i mssql /opt/mssql-tools/bin/sqlcmd " +
+                                "docker exec -i kontrol-db-sqlserver /opt/mssql-tools/bin/sqlcmd " +
                                     "-U $username -P $password -e -H localhost -C -i /var/outputdir/output.sql"
+                                )
+                                .executeAsShell(),
+                        ).describedAs("shell command failed").isZero()
+                    }
+                }
+                "postgres" -> {
+                    val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
+                    println(destOutputSqlFile.absolutePathString())
+                    Files.createDirectories(destOutputSqlFile.parent)
+                    Files.copy(outputSqlFile, destOutputSqlFile, StandardCopyOption.REPLACE_EXISTING)
+                    engine.effectiveSettings.run {
+                        assertThat(
+                            (
+                                "docker exec -e PGPASSWORD=$password -i kontrol-db-postgres psql -v ON_ERROR_STOP=1 -d TEST_DB -a -b -h localhost -p 5432 -U $username " +
+                                    "-f /var/outputdir/output.sql"
                                 )
                                 .executeAsShell(),
                         ).describedAs("shell command failed").isZero()

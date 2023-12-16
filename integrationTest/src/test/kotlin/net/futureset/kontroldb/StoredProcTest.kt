@@ -66,7 +66,7 @@ internal class StoredProcTest {
         }.use {
             assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(10)
             it.applySqlDirectly.withConnection { conn ->
-                conn.executeSql("{call NEW_CUSTOMER('BEN','SMITH','ADR')}")
+                conn.executeSql(it.effectiveSettings.run { "{ call ${quote("NEW_CUSTOMER")}('BEN','SMITH','ADR') }" })
             }
         }
     }
@@ -84,7 +84,7 @@ internal class StoredProcTest {
         }.use {
             assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(10)
             it.applySqlDirectly.withConnection { conn ->
-                conn.executeSql("{call NEW_CUSTOMER('BEN','SMITH','ADR')}")
+                conn.executeSql(it.effectiveSettings.run { "{call ${quote("NEW_CUSTOMER")}('BEN','SMITH','ADR')}" })
             }
         }
     }
@@ -136,7 +136,7 @@ internal class StoredProcTest {
         }.use {
             assertThat(it.applySql()).describedAs("Run procs").isGreaterThanOrEqualTo(11)
             it.applySqlDirectly.withConnection { conn ->
-                conn.executeSql("{call NEW_CUSTOMER('BEN','SMITH','ADR')}")
+                conn.executeSql(it.effectiveSettings.run { "{ call ${quote("NEW_CUSTOMER")}('BEN','SMITH','ADR') }" })
             }
         }
     }

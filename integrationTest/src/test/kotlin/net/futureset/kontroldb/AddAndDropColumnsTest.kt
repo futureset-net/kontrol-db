@@ -21,14 +21,22 @@ class AddAndDropColumnsTest {
             changeModules(
                 module {
                     refactoring(::CreateATable)
-                    single { AddAColumn(if (dialectName == "sqlserver") "dbo" else "PUBLIC") }.bind(Refactoring::class)
+                    single {
+                        AddAColumn(
+                            when (dialectName) {
+                                "sqlserver" -> "dbo"
+                                "postgres" -> "public"
+                                else -> "PUBLIC" },
+                        )
+                    }.bind(Refactoring::class)
                 },
             )
         }.use {
             assertThat(it.applySql()).isGreaterThan(1)
             assertThat(
                 it.applySqlDirectly.withConnection { conn ->
-                    conn.executeQuery("SELECT ONE_COLUMN,TWO_COLUMN,THREE_COLUMN FROM FRED") {
+                    val quote = { s: String -> it.effectiveSettings.openQuote + s + it.effectiveSettings.closeQuote }
+                    conn.executeQuery("SELECT ${quote("ONE_COLUMN")},${quote("TWO_COLUMN")},${quote("THREE_COLUMN")} FROM ${quote("FRED")}") {
                         ""
                     }
                 },

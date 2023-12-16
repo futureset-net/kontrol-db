@@ -100,7 +100,7 @@ internal class SelectQueryTest {
                 tableWithAlias("results", "A")
                 column("STRING_COLUMN")
                 column("TEST_COLUMN")
-                column("ANOTHER", "TEST_COLUMN")
+                column("ANOTHER", "\"TEST_COLUMN\"")
             }
         },
         rollback = emptyList(),
