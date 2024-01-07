@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnDefinition
 import net.futureset.kontroldb.model.ColumnDefinition.ColumnDefinitionBuilder
 import net.futureset.kontroldb.model.ColumnType
@@ -58,6 +58,16 @@ data class CreateTable(
     }
 }
 
+/**
+ * Create a table
+ *
+ * @param tableName the name of the table
+ * @param lambda table columns and attributes
+ * @receiver [ModelChangesBuilder] the container for changes
+ * @return [CreateTable] the immutable data for the table definition
+ *
+ * @sample net.futureset.kontroldb.samples.CreateATable
+ */
 fun ModelChangesBuilder.createTable(tableName: String, lambda: CreateTable.CreateTableBuilder.() -> Unit): CreateTable =
     CreateTable.CreateTableBuilder().table(tableName).apply(lambda).build().apply(changes::add)
 

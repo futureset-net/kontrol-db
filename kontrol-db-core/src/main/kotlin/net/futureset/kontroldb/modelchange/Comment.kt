@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 
 data class Comment(val text: String) : ModelChange, CommentMarker
 

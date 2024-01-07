@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.Table
 
 data class DropTable(
@@ -17,6 +17,16 @@ data class DropTable(
     }
 }
 
+/**
+ * Drop a table
+ *
+ * @param tableName the name of the table
+ * @param lambda other table attributes e.g. schema
+ * @receiver [ModelChangesBuilder] container for the changes
+ * @return [DropTable] the immutable data needed to drop the table
+ *
+ * @sample net.futureset.kontroldb.samples.CreateATable
+ */
 fun ModelChangesBuilder.dropTable(
     tableName: String,
     lambda: DropTable.DropTableBuilder.() -> Unit = {},

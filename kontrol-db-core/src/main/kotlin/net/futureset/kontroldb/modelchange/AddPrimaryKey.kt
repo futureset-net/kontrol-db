@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.Table
 
