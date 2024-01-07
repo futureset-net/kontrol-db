@@ -2,8 +2,8 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.SupportsResultSetHandler
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.Resource.Companion.resource
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.nio.file.Files

@@ -1,8 +1,8 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.ResourceResolver
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.Resource
 import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.SchemaObjectBuilder
@@ -53,6 +53,15 @@ data class CreateProcedure(
     }
 }
 
-fun ModelChangesBuilder.createProcedure(name: String, lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) = apply {
-    changes.add(CreateProcedure.CreateProcedureBuilder().procedure { name(name) }.apply(lambda).build())
-}
+/**
+ * Create a stored procedure
+ *
+ * @param name of the procedure
+ * @param lambda configure the procedure
+ * @return [CreateProcedure]
+ * @receiver [ModelChangesBuilder] container for a collection of changes
+ *
+ * @sample net.futureset.kontroldb.samples.CreateAProcedure
+ */
+fun ModelChangesBuilder.createProcedure(name: String, lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) =
+    CreateProcedure.CreateProcedureBuilder().procedure { name(name) }.apply(lambda).build().also(changes::add)
