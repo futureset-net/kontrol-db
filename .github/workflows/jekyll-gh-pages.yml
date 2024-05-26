@@ -28,6 +28,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: create docs
+        uses: gradle/gradle-build-action@v3.3.2
+        with:
+          arguments: dokkaJekyllMultiModule --scan        
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
