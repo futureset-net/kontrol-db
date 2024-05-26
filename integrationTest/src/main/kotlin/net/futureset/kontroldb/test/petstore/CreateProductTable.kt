@@ -3,9 +3,9 @@ package net.futureset.kontroldb.test.petstore
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.model.StandardColumnTypes.DATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.INT16
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.addPrimaryKey
 import net.futureset.kontroldb.modelchange.createTable
@@ -23,10 +23,10 @@ class CreateProductTable : Refactoring(
     },
     forward = changes {
         createTable("PRODUCT") {
-            column("ID", INT_32)
+            column("ID", INT32)
             column("PRODUCT_NAME", Varchar(30))
-            column("PACKAGE_ID", INT_64)
-            column("CURRENT_INVENTORY_COUNT", INT_16)
+            column("PACKAGE_ID", INT64)
+            column("CURRENT_INVENTORY_COUNT", INT16)
             column("STORE_COST", Decimal(10, 2))
             column("SALE_PRICE", Decimal(10, 2))
             column("LAST_UPDATE_DATE", DATETIME)

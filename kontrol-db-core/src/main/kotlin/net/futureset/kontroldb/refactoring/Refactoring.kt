@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.refactoring
 
-import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.ResourceResolver
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.modelchange.ModelChange
 import kotlin.math.absoluteValue
 

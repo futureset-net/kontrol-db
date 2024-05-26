@@ -1,8 +1,8 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.ResourceResolver
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.Resource
 import net.futureset.kontroldb.model.SchemaObject
@@ -50,6 +50,14 @@ data class CreateView(
     }
 }
 
-fun ModelChangesBuilder.createView(name: String, lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
-    changes.add(CreateView.CreateViewBuilder(name).apply(lambda).build())
+/**
+ * Create a view
+ *
+ * @param viewName
+ * @param lambda the view attributes
+ * @receiver [ModelChangesBuilder] DSL container
+ * @return [CreateView]
+ */
+fun ModelChangesBuilder.createView(viewName: String, lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
+    CreateView.CreateViewBuilder(viewName).apply(lambda).build().also(changes::add)
 }

@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.ModelChangesBuilder
 import net.futureset.kontroldb.ResourceResolver
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnDefinition
 import net.futureset.kontroldb.model.ColumnType
 import net.futureset.kontroldb.model.DbIdentifier
@@ -98,5 +98,13 @@ data class ApplyDsvToTable(
     }
 }
 
+/**
+ * Load a delimiter separated file into a table
+ *
+ * @sample [net.futureset.kontroldb.samples.LoadACsvFile]
+ * @param lambda DSL to configure what to load
+ * @receiver [ModelChangesBuilder] a container for a collection of changes
+ * @return [ApplyDsvToTable] the immutable data
+ */
 fun ModelChangesBuilder.applyDsvToTable(lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit): ApplyDsvToTable =
     ApplyDsvToTable.ApplyDsvToTableBuilder().apply(lambda).build().apply(changes::add)

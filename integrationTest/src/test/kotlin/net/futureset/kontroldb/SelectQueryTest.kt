@@ -1,7 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.createTable
@@ -29,7 +29,7 @@ internal class SelectQueryTest {
         },
         forward = changes {
             createTable("fred") {
-                column("TEST_COLUMN", INT_32)
+                column("TEST_COLUMN", INT32)
                 column("STRING_COLUMN", Varchar(5)) {
                     notNull()
                 }

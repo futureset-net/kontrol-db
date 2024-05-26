@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
-import net.futureset.kontroldb.ModelChangesBuilder
+import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnType
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.SchemaObject
@@ -29,8 +29,16 @@ data class CreateSequence(
             columnType = null,
         )
 
+        /**
+         * Other schema
+         *
+         * @param lambda
+         * @receiver
+         */
         fun otherSchema(lambda: SchemaObjectBuilder.() -> Unit) = apply {
-            createSequence = createSequence.copy(schemaObject = SchemaObjectBuilder(createSequence.schemaObject).apply(lambda).build())
+            createSequence = createSequence.copy(
+                schemaObject = SchemaObjectBuilder(createSequence.schemaObject).apply(lambda).build(),
+            )
         }
 
         fun startWith(startWith: Long) = apply {
@@ -44,6 +52,7 @@ data class CreateSequence(
         fun columnType(columnType: ColumnType) = apply {
             createSequence = createSequence.copy(columnType = columnType)
         }
+
         fun minValue(minValue: Long) = apply {
             createSequence = createSequence.copy(minValue = minValue)
         }
@@ -64,6 +73,13 @@ data class CreateSequence(
     }
 }
 
-fun ModelChangesBuilder.createSequence(name: String, lambda: CreateSequence.CreateSequenceBuilder.() -> Unit) {
-    changes.add(CreateSequence.CreateSequenceBuilder(name).apply(lambda).build())
-}
+/**
+ * Create a sequence
+ *
+ * @param name the name of the sequence to create
+ * @param lambda a block containing other sequence attributes
+ * @return [CreateSequence]
+ * @sample [net.futureset.kontroldb.samples.CreateASequence]
+ */
+fun ModelChangesBuilder.createSequence(name: String, lambda: CreateSequence.CreateSequenceBuilder.() -> Unit): CreateSequence =
+    CreateSequence.CreateSequenceBuilder(name).apply(lambda).build().also(changes::add)

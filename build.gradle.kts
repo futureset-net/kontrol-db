@@ -1,8 +1,12 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
+import org.jetbrains.dokka.DokkaConfiguration
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import java.net.URI
 
 plugins {
     kotlin("jvm")
     alias(libs.plugins.spotless)
+    alias(libs.plugins.dokka)
     id("jacoco-report-aggregation")
 }
 
@@ -25,6 +29,44 @@ extensions.configure<SpotlessExtension> {
         ktlint(libs.versions.ktlint.get())
         target("**/src/*/kotlin/**/*.kt", "**/*.gradle.kts")
     }
+}
+subprojects {
+    tasks.withType<DokkaTaskPartial>().configureEach {
+        dokkaSourceSets.configureEach {
+            failOnWarning.set(true)
+            samples = files(rootDir.resolve("integrationTest/src/main/kotlin/net/futureset/kontroldb/samples"))
+            sourceLink {
+                localDirectory.set(projectDir.resolve("src"))
+                remoteUrl.set(URI.create("https://github.com/futureset/kontrol-db/tree/main").toURL())
+                remoteLineSuffix.set("#L")
+            }
+            perPackageOption {
+                matchingRegex.set(".*(modelchange|dialect|dsl).*")
+                displayName.set(project.description)
+                suppressObviousFunctions.set(true)
+                documentedVisibilities.set(setOf(DokkaConfiguration.Visibility.PUBLIC))
+                reportUndocumented.set(false)
+                skipEmptyPackages.set(true)
+                skipDeprecated.set(false)
+            }
+            perPackageOption {
+                matchingRegex.set(".*")
+                suppress.set(true)
+            }
+        }
+    }
+}
+
+tasks.named<Delete>("clean") {
+    delete("docs")
+}
+
+tasks.dokkaJekyllMultiModule.configure {
+    this.outputDirectory.set(project.layout.projectDirectory.dir("docs"))
+}
+
+tasks.assemble {
+    dependsOn(tasks.dokkaJekyllMultiModule)
 }
 
 subprojects {
@@ -92,7 +134,7 @@ subprojects {
     }
 }
 
-val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"))
+val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"), project(":kontrol-db-postgres"))
 
 reporting {
     reports {

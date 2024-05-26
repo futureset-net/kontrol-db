@@ -5,6 +5,7 @@ import net.futureset.kontroldb.modelchange.createProcedure
 import net.futureset.kontroldb.modelchange.dropProcedureIfExists
 import net.futureset.kontroldb.refactoring.ExecuteMode
 import net.futureset.kontroldb.refactoring.Refactoring
+import net.futureset.kontroldb.samples.CreateAProcedure
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,23 +16,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.nio.file.Path
 import kotlin.io.path.writeText
-
-class CreateAProcedure : Refactoring(
-    executionOrder {
-        ymd(2023, 11, 30)
-        author("ben")
-    },
-    forward = changes {
-        createProcedure("NEW_CUSTOMER") {
-            body(
-                Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql")!!.readText(),
-            )
-            wholeDefinition(true)
-        }
-    },
-    rollback = emptyList(),
-
-)
 
 class CreateAProcedurePartialDefinition : Refactoring(
     executionOrder {

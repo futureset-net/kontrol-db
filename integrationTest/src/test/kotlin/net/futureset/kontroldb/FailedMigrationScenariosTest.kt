@@ -1,7 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.insertRowsInto
@@ -79,7 +79,7 @@ class FailedMigrationScenariosTest {
         },
         forward = changes {
             createTable("TEST") {
-                column("STAGE_NUM", INT_32)
+                column("STAGE_NUM", INT32)
                 column("STAGE_NAME", Varchar(32))
             }
             insertRowsInto("TEST") {
