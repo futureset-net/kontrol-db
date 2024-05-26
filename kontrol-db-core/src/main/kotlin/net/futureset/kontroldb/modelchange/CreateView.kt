@@ -50,6 +50,14 @@ data class CreateView(
     }
 }
 
-fun ModelChangesBuilder.createView(name: String, lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
-    changes.add(CreateView.CreateViewBuilder(name).apply(lambda).build())
+/**
+ * Create a view
+ *
+ * @param viewName
+ * @param lambda the view attributes
+ * @receiver [ModelChangesBuilder] DSL container
+ * @return [CreateView]
+ */
+fun ModelChangesBuilder.createView(viewName: String, lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
+    CreateView.CreateViewBuilder(viewName).apply(lambda).build().also(changes::add)
 }

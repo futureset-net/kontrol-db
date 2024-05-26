@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.core.template
 
-import net.futureset.kontroldb.modelchange.Comment
+import net.futureset.kontroldb.modelchange.ScriptComment
 import net.futureset.kontroldb.modelchange.StartBanner
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.template.DbAwareTemplate
@@ -15,6 +15,6 @@ class StartMigrationTemplate(val db: EffectiveSettings) : DbAwareTemplate<StartB
 
     override fun convert(change: StartBanner): List<String> {
         val state = db.startState
-        return Comment(state.toString()).let { template(it)?.convert(it)?.filterNotNull().orEmpty() }
+        return ScriptComment(state.toString()).let { template(it)?.convert(it)?.filterNotNull().orEmpty() }
     }
 }

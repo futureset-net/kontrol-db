@@ -5,8 +5,8 @@ import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.model.StandardColumnTypes.Char
 import net.futureset.kontroldb.model.StandardColumnTypes.DATE
 import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.INT16
+import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.ApplyDsvToTable
@@ -46,13 +46,13 @@ internal class CanLoadCsvIntoTableTest {
         },
         forward = changes {
             createTable("CUSTOMER") {
-                column("CUST_ID", INT_64)
+                column("CUST_ID", INT64)
                 column("FIRSTNAME", Varchar(256))
                 column("LASTNAME", Varchar(256))
                 column("FAVOURITE_LETTER", Char(1))
                 column("FAVOURITE_DECIMAL", Decimal(3, 2))
                 column("IS_AN_IDIOT", BOOLEAN)
-                column("NUMBER_OF_STAMPS", INT_16)
+                column("NUMBER_OF_STAMPS", INT16)
                 column("DATE_OF_BIRTH", DATE)
                 column("TIME_RIGHT_NOW", LOCALDATETIME)
             }
@@ -100,13 +100,13 @@ internal class CanLoadCsvIntoTableTest {
                 separator(delimiter)
 
                 table("CUSTOMER")
-                columnMapping("CUST_ID", INT_64, primaryKey = true)
+                columnMapping("CUST_ID", INT64, primaryKey = true)
                 columnMapping("FIRSTNAME", Varchar(256))
                 columnMapping("LASTNAME", Varchar(256))
                 columnMapping("FAVOURITE_LETTER", Char(1))
                 columnMapping("FAVOURITE_DECIMAL", Decimal(3, 2))
                 columnMapping("IS_AN_IDIOT", BOOLEAN)
-                columnMapping("NUMBER_OF_STAMPS", INT_16)
+                columnMapping("NUMBER_OF_STAMPS", INT16)
                 columnMapping("DATE_OF_BIRTH", DATE)
                 columnMapping("TIME_RIGHT_NOW", LOCALDATETIME)
             }
@@ -138,13 +138,13 @@ internal class CanLoadCsvIntoTableTest {
                 ignoreInsertViolations(ignoreInsertViolations)
 
                 table("CUSTOMER")
-                columnMapping("CUST_ID", INT_64, primaryKey = true)
+                columnMapping("CUST_ID", INT64, primaryKey = true)
                 columnMapping("FIRSTNAME", Varchar(256))
                 columnMapping("LASTNAME", Varchar(256))
                 columnMapping("FAVOURITE_LETTER", Char(1))
                 columnMapping("FAVOURITE_DECIMAL", Decimal(3, 2))
                 columnMapping("IS_AN_IDIOT", BOOLEAN)
-                columnMapping("NUMBER_OF_STAMPS", INT_16)
+                columnMapping("NUMBER_OF_STAMPS", INT16)
                 columnMapping("DATE_OF_BIRTH", DATE)
                 columnMapping("TIME_RIGHT_NOW", LOCALDATETIME)
             }

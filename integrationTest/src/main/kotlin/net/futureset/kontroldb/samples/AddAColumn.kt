@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.samples
 
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.modelchange.addColumnsTo
 import net.futureset.kontroldb.modelchange.dropColumnsFrom
 import net.futureset.kontroldb.refactoring.Refactoring
@@ -13,10 +13,10 @@ class AddAColumn(schemaName: String) : Refactoring(
     },
     forward = changes {
         addColumnsTo("FRED") {
-            column("TWO_COLUMN", INT_32)
-            column("THREE_COLUMN", INT_32)
-            column("FOUR_COLUMN", INT_32)
-            column("FIVE_COLUMN", INT_32)
+            column("TWO_COLUMN", INT32)
+            column("THREE_COLUMN", INT32)
+            column("FOUR_COLUMN", INT32)
+            column("FIVE_COLUMN", INT32)
             table {
                 schema(schemaName)
             }

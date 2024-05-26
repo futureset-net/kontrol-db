@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.test.petstore
 
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.refactoring.Refactoring
@@ -19,7 +19,7 @@ class DropMistakeTable : Refactoring(
     },
     rollback = changes {
         createTable("MISTAKE") {
-            column("ID", INT_32)
+            column("ID", INT32)
             tablespace("ANOTHER_TS")
         }
     },

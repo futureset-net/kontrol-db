@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.test.petstore
 
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.addNotNull
 import net.futureset.kontroldb.modelchange.createTable
@@ -16,7 +16,7 @@ class CreateCustomerTable : Refactoring(
     },
     forward = changes {
         createTable("CUSTOMER") {
-            column("CUST_ID", INT_32)
+            column("CUST_ID", INT32)
             column("FIRSTNAME", Varchar(20))
             column("LASTNAME", Varchar(25))
             column("ADDRESS", Varchar(32))

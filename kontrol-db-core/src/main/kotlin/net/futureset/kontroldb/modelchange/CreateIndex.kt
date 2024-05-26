@@ -50,6 +50,14 @@ data class CreateIndex(
     }
 }
 
+/**
+ * Create an index
+ *
+ * @param indexName name of the index
+ * @param lambda index attributes
+ * @receiver [ModelChangesBuilder] DSL container
+ * @return [CreateIndex] the immutable index object
+ */
 fun ModelChangesBuilder.createIndex(
     indexName: String,
     lambda: CreateIndex.CreateIndexBuilder.() -> Unit,

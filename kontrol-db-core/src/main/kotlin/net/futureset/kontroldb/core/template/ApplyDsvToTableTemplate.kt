@@ -6,9 +6,9 @@ import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.model.StandardColumnTypes.DATE
 import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.INT16
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.modelchange.AddPrimaryKey
@@ -67,7 +67,7 @@ class ApplyDsvToTableTemplate(db: EffectiveSettings) :
                                 }
                                 DATE -> v.value(it.columnName.name, LocalDate.parse(value, SQL_DATE_FORMAT))
                                 LOCALDATETIME -> v.value(it.columnName.name, LocalDateTime.parse(value, SQL_TIMESTAMP_FORMAT))
-                                INT_64, INT_32, INT_16 -> v.value(
+                                INT64, INT32, INT16 -> v.value(
                                     it.columnName.name,
                                     value.toLong(),
                                 )

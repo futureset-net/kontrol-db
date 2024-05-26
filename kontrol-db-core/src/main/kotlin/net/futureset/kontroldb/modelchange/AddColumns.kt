@@ -44,8 +44,8 @@ data class AddColumns(
  * Add columns to a table
  *
  * @sample [net.futureset.kontroldb.samples.AddAColumn]
- * @param tableName
- * @param lambda
+ * @param tableName name of the table to add columns
+ * @param lambda containing column definitions
  * @receiver a container for all the changes
  * @return the immutable [AddColumns] type
  */

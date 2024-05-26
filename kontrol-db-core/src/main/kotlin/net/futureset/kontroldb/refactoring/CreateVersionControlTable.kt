@@ -1,9 +1,9 @@
 package net.futureset.kontroldb.refactoring
 
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_16
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_64
+import net.futureset.kontroldb.model.StandardColumnTypes.INT16
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.addPrimaryKey
@@ -42,12 +42,12 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
             column(ID_COLUMN, Varchar(120))
             column(APPLICATION_VERSION, Varchar(32))
             column(EXECUTION_ORDER, Varchar(24))
-            column(EXECUTED_SEQUENCE, INT_32)
+            column(EXECUTED_SEQUENCE, INT32)
             column(LAST_APPLIED, LOCALDATETIME)
             column(FIRST_APPLIED, LOCALDATETIME)
             column(EXECUTION_FREQUENCY, Varchar(20))
-            column(EXECUTION_COUNT, INT_16)
-            column(MIGRATION_RUN_ID, INT_64)
+            column(EXECUTION_COUNT, INT16)
+            column(MIGRATION_RUN_ID, INT64)
             column(CHECK_SUM, Varchar(23))
             column(ROLLED_BACK, BOOLEAN)
         }
