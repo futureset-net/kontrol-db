@@ -1,7 +1,7 @@
 package net.futureset.kontroldb.test.petstore
 
 import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.modelchange.addForeignKey
 import net.futureset.kontroldb.modelchange.addPrimaryKey
 import net.futureset.kontroldb.modelchange.createTable
@@ -19,8 +19,8 @@ class CreateSalesItemTable : Refactoring(
     },
     forward = changes {
         createTable("SALES_ITEM") {
-            column("PRODUCT_ID", INT_32)
-            column("SALES_ID", INT_32)
+            column("PRODUCT_ID", INT32)
+            column("SALES_ID", INT32)
             column("SALE_AMOUNT", Decimal(10, 2))
         }
         addPrimaryKey("SALES_ITEM_PK") {

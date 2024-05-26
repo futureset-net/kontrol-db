@@ -8,12 +8,12 @@ import net.futureset.kontroldb.model.ColumnValue.Companion.column
 import net.futureset.kontroldb.model.ColumnValue.Companion.value
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.modelchange.ChangeToDefaultCatalogAndSchema
-import net.futureset.kontroldb.modelchange.Comment
 import net.futureset.kontroldb.modelchange.CommentMarker
 import net.futureset.kontroldb.modelchange.InitCatalog
 import net.futureset.kontroldb.modelchange.InitSchema
 import net.futureset.kontroldb.modelchange.InsertRows.InsertRowsBuilder.Companion.insertRowsInto
 import net.futureset.kontroldb.modelchange.ModelChange
+import net.futureset.kontroldb.modelchange.ScriptComment
 import net.futureset.kontroldb.modelchange.UpdateRows.UpdateRowsBuilder.Companion.updateRowsOf
 import net.futureset.kontroldb.refactoring.APPLICATION_VERSION
 import net.futureset.kontroldb.refactoring.AStartEndMarker
@@ -161,7 +161,7 @@ data class KontrolDbEngine(
                         refactoring,
                         (
                             emptyList<ModelChange>() +
-                                Comment("Start ${if (rollback) "ROLLBACK" else ""} ${refactoring.id()}\nContains ${refactoring.forward.size} changes") +
+                                ScriptComment("Start ${if (rollback) "ROLLBACK" else ""} ${refactoring.id()}\nContains ${refactoring.forward.size} changes") +
                                 (
                                     if (rollback) {
                                         refactoring.rollback

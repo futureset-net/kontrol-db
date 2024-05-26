@@ -1,6 +1,6 @@
 package net.futureset.kontroldb.core.template
 
-import net.futureset.kontroldb.modelchange.Comment
+import net.futureset.kontroldb.modelchange.ScriptComment
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.template.DbAwareTemplate
 import net.futureset.kontroldb.template.SqlTemplate
@@ -9,12 +9,12 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<Comment>(db, TemplatePriority.DEFAULT) {
-    override fun type(): KClass<Comment> {
-        return Comment::class
+class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<ScriptComment>(db, TemplatePriority.DEFAULT) {
+    override fun type(): KClass<ScriptComment> {
+        return ScriptComment::class
     }
 
-    override fun convertToSingleStatement(change: Comment): String {
+    override fun convertToSingleStatement(change: ScriptComment): String {
         val text = change.text.trim()
         return if (text.count { it == '\n' } > 0) {
             val lines = text.split("\n")

@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.modelchange.addColumnsTo
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropColumnsFrom
@@ -51,7 +51,7 @@ class AddAndDropColumnsTest {
         },
         forward = changes {
             createTable("FRED") {
-                column("ONE_COLUMN", INT_32)
+                column("ONE_COLUMN", INT32)
             }
         },
         rollback = emptyList(),
@@ -65,10 +65,10 @@ class AddAndDropColumnsTest {
         },
         forward = changes {
             addColumnsTo("FRED") {
-                column("TWO_COLUMN", INT_32)
-                column("THREE_COLUMN", INT_32)
-                column("FOUR_COLUMN", INT_32)
-                column("FIVE_COLUMN", INT_32)
+                column("TWO_COLUMN", INT32)
+                column("THREE_COLUMN", INT32)
+                column("FOUR_COLUMN", INT32)
+                column("FIVE_COLUMN", INT32)
                 table {
                     schema(schemaName)
                 }

@@ -40,7 +40,7 @@ internal class DropIfExistsTest {
                 maxValue(100)
                 incrementBy(2)
                 startWith(3)
-                columnType(StandardColumnTypes.INT_64)
+                columnType(StandardColumnTypes.INT64)
                 cycle()
                 otherSchema {
                     schema(schemaName)

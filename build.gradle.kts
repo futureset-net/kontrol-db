@@ -43,6 +43,7 @@ subprojects {
             perPackageOption {
                 matchingRegex.set(".*(modelchange|dialect|dsl).*")
                 displayName.set(project.description)
+                suppressObviousFunctions.set(true)
                 documentedVisibilities.set(setOf(DokkaConfiguration.Visibility.PUBLIC))
                 reportUndocumented.set(false)
                 skipEmptyPackages.set(true)
@@ -57,14 +58,15 @@ subprojects {
 }
 
 tasks.named<Delete>("clean") {
-    delete("dokka")
+    delete("docs")
 }
-tasks.dokkaGfmMultiModule.configure {
-    this.outputDirectory.set(project.layout.projectDirectory.dir("dokka"))
+
+tasks.dokkaJekyllMultiModule.configure {
+    this.outputDirectory.set(project.layout.projectDirectory.dir("docs"))
 }
 
 tasks.assemble {
-    dependsOn(tasks.dokkaGfmMultiModule)
+    dependsOn(tasks.dokkaJekyllMultiModule)
 }
 
 subprojects {
@@ -132,7 +134,7 @@ subprojects {
     }
 }
 
-val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"))
+val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"), project(":kontrol-db-postgres"))
 
 reporting {
     reports {

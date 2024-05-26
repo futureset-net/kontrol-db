@@ -1,8 +1,7 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.model.ColumnValue.Companion.value
-import net.futureset.kontroldb.model.StandardColumnTypes.INT_32
+import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.modelchange.createTable
@@ -27,7 +26,7 @@ internal class InsertRowsUpdateAndDeleteRowsTest {
         },
         forward = changes {
             createTable("fred") {
-                column("TEST_COLUMN", INT_32)
+                column("TEST_COLUMN", INT32)
             }
             insertOrUpdateRowsOf("fred") {
                 for (i in 1..100) {
