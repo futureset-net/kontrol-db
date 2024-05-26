@@ -9,7 +9,7 @@ title: catalog
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [catalog](catalog.html): DbIdentifier
 
 

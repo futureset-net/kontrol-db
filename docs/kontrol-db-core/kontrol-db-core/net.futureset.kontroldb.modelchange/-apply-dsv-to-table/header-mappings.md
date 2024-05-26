@@ -9,7 +9,7 @@ title: headerMappings
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [headerMappings](header-mappings.html): [Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html)&lt;[String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), ColumnDefinition&gt;
 
 

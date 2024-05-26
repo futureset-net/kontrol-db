@@ -25,8 +25,8 @@ interface [TableAliasBuilder](index.html)&lt;[B](index.html) : [TableBuilder](..
 
 | Name | Summary |
 |---|---|
-| [alias](alias.html) | [core engine and default templates for kontrol-db]<br>abstract var [alias](alias.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? |
-| [table](../-table-builder/table.html) | [core engine and default templates for kontrol-db]<br>abstract var [table](../-table-builder/table.html): Table |
+| [alias](alias.html) | [jvm]<br>abstract var [alias](alias.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? |
+| [table](../-table-builder/table.html) | [jvm]<br>abstract var [table](../-table-builder/table.html): Table |
 
 
 ## Functions
@@ -34,10 +34,10 @@ interface [TableAliasBuilder](index.html)&lt;[B](index.html) : [TableBuilder](..
 
 | Name | Summary |
 |---|---|
-| [alias](alias.html) | [core engine and default templates for kontrol-db]<br>open fun [alias](alias.html)(alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html) |
-| [asGlobalTemporaryTable](../-table-builder/as-global-temporary-table.html) | [core engine and default templates for kontrol-db]<br>open fun [asGlobalTemporaryTable](../-table-builder/as-global-temporary-table.html)(): [B](index.html) |
-| [asLocalTemporaryTable](../-table-builder/as-local-temporary-table.html) | [core engine and default templates for kontrol-db]<br>open fun [asLocalTemporaryTable](../-table-builder/as-local-temporary-table.html)(): [B](index.html) |
-| [build](../-table-builder/index.html#2028528719%2FFunctions%2F894165660) | [core engine and default templates for kontrol-db]<br>abstract fun [build](../-table-builder/index.html#2028528719%2FFunctions%2F894165660)(): [T](index.html) |
-| [table](../-table-builder/table.html) | [core engine and default templates for kontrol-db]<br>open fun [table](../-table-builder/table.html)(table: Table): [B](index.html)<br>open fun [table](../-table-builder/table.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null, block: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = {}): [B](index.html) |
-| [tableWithAlias](table-with-alias.html) | [core engine and default templates for kontrol-db]<br>open fun [tableWithAlias](table-with-alias.html)(table: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html)<br>open fun [tableWithAlias](table-with-alias.html)(table: Table, alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html) |
+| [alias](alias.html) | [jvm]<br>open fun [alias](alias.html)(alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html) |
+| [asGlobalTemporaryTable](../-table-builder/as-global-temporary-table.html) | [jvm]<br>open fun [asGlobalTemporaryTable](../-table-builder/as-global-temporary-table.html)(): [B](index.html) |
+| [asLocalTemporaryTable](../-table-builder/as-local-temporary-table.html) | [jvm]<br>open fun [asLocalTemporaryTable](../-table-builder/as-local-temporary-table.html)(): [B](index.html) |
+| [build](../-table-builder/index.html#2028528719%2FFunctions%2F1904592438) | [jvm]<br>abstract fun [build](../-table-builder/index.html#2028528719%2FFunctions%2F1904592438)(): [T](index.html) |
+| [table](../-table-builder/table.html) | [jvm]<br>open fun [table](../-table-builder/table.html)(table: Table): [B](index.html)<br>open fun [table](../-table-builder/table.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null, block: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = {}): [B](index.html) |
+| [tableWithAlias](table-with-alias.html) | [jvm]<br>open fun [tableWithAlias](table-with-alias.html)(table: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html)<br>open fun [tableWithAlias](table-with-alias.html)(table: Table, alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html) |
 

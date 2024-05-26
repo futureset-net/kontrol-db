@@ -9,7 +9,7 @@ title: column
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [column](column.html)(columnName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), expression: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null): [SelectQuery.SelectQueryBuilder](index.html)
 
 

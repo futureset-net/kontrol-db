@@ -9,7 +9,7 @@ title: AddForeignKeyBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(constraintName: DbIdentifier? = null, foreignTable: SchemaObject? = null, columnMap: [MutableMap](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html)&lt;DbIdentifier, DbIdentifier&gt; = mutableMapOf())
 
 

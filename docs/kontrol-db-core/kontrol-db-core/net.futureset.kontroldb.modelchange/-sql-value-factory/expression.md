@@ -9,7 +9,7 @@ title: expression
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html).[expression](expression.html)(): ColumnValue
 
 

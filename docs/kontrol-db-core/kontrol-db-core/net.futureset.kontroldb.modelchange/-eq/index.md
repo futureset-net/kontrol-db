@@ -9,7 +9,7 @@ title: Eq
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [Eq](index.html)(val a: [Operand](../-operand/index.html), val b: [Operand](../-operand/index.html)) : [SqlPredicate](../-sql-predicate/index.html)
 
 
@@ -19,7 +19,7 @@ data class [Eq](index.html)(val a: [Operand](../-operand/index.html), val b: [Op
 
 | | |
 |---|---|
-| [Eq](-eq.html) | [core engine and default templates for kontrol-db]<br>constructor(a: [Operand](../-operand/index.html), b: [Operand](../-operand/index.html)) |
+| [Eq](-eq.html) | [jvm]<br>constructor(a: [Operand](../-operand/index.html), b: [Operand](../-operand/index.html)) |
 
 
 ## Properties
@@ -27,8 +27,8 @@ data class [Eq](index.html)(val a: [Operand](../-operand/index.html), val b: [Op
 
 | Name | Summary |
 |---|---|
-| [a](a.html) | [core engine and default templates for kontrol-db]<br>val [a](a.html): [Operand](../-operand/index.html) |
-| [b](b.html) | [core engine and default templates for kontrol-db]<br>val [b](b.html): [Operand](../-operand/index.html) |
+| [a](a.html) | [jvm]<br>val [a](a.html): [Operand](../-operand/index.html) |
+| [b](b.html) | [jvm]<br>val [b](b.html): [Operand](../-operand/index.html) |
 
 
 ## Functions
@@ -36,7 +36,7 @@ data class [Eq](index.html)(val a: [Operand](../-operand/index.html), val b: [Op
 
 | Name | Summary |
 |---|---|
-| [isEmpty](../-sql-predicate/is-empty.html) | [core engine and default templates for kontrol-db]<br>open fun [isEmpty](../-sql-predicate/is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [plus](../-sql-predicate/plus.html) | [core engine and default templates for kontrol-db]<br>open operator fun [plus](../-sql-predicate/plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [SqlPredicate](../-sql-predicate/index.html) |
-| [toSql](to-sql.html) | [core engine and default templates for kontrol-db]<br>open override fun [toSql](to-sql.html)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [isEmpty](../-sql-predicate/is-empty.html) | [jvm]<br>open fun [isEmpty](../-sql-predicate/is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [plus](../-sql-predicate/plus.html) | [jvm]<br>open operator fun [plus](../-sql-predicate/plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [SqlPredicate](../-sql-predicate/index.html) |
+| [toSql](to-sql.html) | [jvm]<br>open override fun [toSql](to-sql.html)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

@@ -9,7 +9,7 @@ title: view
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [view](view.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateView.CreateViewBuilder](index.html)
 
 

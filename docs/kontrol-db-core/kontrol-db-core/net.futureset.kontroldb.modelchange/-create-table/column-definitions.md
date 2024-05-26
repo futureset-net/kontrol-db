@@ -9,7 +9,7 @@ title: columnDefinitions
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [columnDefinitions](column-definitions.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;ColumnDefinition&gt;
 
 

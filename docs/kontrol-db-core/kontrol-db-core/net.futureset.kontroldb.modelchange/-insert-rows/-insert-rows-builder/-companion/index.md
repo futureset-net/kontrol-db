@@ -9,7 +9,7 @@ title: Companion
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 object [Companion](index.html)
 
 
@@ -19,5 +19,5 @@ object [Companion](index.html)
 
 | Name | Summary |
 |---|---|
-| [insertRowsInto](insert-rows-into.html) | [core engine and default templates for kontrol-db]<br>fun [insertRowsInto](insert-rows-into.html)(table: Table, block: [InsertRows.InsertRowsBuilder](../index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [InsertRows](../../index.html) |
+| [insertRowsInto](insert-rows-into.html) | [jvm]<br>fun [insertRowsInto](insert-rows-into.html)(table: Table, block: [InsertRows.InsertRowsBuilder](../index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [InsertRows](../../index.html) |
 

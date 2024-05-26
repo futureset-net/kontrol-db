@@ -9,7 +9,7 @@ title: plus
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open operator fun [plus](plus.html)(predicate: [SqlPredicate](index.html)): [SqlPredicate](index.html)
 
 

@@ -9,7 +9,7 @@ title: primaryKey
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [primaryKey](primary-key.html): [AddPrimaryKey](../-add-primary-key/index.html)?
 
 

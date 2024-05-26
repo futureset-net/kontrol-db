@@ -9,7 +9,7 @@ title: columnType
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [columnType](column-type.html)(columnType: ColumnType): [CreateSequence.CreateSequenceBuilder](index.html)
 
 

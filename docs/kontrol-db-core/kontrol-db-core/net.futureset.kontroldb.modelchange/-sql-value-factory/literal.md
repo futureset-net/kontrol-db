@@ -9,7 +9,7 @@ title: literal
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html).[literal](literal.html)(): ColumnValue
 
 open fun [Number](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html).[literal](literal.html)(): ColumnValue

@@ -9,7 +9,7 @@ title: CreateRole
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(roleName: DbIdentifier)
 
 

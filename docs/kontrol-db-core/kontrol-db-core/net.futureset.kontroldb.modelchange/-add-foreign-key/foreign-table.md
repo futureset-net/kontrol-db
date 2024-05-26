@@ -9,7 +9,7 @@ title: foreignTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [foreignTable](foreign-table.html): SchemaObject
 
 

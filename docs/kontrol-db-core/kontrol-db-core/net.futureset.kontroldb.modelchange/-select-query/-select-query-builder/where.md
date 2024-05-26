@@ -9,7 +9,7 @@ title: where
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [where](where.html)(lambda: [PredicateBuilder](../../-predicate-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [SelectQuery.SelectQueryBuilder](index.html)
 
 

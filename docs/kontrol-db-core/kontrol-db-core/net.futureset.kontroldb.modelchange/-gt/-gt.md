@@ -9,7 +9,7 @@ title: Gt
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(a: [Operand](../-operand/index.html), b: [Operand](../-operand/index.html))
 
 

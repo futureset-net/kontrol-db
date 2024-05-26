@@ -9,7 +9,7 @@ title: insertRows
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [insertRows](insert-rows.html)(insertRows: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [ApplyDsvToTable.ApplyDsvToTableBuilder](index.html)
 
 

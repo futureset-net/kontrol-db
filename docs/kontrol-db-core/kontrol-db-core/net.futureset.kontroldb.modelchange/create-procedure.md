@@ -9,7 +9,7 @@ title: createProcedure
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[createProcedure](create-procedure.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [CreateProcedure.CreateProcedureBuilder](-create-procedure/-create-procedure-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateProcedure](-create-procedure/index.html)
 
 
@@ -37,7 +37,7 @@ Create a stored procedure
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|

@@ -9,7 +9,7 @@ title: DatabaseConditionalChange
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(dbPredicate: ([String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) -&gt; [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html), wrappedChange: [ModelChange](../-model-change/index.html))
 
 

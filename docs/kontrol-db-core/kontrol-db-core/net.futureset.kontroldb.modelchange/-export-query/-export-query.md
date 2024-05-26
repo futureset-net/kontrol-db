@@ -9,7 +9,7 @@ title: ExportQuery
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(selectQuery: [SelectQuery](../-select-query/index.html), path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?, separator: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
 
 

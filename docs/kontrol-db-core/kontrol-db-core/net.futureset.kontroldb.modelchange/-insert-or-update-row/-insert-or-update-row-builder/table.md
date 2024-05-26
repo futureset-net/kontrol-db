@@ -9,7 +9,7 @@ title: table
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open override var [table](table.html): Table
 
 

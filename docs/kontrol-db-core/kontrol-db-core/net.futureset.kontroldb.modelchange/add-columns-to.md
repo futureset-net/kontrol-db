@@ -9,7 +9,7 @@ title: addColumnsTo
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[addColumnsTo](add-columns-to.html)(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [AddColumns.AddColumnsBuilder](-add-columns/-add-columns-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [AddColumns](-add-columns/index.html)
 
 
@@ -37,7 +37,7 @@ the immutable [AddColumns](-add-columns/index.html) type
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|

@@ -9,7 +9,7 @@ title: DropColumnsBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 class [DropColumnsBuilder](index.html)(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;DbIdentifier&gt; = mutableListOf()) : Builder&lt;[DropColumns.DropColumnsBuilder](index.html), [DropColumns](../index.html)&gt;
 
 
@@ -19,7 +19,7 @@ class [DropColumnsBuilder](index.html)(tableName: [String](https://kotlinlang.or
 
 | | |
 |---|---|
-| [DropColumnsBuilder](-drop-columns-builder.html) | [core engine and default templates for kontrol-db]<br>constructor(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;DbIdentifier&gt; = mutableListOf()) |
+| [DropColumnsBuilder](-drop-columns-builder.html) | [jvm]<br>constructor(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;DbIdentifier&gt; = mutableListOf()) |
 
 
 ## Functions
@@ -27,7 +27,7 @@ class [DropColumnsBuilder](index.html)(tableName: [String](https://kotlinlang.or
 
 | Name | Summary |
 |---|---|
-| [build](build.html) | [core engine and default templates for kontrol-db]<br>open override fun [build](build.html)(): [DropColumns](../index.html) |
-| [column](column.html) | [core engine and default templates for kontrol-db]<br>fun [column](column.html)(vararg columns: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [DropColumns.DropColumnsBuilder](index.html) |
-| [table](table.html) | [core engine and default templates for kontrol-db]<br>fun [table](table.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [DropColumns.DropColumnsBuilder](index.html) |
+| [build](build.html) | [jvm]<br>open override fun [build](build.html)(): [DropColumns](../index.html) |
+| [column](column.html) | [jvm]<br>fun [column](column.html)(vararg columns: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [DropColumns.DropColumnsBuilder](index.html) |
+| [table](table.html) | [jvm]<br>fun [table](table.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [DropColumns.DropColumnsBuilder](index.html) |
 

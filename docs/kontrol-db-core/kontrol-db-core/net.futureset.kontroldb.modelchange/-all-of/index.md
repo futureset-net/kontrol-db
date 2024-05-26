@@ -9,7 +9,7 @@ title: AllOf
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [AllOf](index.html)(val predicates: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[SqlPredicate](../-sql-predicate/index.html)&gt;) : [SqlPredicate](../-sql-predicate/index.html)
 
 
@@ -19,7 +19,7 @@ data class [AllOf](index.html)(val predicates: [List](https://kotlinlang.org/api
 
 | | |
 |---|---|
-| [AllOf](-all-of.html) | [core engine and default templates for kontrol-db]<br>constructor(predicates: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[SqlPredicate](../-sql-predicate/index.html)&gt;) |
+| [AllOf](-all-of.html) | [jvm]<br>constructor(predicates: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[SqlPredicate](../-sql-predicate/index.html)&gt;) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [AllOf](index.html)(val predicates: [List](https://kotlinlang.org/api
 
 | Name | Summary |
 |---|---|
-| [predicates](predicates.html) | [core engine and default templates for kontrol-db]<br>val [predicates](predicates.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[SqlPredicate](../-sql-predicate/index.html)&gt; |
+| [predicates](predicates.html) | [jvm]<br>val [predicates](predicates.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[SqlPredicate](../-sql-predicate/index.html)&gt; |
 
 
 ## Functions
@@ -35,7 +35,7 @@ data class [AllOf](index.html)(val predicates: [List](https://kotlinlang.org/api
 
 | Name | Summary |
 |---|---|
-| [isEmpty](is-empty.html) | [core engine and default templates for kontrol-db]<br>open override fun [isEmpty](is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [plus](plus.html) | [core engine and default templates for kontrol-db]<br>open operator override fun [plus](plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [AllOf](index.html) |
-| [toSql](to-sql.html) | [core engine and default templates for kontrol-db]<br>open override fun [toSql](to-sql.html)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [isEmpty](is-empty.html) | [jvm]<br>open override fun [isEmpty](is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [plus](plus.html) | [jvm]<br>open operator override fun [plus](plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [AllOf](index.html) |
+| [toSql](to-sql.html) | [jvm]<br>open override fun [toSql](to-sql.html)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

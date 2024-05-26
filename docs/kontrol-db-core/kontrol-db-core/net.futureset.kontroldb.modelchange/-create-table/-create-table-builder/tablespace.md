@@ -9,7 +9,7 @@ title: tablespace
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [tablespace](tablespace.html)(tablespace: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateTable.CreateTableBuilder](index.html)
 
 

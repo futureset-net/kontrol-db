@@ -9,7 +9,7 @@ title: columnType
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [columnType](column-type.html): ColumnType?
 
 

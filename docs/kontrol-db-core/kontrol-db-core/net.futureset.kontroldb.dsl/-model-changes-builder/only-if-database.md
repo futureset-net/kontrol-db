@@ -9,7 +9,7 @@ title: onlyIfDatabase
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChange](../../net.futureset.kontroldb.modelchange/-model-change/index.html).[onlyIfDatabase](only-if-database.html)(dbPredicate: ([String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) -&gt; [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [DatabaseConditionalChange](../../net.futureset.kontroldb.modelchange/-database-conditional-change/index.html)
 
 
@@ -37,7 +37,7 @@ For onlyIfDatabase
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|

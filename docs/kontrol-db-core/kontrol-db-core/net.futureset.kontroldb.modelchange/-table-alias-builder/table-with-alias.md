@@ -9,7 +9,7 @@ title: tableWithAlias
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [tableWithAlias](table-with-alias.html)(table: Table, alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html)
 
 open fun [tableWithAlias](table-with-alias.html)(table: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html)

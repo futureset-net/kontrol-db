@@ -9,7 +9,7 @@ title: runScriptAgainstDb
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override fun [runScriptAgainstDb](run-script-against-db.html)(emptyDb: [Connection](https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html), sqlScript: [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html))
 
 

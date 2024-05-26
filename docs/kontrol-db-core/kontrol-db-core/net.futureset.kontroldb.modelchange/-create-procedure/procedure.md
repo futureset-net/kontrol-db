@@ -9,7 +9,7 @@ title: procedure
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [procedure](procedure.html): SchemaObject
 
 

@@ -9,7 +9,7 @@ title: supportsCatalogs
 
 
 
-[hsqldb extensions for kontrol-db]\
+[jvm]\
 open override val [supportsCatalogs](supports-catalogs.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = true
 
 

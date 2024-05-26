@@ -9,7 +9,7 @@ title: asGlobalTemporaryTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [asGlobalTemporaryTable](as-global-temporary-table.html)(): [B](index.html)
 
 

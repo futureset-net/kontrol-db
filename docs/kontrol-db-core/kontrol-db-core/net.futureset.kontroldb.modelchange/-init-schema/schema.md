@@ -9,7 +9,7 @@ title: schema
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [schema](schema.html): DbIdentifier
 
 

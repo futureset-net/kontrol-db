@@ -9,7 +9,7 @@ title: preserveRowsOnCommit
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [preserveRowsOnCommit](preserve-rows-on-commit.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

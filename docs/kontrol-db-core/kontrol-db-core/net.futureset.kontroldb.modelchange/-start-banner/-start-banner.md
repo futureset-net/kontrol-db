@@ -9,7 +9,7 @@ title: StartBanner
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(message: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
 
 

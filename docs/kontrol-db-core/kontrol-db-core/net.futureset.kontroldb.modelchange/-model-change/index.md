@@ -50,6 +50,6 @@ interface [ModelChange](index.html)
 
 | Name | Summary |
 |---|---|
-| [checksum](checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](checksum.html) | [jvm]<br>open fun [checksum](checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](get-name.html) | [jvm]<br>open fun [getName](get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

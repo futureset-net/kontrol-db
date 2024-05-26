@@ -9,7 +9,7 @@ title: tablespace
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [tablespace](tablespace.html): Tablespace? = null
 
 

@@ -9,7 +9,7 @@ title: minValue
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [minValue](min-value.html): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)?
 
 

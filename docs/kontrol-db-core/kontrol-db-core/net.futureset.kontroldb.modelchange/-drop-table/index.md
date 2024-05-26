@@ -9,7 +9,7 @@ title: DropTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [DropTable](index.html)(val table: Table) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [DropTable](index.html)(val table: Table) : [ModelChange](../-model-c
 
 | | |
 |---|---|
-| [DropTable](-drop-table.html) | [core engine and default templates for kontrol-db]<br>constructor(table: Table) |
+| [DropTable](-drop-table.html) | [jvm]<br>constructor(table: Table) |
 
 
 ## Types
@@ -27,7 +27,7 @@ data class [DropTable](index.html)(val table: Table) : [ModelChange](../-model-c
 
 | Name | Summary |
 |---|---|
-| [DropTableBuilder](-drop-table-builder/index.html) | [core engine and default templates for kontrol-db]<br>class [DropTableBuilder](-drop-table-builder/index.html) : [TableBuilder](../-table-builder/index.html)&lt;[DropTable.DropTableBuilder](-drop-table-builder/index.html), [DropTable](index.html)&gt; |
+| [DropTableBuilder](-drop-table-builder/index.html) | [jvm]<br>class [DropTableBuilder](-drop-table-builder/index.html) : [TableBuilder](../-table-builder/index.html)&lt;[DropTable.DropTableBuilder](-drop-table-builder/index.html), [DropTable](index.html)&gt; |
 
 
 ## Properties
@@ -35,7 +35,7 @@ data class [DropTable](index.html)(val table: Table) : [ModelChange](../-model-c
 
 | Name | Summary |
 |---|---|
-| [table](table.html) | [core engine and default templates for kontrol-db]<br>val [table](table.html): Table |
+| [table](table.html) | [jvm]<br>val [table](table.html): Table |
 
 
 ## Functions
@@ -43,6 +43,6 @@ data class [DropTable](index.html)(val table: Table) : [ModelChange](../-model-c
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

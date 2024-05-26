@@ -9,7 +9,7 @@ title: TableAlias
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?, table: Table)
 
 

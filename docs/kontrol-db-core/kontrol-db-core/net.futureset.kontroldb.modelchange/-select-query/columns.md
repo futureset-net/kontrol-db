@@ -9,7 +9,7 @@ title: columns
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [columns](columns.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;ColumnAndValue&gt;
 
 

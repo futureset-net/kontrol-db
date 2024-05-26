@@ -9,7 +9,7 @@ title: columnMap
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [columnMap](column-map.html): [Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html)&lt;DbIdentifier, DbIdentifier&gt;
 
 

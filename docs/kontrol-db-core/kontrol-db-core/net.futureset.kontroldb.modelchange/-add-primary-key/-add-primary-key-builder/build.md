@@ -9,7 +9,7 @@ title: build
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open override fun [build](build.html)(): [AddPrimaryKey](../index.html)
 
 

@@ -9,7 +9,7 @@ title: index
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [index](--index--.html)(block: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = {}): [DropIndexBuilder](index.html)
 
 

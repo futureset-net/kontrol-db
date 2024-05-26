@@ -9,7 +9,7 @@ title: InitCatalog
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(catalog: DbIdentifier)
 
 

@@ -9,7 +9,7 @@ title: selectQuery
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [selectQuery](select-query.html): [SelectQuery](../-select-query/index.html)
 
 

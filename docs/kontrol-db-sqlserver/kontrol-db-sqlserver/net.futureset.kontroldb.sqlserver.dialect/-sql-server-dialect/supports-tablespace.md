@@ -9,7 +9,7 @@ title: supportsTablespace
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override val [supportsTablespace](supports-tablespace.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false
 
 

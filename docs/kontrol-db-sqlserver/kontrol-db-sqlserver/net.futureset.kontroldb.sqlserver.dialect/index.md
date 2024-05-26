@@ -14,5 +14,5 @@ title: net.futureset.kontroldb.sqlserver.dialect
 
 | Name | Summary |
 |---|---|
-| [SqlServerDialect](-sql-server-dialect/index.html) | [sqlserver extensions for kontrol-db]<br>class [SqlServerDialect](-sql-server-dialect/index.html) : AnsiDialect |
+| [SqlServerDialect](-sql-server-dialect/index.html) | [jvm]<br>class [SqlServerDialect](-sql-server-dialect/index.html) : AnsiDialect |
 

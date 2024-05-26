@@ -31,7 +31,7 @@ interface [TableBuilder](index.html)&lt;[B](index.html) : [TableBuilder](index.h
 
 | Name | Summary |
 |---|---|
-| [table](table.html) | [core engine and default templates for kontrol-db]<br>abstract var [table](table.html): Table |
+| [table](table.html) | [jvm]<br>abstract var [table](table.html): Table |
 
 
 ## Functions
@@ -39,8 +39,8 @@ interface [TableBuilder](index.html)&lt;[B](index.html) : [TableBuilder](index.h
 
 | Name | Summary |
 |---|---|
-| [asGlobalTemporaryTable](as-global-temporary-table.html) | [core engine and default templates for kontrol-db]<br>open fun [asGlobalTemporaryTable](as-global-temporary-table.html)(): [B](index.html) |
-| [asLocalTemporaryTable](as-local-temporary-table.html) | [core engine and default templates for kontrol-db]<br>open fun [asLocalTemporaryTable](as-local-temporary-table.html)(): [B](index.html) |
-| [build](index.html#2028528719%2FFunctions%2F894165660) | [core engine and default templates for kontrol-db]<br>abstract fun [build](index.html#2028528719%2FFunctions%2F894165660)(): [T](index.html) |
-| [table](table.html) | [core engine and default templates for kontrol-db]<br>open fun [table](table.html)(table: Table): [B](index.html)<br>open fun [table](table.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null, block: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = {}): [B](index.html) |
+| [asGlobalTemporaryTable](as-global-temporary-table.html) | [jvm]<br>open fun [asGlobalTemporaryTable](as-global-temporary-table.html)(): [B](index.html) |
+| [asLocalTemporaryTable](as-local-temporary-table.html) | [jvm]<br>open fun [asLocalTemporaryTable](as-local-temporary-table.html)(): [B](index.html) |
+| [build](index.html#2028528719%2FFunctions%2F1904592438) | [jvm]<br>abstract fun [build](index.html#2028528719%2FFunctions%2F1904592438)(): [T](index.html) |
+| [table](table.html) | [jvm]<br>open fun [table](table.html)(table: Table): [B](index.html)<br>open fun [table](table.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null, block: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = {}): [B](index.html) |
 

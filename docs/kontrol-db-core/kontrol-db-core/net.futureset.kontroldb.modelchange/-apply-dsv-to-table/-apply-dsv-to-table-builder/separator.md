@@ -9,7 +9,7 @@ title: separator
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [separator](separator.html)(separator: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ApplyDsvToTable.ApplyDsvToTableBuilder](index.html)
 
 

@@ -9,7 +9,7 @@ title: HsqlDbDialect
 
 
 
-[hsqldb extensions for kontrol-db]\
+[jvm]\
 constructor()
 
 

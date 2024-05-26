@@ -9,7 +9,7 @@ title: dbNowTimestamp
 
 
 
-[hsqldb extensions for kontrol-db]\
+[jvm]\
 open override fun [dbNowTimestamp](db-now-timestamp.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

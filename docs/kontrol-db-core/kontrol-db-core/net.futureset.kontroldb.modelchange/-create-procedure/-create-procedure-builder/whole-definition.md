@@ -9,7 +9,7 @@ title: wholeDefinition
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [wholeDefinition](whole-definition.html)(wholeDefinition: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [CreateProcedure.CreateProcedureBuilder](index.html)
 
 

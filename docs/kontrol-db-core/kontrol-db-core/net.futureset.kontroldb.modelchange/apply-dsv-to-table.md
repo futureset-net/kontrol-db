@@ -9,7 +9,7 @@ title: applyDsvToTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[applyDsvToTable](apply-dsv-to-table.html)(lambda: [ApplyDsvToTable.ApplyDsvToTableBuilder](-apply-dsv-to-table/-apply-dsv-to-table-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [ApplyDsvToTable](-apply-dsv-to-table/index.html)
 
 
@@ -37,7 +37,7 @@ Load a delimiter separated file into a table
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|

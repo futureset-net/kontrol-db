@@ -9,7 +9,7 @@ title: outputFile
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [outputFile](output-file.html)(path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
 
 

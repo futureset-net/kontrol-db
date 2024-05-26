@@ -9,7 +9,7 @@ title: SqlServerDialect
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 constructor()
 
 

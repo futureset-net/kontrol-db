@@ -9,7 +9,7 @@ title: body
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [body](body.html)(body: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateProcedure.CreateProcedureBuilder](index.html)
 
 

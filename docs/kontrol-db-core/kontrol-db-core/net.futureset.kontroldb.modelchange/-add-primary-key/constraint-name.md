@@ -9,7 +9,7 @@ title: constraintName
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open override var [constraintName](constraint-name.html): DbIdentifier?
 
 

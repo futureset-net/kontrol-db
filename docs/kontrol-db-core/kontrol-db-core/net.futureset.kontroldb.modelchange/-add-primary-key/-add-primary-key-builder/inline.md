@@ -9,7 +9,7 @@ title: inline
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [inline](inline.html)(): [AddPrimaryKey.AddPrimaryKeyBuilder](index.html)
 
 

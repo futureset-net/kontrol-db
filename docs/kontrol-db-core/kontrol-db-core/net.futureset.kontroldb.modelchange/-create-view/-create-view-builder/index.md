@@ -9,7 +9,7 @@ title: CreateViewBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 class [CreateViewBuilder](index.html)(viewName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) : Builder&lt;[CreateView.CreateViewBuilder](index.html), [CreateView](../index.html)&gt;
 
 
@@ -19,7 +19,7 @@ class [CreateViewBuilder](index.html)(viewName: [String](https://kotlinlang.org/
 
 | | |
 |---|---|
-| [CreateViewBuilder](-create-view-builder.html) | [core engine and default templates for kontrol-db]<br>constructor(viewName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) |
+| [CreateViewBuilder](-create-view-builder.html) | [jvm]<br>constructor(viewName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) |
 
 
 ## Functions
@@ -27,10 +27,10 @@ class [CreateViewBuilder](index.html)(viewName: [String](https://kotlinlang.org/
 
 | Name | Summary |
 |---|---|
-| [body](body.html) | [core engine and default templates for kontrol-db]<br>fun [body](body.html)(body: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateView.CreateViewBuilder](index.html) |
-| [build](build.html) | [core engine and default templates for kontrol-db]<br>open override fun [build](build.html)(): [CreateView](../index.html) |
-| [language](language.html) | [core engine and default templates for kontrol-db]<br>fun [language](language.html)(language: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateView.CreateViewBuilder](index.html) |
-| [resource](resource.html) | [core engine and default templates for kontrol-db]<br>fun [resource](resource.html)(path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateView.CreateViewBuilder](index.html) |
-| [view](view.html) | [core engine and default templates for kontrol-db]<br>fun [view](view.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateView.CreateViewBuilder](index.html) |
-| [wholeDefinition](whole-definition.html) | [core engine and default templates for kontrol-db]<br>fun [wholeDefinition](whole-definition.html)(wholeDefinition: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [CreateView.CreateViewBuilder](index.html) |
+| [body](body.html) | [jvm]<br>fun [body](body.html)(body: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateView.CreateViewBuilder](index.html) |
+| [build](build.html) | [jvm]<br>open override fun [build](build.html)(): [CreateView](../index.html) |
+| [language](language.html) | [jvm]<br>fun [language](language.html)(language: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateView.CreateViewBuilder](index.html) |
+| [resource](resource.html) | [jvm]<br>fun [resource](resource.html)(path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateView.CreateViewBuilder](index.html) |
+| [view](view.html) | [jvm]<br>fun [view](view.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateView.CreateViewBuilder](index.html) |
+| [wholeDefinition](whole-definition.html) | [jvm]<br>fun [wholeDefinition](whole-definition.html)(wholeDefinition: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [CreateView.CreateViewBuilder](index.html) |
 

@@ -9,7 +9,7 @@ title: columnValues
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [columnValues](column-values.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[Map](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html)&lt;DbIdentifier, ColumnValue&gt;&gt;
 
 

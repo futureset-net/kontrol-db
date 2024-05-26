@@ -9,7 +9,7 @@ title: AddNotNull
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(table: Table?, column: ColumnDefinition, constraintName: DbIdentifier?)
 
 

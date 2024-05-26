@@ -9,7 +9,7 @@ title: DropColumns
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(table: SchemaObject, columns: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;DbIdentifier&gt;)
 
 

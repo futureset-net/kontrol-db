@@ -9,7 +9,7 @@ title: createTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[createTable](create-table.html)(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [CreateTable.CreateTableBuilder](-create-table/-create-table-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateTable](-create-table/index.html)
 
 
@@ -37,7 +37,7 @@ Create a table
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|
@@ -87,7 +87,7 @@ fun main() {
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[createTable](create-table.html)(table: Table, lambda: [CreateTable.CreateTableBuilder](-create-table/-create-table-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateTable](-create-table/index.html)
 
 

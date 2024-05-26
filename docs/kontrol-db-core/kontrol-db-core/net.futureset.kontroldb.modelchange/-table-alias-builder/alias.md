@@ -9,7 +9,7 @@ title: alias
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [alias](alias.html)(alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [B](index.html)
 
 abstract var [alias](alias.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?

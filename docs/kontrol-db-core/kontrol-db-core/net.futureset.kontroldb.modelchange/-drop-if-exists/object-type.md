@@ -9,7 +9,7 @@ title: objectType
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [objectType](object-type.html): DbObjectType
 
 

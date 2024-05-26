@@ -9,7 +9,7 @@ title: targetObject
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [targetObject](target-object.html): SchemaObject
 
 

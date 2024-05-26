@@ -9,7 +9,7 @@ title: roleName
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [roleName](role-name.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateRole.CreateRoleBuilder](index.html)
 
 

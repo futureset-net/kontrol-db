@@ -9,7 +9,7 @@ title: unique
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [unique](unique.html)(unique: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [CreateIndex.CreateIndexBuilder](index.html)
 
 

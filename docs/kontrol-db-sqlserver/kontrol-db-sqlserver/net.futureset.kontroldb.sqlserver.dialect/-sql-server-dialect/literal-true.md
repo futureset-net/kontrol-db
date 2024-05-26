@@ -9,7 +9,7 @@ title: literalTrue
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override val [literalTrue](literal-true.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

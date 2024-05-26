@@ -9,7 +9,7 @@ title: value
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [value](value.html)(colName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), v: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ValuesBuilder](index.html)
 
 fun [value](value.html)(colName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), v: [Number](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html)): [ValuesBuilder](index.html)

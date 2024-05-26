@@ -9,7 +9,7 @@ title: DeleteRows
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(table: [TableAlias](../-table-alias/index.html), predicate: [SqlPredicate](../-sql-predicate/index.html)?)
 
 

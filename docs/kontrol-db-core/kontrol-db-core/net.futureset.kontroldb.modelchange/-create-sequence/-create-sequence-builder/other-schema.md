@@ -9,7 +9,7 @@ title: otherSchema
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [otherSchema](other-schema.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateSequence.CreateSequenceBuilder](index.html)
 
 
@@ -25,7 +25,7 @@ Other schema
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | |
 |---|

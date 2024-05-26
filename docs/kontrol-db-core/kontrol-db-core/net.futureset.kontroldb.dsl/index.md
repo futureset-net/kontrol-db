@@ -14,5 +14,5 @@ title: net.futureset.kontroldb.dsl
 
 | Name | Summary |
 |---|---|
-| [ModelChangesBuilder](-model-changes-builder/index.html) | [core engine and default templates for kontrol-db]<br>data class [ModelChangesBuilder](-model-changes-builder/index.html)(val changes: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;[ModelChange](../net.futureset.kontroldb.modelchange/-model-change/index.html)&gt; = mutableListOf()) : Builder&lt;[ModelChangesBuilder](-model-changes-builder/index.html), [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[ModelChange](../net.futureset.kontroldb.modelchange/-model-change/index.html)&gt;&gt; |
+| [ModelChangesBuilder](-model-changes-builder/index.html) | [jvm]<br>data class [ModelChangesBuilder](-model-changes-builder/index.html)(val changes: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;[ModelChange](../net.futureset.kontroldb.modelchange/-model-change/index.html)&gt; = mutableListOf()) : Builder&lt;[ModelChangesBuilder](-model-changes-builder/index.html), [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[ModelChange](../net.futureset.kontroldb.modelchange/-model-change/index.html)&gt;&gt; |
 

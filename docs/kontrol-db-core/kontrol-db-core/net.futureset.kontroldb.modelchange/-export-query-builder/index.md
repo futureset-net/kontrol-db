@@ -9,7 +9,7 @@ title: ExportQueryBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 class [ExportQueryBuilder](index.html) : Builder&lt;[ExportQueryBuilder](index.html), [ExportQuery](../-export-query/index.html)&gt;
 
 
@@ -19,7 +19,7 @@ class [ExportQueryBuilder](index.html) : Builder&lt;[ExportQueryBuilder](index.h
 
 | | |
 |---|---|
-| [ExportQueryBuilder](-export-query-builder.html) | [core engine and default templates for kontrol-db]<br>constructor() |
+| [ExportQueryBuilder](-export-query-builder.html) | [jvm]<br>constructor() |
 
 
 ## Functions
@@ -27,8 +27,8 @@ class [ExportQueryBuilder](index.html) : Builder&lt;[ExportQueryBuilder](index.h
 
 | Name | Summary |
 |---|---|
-| [build](build.html) | [core engine and default templates for kontrol-db]<br>open override fun [build](build.html)(): [ExportQuery](../-export-query/index.html) |
-| [outputFile](output-file.html) | [core engine and default templates for kontrol-db]<br>fun [outputFile](output-file.html)(path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) |
-| [selectFrom](select-from.html) | [core engine and default templates for kontrol-db]<br>fun [selectFrom](select-from.html)(from: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [SelectQuery.SelectQueryBuilder](../-select-query/-select-query-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [ExportQueryBuilder](index.html) |
-| [separator](separator.html) | [core engine and default templates for kontrol-db]<br>fun [separator](separator.html)(separator: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ExportQueryBuilder](index.html) |
+| [build](build.html) | [jvm]<br>open override fun [build](build.html)(): [ExportQuery](../-export-query/index.html) |
+| [outputFile](output-file.html) | [jvm]<br>fun [outputFile](output-file.html)(path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) |
+| [selectFrom](select-from.html) | [jvm]<br>fun [selectFrom](select-from.html)(from: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [SelectQuery.SelectQueryBuilder](../-select-query/-select-query-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [ExportQueryBuilder](index.html) |
+| [separator](separator.html) | [jvm]<br>fun [separator](separator.html)(separator: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ExportQueryBuilder](index.html) |
 

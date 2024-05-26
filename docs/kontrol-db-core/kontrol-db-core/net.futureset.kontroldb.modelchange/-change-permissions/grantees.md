@@ -9,7 +9,7 @@ title: grantees
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [grantees](grantees.html): [Set](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html)&lt;DbIdentifier&gt;
 
 

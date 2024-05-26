@@ -9,7 +9,7 @@ title: asLocalTemporaryTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [asLocalTemporaryTable](as-local-temporary-table.html)(): [B](index.html)
 
 

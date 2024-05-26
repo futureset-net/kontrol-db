@@ -9,7 +9,7 @@ title: checksum
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [checksum](checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)
 
 

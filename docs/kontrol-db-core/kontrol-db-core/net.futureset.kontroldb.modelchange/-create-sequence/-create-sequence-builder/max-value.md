@@ -9,7 +9,7 @@ title: maxValue
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [maxValue](max-value.html)(maxValue: [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)): [CreateSequence.CreateSequenceBuilder](index.html)
 
 

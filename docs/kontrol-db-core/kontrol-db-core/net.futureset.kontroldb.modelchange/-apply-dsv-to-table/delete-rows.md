@@ -9,7 +9,7 @@ title: deleteRows
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [deleteRows](delete-rows.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

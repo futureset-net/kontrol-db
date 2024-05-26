@@ -24,7 +24,7 @@ interface [ConstraintModelChange](index.html) : [ModelChange](../-model-change/i
 
 | Name | Summary |
 |---|---|
-| [constraintName](constraint-name.html) | [core engine and default templates for kontrol-db]<br>abstract val [constraintName](constraint-name.html): DbIdentifier? |
+| [constraintName](constraint-name.html) | [jvm]<br>abstract val [constraintName](constraint-name.html): DbIdentifier? |
 
 
 ## Functions
@@ -32,6 +32,6 @@ interface [ConstraintModelChange](index.html) : [ModelChange](../-model-change/i
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

@@ -9,7 +9,7 @@ title: useDbLoadingTool
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [useDbLoadingTool](use-db-loading-tool.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

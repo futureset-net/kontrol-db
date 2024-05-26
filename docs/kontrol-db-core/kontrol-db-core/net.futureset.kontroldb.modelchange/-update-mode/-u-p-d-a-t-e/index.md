@@ -9,7 +9,7 @@ title: UPDATE
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 [UPDATE](index.html)
 
 
@@ -19,6 +19,6 @@ title: UPDATE
 
 | Name | Summary |
 |---|---|
-| [name](../../-table-persistence/-n-o-r-m-a-l/index.html#-372974862%2FProperties%2F894165660) | [core engine and default templates for kontrol-db]<br>val [name](../../-table-persistence/-n-o-r-m-a-l/index.html#-372974862%2FProperties%2F894165660): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
-| [ordinal](../../-table-persistence/-n-o-r-m-a-l/index.html#-739389684%2FProperties%2F894165660) | [core engine and default templates for kontrol-db]<br>val [ordinal](../../-table-persistence/-n-o-r-m-a-l/index.html#-739389684%2FProperties%2F894165660): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [name](../../-table-persistence/-n-o-r-m-a-l/index.html#-372974862%2FProperties%2F1904592438) | [jvm]<br>val [name](../../-table-persistence/-n-o-r-m-a-l/index.html#-372974862%2FProperties%2F1904592438): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [ordinal](../../-table-persistence/-n-o-r-m-a-l/index.html#-739389684%2FProperties%2F1904592438) | [jvm]<br>val [ordinal](../../-table-persistence/-n-o-r-m-a-l/index.html#-739389684%2FProperties%2F1904592438): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
 

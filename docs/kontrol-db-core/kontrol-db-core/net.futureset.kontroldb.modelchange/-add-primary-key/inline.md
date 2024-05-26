@@ -9,7 +9,7 @@ title: inline
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [inline](inline.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

@@ -9,7 +9,7 @@ title: startTransaction
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override fun [startTransaction](start-transaction.html)(id: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

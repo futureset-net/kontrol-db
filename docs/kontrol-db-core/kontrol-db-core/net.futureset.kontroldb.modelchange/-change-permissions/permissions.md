@@ -9,7 +9,7 @@ title: permissions
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [permissions](permissions.html): [Set](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html)&lt;[String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)&gt;
 
 

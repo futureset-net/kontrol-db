@@ -9,7 +9,7 @@ title: view
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [view](view.html): SchemaObject
 
 

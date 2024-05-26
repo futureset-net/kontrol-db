@@ -9,7 +9,7 @@ title: grantOrRevoke
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [grantOrRevoke](grant-or-revoke.html): [GrantOrRevoke](../-grant-or-revoke/index.html)
 
 
