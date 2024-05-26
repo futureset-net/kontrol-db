@@ -9,7 +9,7 @@ title: fromSelect
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [fromSelect](from-select.html): [SelectQuery](../-select-query/index.html)?
 
 

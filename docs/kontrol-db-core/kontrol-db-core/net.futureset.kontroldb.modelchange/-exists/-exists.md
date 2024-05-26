@@ -9,7 +9,7 @@ title: Exists
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(selectQuery: [SelectQuery](../-select-query/index.html))
 
 

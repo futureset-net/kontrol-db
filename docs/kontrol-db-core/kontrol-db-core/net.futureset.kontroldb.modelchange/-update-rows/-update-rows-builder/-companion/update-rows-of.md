@@ -9,7 +9,7 @@ title: updateRowsOf
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [updateRowsOf](update-rows-of.html)(table: Table, block: [UpdateRows.UpdateRowsBuilder](../index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [UpdateRows](../../index.html)
 
 

@@ -9,7 +9,7 @@ title: Not
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [Not](index.html)(val predicate: [SqlPredicate](../-sql-predicate/index.html)) : [SqlPredicate](../-sql-predicate/index.html)
 
 
@@ -19,7 +19,7 @@ data class [Not](index.html)(val predicate: [SqlPredicate](../-sql-predicate/ind
 
 | | |
 |---|---|
-| [Not](-not.html) | [core engine and default templates for kontrol-db]<br>constructor(predicate: [SqlPredicate](../-sql-predicate/index.html)) |
+| [Not](-not.html) | [jvm]<br>constructor(predicate: [SqlPredicate](../-sql-predicate/index.html)) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [Not](index.html)(val predicate: [SqlPredicate](../-sql-predicate/ind
 
 | Name | Summary |
 |---|---|
-| [predicate](predicate.html) | [core engine and default templates for kontrol-db]<br>val [predicate](predicate.html): [SqlPredicate](../-sql-predicate/index.html) |
+| [predicate](predicate.html) | [jvm]<br>val [predicate](predicate.html): [SqlPredicate](../-sql-predicate/index.html) |
 
 
 ## Functions
@@ -35,7 +35,7 @@ data class [Not](index.html)(val predicate: [SqlPredicate](../-sql-predicate/ind
 
 | Name | Summary |
 |---|---|
-| [isEmpty](../-sql-predicate/is-empty.html) | [core engine and default templates for kontrol-db]<br>open fun [isEmpty](../-sql-predicate/is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [plus](../-sql-predicate/plus.html) | [core engine and default templates for kontrol-db]<br>open operator fun [plus](../-sql-predicate/plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [SqlPredicate](../-sql-predicate/index.html) |
-| [toSql](to-sql.html) | [core engine and default templates for kontrol-db]<br>open override fun [toSql](to-sql.html)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [isEmpty](../-sql-predicate/is-empty.html) | [jvm]<br>open fun [isEmpty](../-sql-predicate/is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [plus](../-sql-predicate/plus.html) | [jvm]<br>open operator fun [plus](../-sql-predicate/plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [SqlPredicate](../-sql-predicate/index.html) |
+| [toSql](to-sql.html) | [jvm]<br>open override fun [toSql](to-sql.html)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

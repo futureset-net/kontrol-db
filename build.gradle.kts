@@ -30,19 +30,24 @@ extensions.configure<SpotlessExtension> {
         target("**/src/*/kotlin/**/*.kt", "**/*.gradle.kts")
     }
 }
+
 subprojects {
     tasks.withType<DokkaTaskPartial>().configureEach {
         dokkaSourceSets.configureEach {
             failOnWarning.set(true)
             samples = files(rootDir.resolve("integrationTest/src/main/kotlin/net/futureset/kontroldb/samples"))
+            includes.from(
+                *project.files("extra.md").filter {
+                    it.exists()
+                }.files.toTypedArray(),
+            )
             sourceLink {
                 localDirectory.set(projectDir.resolve("src"))
-                remoteUrl.set(URI.create("https://github.com/futureset/kontrol-db/tree/main").toURL())
+                remoteUrl.set(URI.create("https://github.com/futureset-net/kontrol-db/tree/main").toURL())
                 remoteLineSuffix.set("#L")
             }
             perPackageOption {
                 matchingRegex.set(".*(modelchange|dialect|dsl).*")
-                displayName.set(project.description)
                 suppressObviousFunctions.set(true)
                 documentedVisibilities.set(setOf(DokkaConfiguration.Visibility.PUBLIC))
                 reportUndocumented.set(false)
@@ -62,6 +67,8 @@ tasks.named<Delete>("clean") {
 }
 
 tasks.dokkaJekyllMultiModule.configure {
+    moduleName.set(project.name)
+    includes.from(file("extra.md"))
     this.outputDirectory.set(project.layout.projectDirectory.dir("docs"))
 }
 

@@ -9,7 +9,7 @@ title: path
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [path](path.html): Resource?
 
 

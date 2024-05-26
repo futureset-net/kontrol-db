@@ -9,7 +9,7 @@ title: index
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [index](--index--.html): SchemaObject
 
 

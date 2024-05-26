@@ -9,7 +9,7 @@ title: CreateRole
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [CreateRole](index.html)(val roleName: DbIdentifier) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [CreateRole](index.html)(val roleName: DbIdentifier) : [ModelChange](
 
 | | |
 |---|---|
-| [CreateRole](-create-role.html) | [core engine and default templates for kontrol-db]<br>constructor(roleName: DbIdentifier) |
+| [CreateRole](-create-role.html) | [jvm]<br>constructor(roleName: DbIdentifier) |
 
 
 ## Types
@@ -27,7 +27,7 @@ data class [CreateRole](index.html)(val roleName: DbIdentifier) : [ModelChange](
 
 | Name | Summary |
 |---|---|
-| [CreateRoleBuilder](-create-role-builder/index.html) | [core engine and default templates for kontrol-db]<br>data class [CreateRoleBuilder](-create-role-builder/index.html)(roleName: DbIdentifier? = null) : Builder&lt;[CreateRole.CreateRoleBuilder](-create-role-builder/index.html), [CreateRole](index.html)&gt; |
+| [CreateRoleBuilder](-create-role-builder/index.html) | [jvm]<br>data class [CreateRoleBuilder](-create-role-builder/index.html)(roleName: DbIdentifier? = null) : Builder&lt;[CreateRole.CreateRoleBuilder](-create-role-builder/index.html), [CreateRole](index.html)&gt; |
 
 
 ## Properties
@@ -35,7 +35,7 @@ data class [CreateRole](index.html)(val roleName: DbIdentifier) : [ModelChange](
 
 | Name | Summary |
 |---|---|
-| [roleName](role-name.html) | [core engine and default templates for kontrol-db]<br>val [roleName](role-name.html): DbIdentifier |
+| [roleName](role-name.html) | [jvm]<br>val [roleName](role-name.html): DbIdentifier |
 
 
 ## Functions
@@ -43,6 +43,6 @@ data class [CreateRole](index.html)(val roleName: DbIdentifier) : [ModelChange](
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

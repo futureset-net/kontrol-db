@@ -9,7 +9,7 @@ title: statementSeparator
 
 
 
-[hsqldb extensions for kontrol-db]\
+[jvm]\
 open override val [statementSeparator](statement-separator.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

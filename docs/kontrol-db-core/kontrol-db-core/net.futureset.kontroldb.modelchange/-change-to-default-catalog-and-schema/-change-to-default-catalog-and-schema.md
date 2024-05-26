@@ -9,7 +9,7 @@ title: ChangeToDefaultCatalogAndSchema
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(message: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) = &quot;Change to default catalog and schema in settings&quot;)
 
 

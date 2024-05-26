@@ -9,7 +9,7 @@ title: table
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [table](table.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [AddColumns.AddColumnsBuilder](index.html)
 
 

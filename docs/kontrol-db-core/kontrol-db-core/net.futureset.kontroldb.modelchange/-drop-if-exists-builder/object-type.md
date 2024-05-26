@@ -9,7 +9,7 @@ title: objectType
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [objectType](object-type.html)(objectType: DbObjectType): [DropIfExistsBuilder](index.html)
 
 

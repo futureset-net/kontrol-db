@@ -9,7 +9,7 @@ title: entries
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [entries](entries.html): [EnumEntries](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.enums/-enum-entries/index.html)&lt;[UpdateMode](index.html)&gt;
 
 

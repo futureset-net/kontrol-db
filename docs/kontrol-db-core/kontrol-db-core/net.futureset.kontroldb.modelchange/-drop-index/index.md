@@ -9,7 +9,7 @@ title: DropIndex
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [DropIndex](index.html)(val index: SchemaObject, val table: Table, val ifExists: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [DropIndex](index.html)(val index: SchemaObject, val table: Table, va
 
 | | |
 |---|---|
-| [DropIndex](-drop-index.html) | [core engine and default templates for kontrol-db]<br>constructor(index: SchemaObject, table: Table, ifExists: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)) |
+| [DropIndex](-drop-index.html) | [jvm]<br>constructor(index: SchemaObject, table: Table, ifExists: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)) |
 
 
 ## Properties
@@ -27,9 +27,9 @@ data class [DropIndex](index.html)(val index: SchemaObject, val table: Table, va
 
 | Name | Summary |
 |---|---|
-| [ifExists](if-exists.html) | [core engine and default templates for kontrol-db]<br>val [ifExists](if-exists.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [index](--index--.html) | [core engine and default templates for kontrol-db]<br>val [index](--index--.html): SchemaObject |
-| [table](table.html) | [core engine and default templates for kontrol-db]<br>val [table](table.html): Table |
+| [ifExists](if-exists.html) | [jvm]<br>val [ifExists](if-exists.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [index](--index--.html) | [jvm]<br>val [index](--index--.html): SchemaObject |
+| [table](table.html) | [jvm]<br>val [table](table.html): Table |
 
 
 ## Functions
@@ -37,6 +37,6 @@ data class [DropIndex](index.html)(val index: SchemaObject, val table: Table, va
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

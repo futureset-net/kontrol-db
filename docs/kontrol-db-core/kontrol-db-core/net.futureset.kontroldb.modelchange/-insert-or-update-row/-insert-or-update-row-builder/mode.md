@@ -9,7 +9,7 @@ title: mode
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [mode](mode.html)(mode: [UpdateMode](../../-update-mode/index.html)): [InsertOrUpdateRow.InsertOrUpdateRowBuilder](index.html)
 
 

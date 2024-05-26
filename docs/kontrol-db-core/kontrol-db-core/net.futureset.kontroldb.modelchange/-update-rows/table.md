@@ -9,7 +9,7 @@ title: table
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [table](table.html): [TableAlias](../-table-alias/index.html)
 
 

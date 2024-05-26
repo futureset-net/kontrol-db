@@ -9,7 +9,7 @@ title: literalFalse
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override val [literalFalse](literal-false.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

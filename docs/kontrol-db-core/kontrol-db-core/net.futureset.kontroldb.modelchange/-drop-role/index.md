@@ -9,7 +9,7 @@ title: DropRole
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [DropRole](index.html)(val roleName: DbIdentifier) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [DropRole](index.html)(val roleName: DbIdentifier) : [ModelChange](..
 
 | | |
 |---|---|
-| [DropRole](-drop-role.html) | [core engine and default templates for kontrol-db]<br>constructor(roleName: DbIdentifier) |
+| [DropRole](-drop-role.html) | [jvm]<br>constructor(roleName: DbIdentifier) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [DropRole](index.html)(val roleName: DbIdentifier) : [ModelChange](..
 
 | Name | Summary |
 |---|---|
-| [roleName](role-name.html) | [core engine and default templates for kontrol-db]<br>val [roleName](role-name.html): DbIdentifier |
+| [roleName](role-name.html) | [jvm]<br>val [roleName](role-name.html): DbIdentifier |
 
 
 ## Functions
@@ -35,6 +35,6 @@ data class [DropRole](index.html)(val roleName: DbIdentifier) : [ModelChange](..
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

@@ -9,7 +9,7 @@ title: DropIfExists
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(objectName: SchemaObject, objectType: DbObjectType)
 
 

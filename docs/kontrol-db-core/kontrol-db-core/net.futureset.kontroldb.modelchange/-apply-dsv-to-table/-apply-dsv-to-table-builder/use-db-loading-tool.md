@@ -9,7 +9,7 @@ title: useDbLoadingTool
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [useDbLoadingTool](use-db-loading-tool.html)(useDbLoadingTool: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [ApplyDsvToTable.ApplyDsvToTableBuilder](index.html)
 
 

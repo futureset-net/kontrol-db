@@ -9,7 +9,7 @@ title: ScriptComment
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [ScriptComment](index.html)(val text: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) : [ModelChange](../-model-change/index.html), [CommentMarker](../-comment-marker/index.html)
 
 
@@ -19,7 +19,7 @@ data class [ScriptComment](index.html)(val text: [String](https://kotlinlang.org
 
 | | |
 |---|---|
-| [ScriptComment](-script-comment.html) | [core engine and default templates for kontrol-db]<br>constructor(text: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) |
+| [ScriptComment](-script-comment.html) | [jvm]<br>constructor(text: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [ScriptComment](index.html)(val text: [String](https://kotlinlang.org
 
 | Name | Summary |
 |---|---|
-| [text](text.html) | [core engine and default templates for kontrol-db]<br>val [text](text.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [text](text.html) | [jvm]<br>val [text](text.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 
 
 ## Functions
@@ -35,6 +35,6 @@ data class [ScriptComment](index.html)(val text: [String](https://kotlinlang.org
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

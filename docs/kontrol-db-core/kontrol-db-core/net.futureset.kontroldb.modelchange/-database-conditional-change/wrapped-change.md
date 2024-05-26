@@ -9,7 +9,7 @@ title: wrappedChange
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [wrappedChange](wrapped-change.html): [ModelChange](../-model-change/index.html)
 
 

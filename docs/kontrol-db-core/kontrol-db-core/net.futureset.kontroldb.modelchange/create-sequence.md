@@ -9,7 +9,7 @@ title: createSequence
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[createSequence](create-sequence.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [CreateSequence.CreateSequenceBuilder](-create-sequence/-create-sequence-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateSequence](-create-sequence/index.html)
 
 
@@ -29,7 +29,7 @@ Create a sequence
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|

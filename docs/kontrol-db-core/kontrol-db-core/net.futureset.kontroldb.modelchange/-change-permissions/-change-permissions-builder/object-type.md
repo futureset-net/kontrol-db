@@ -9,7 +9,7 @@ title: objectType
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [objectType](object-type.html)(objectType: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ChangePermissions.ChangePermissionsBuilder](index.html)
 
 fun [objectType](object-type.html)(objectType: DbObjectType): [ChangePermissions.ChangePermissionsBuilder](index.html)

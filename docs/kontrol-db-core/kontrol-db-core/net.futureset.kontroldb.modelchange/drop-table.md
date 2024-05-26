@@ -9,7 +9,7 @@ title: dropTable
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[dropTable](drop-table.html)(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [DropTable.DropTableBuilder](-drop-table/-drop-table-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = {}): [DropTable](-drop-table/index.html)
 
 
@@ -37,7 +37,7 @@ Drop a table
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | | |
 |---|---|
@@ -87,7 +87,7 @@ fun main() {
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[dropTable](drop-table.html)(table: Table): [DropTable](-drop-table/index.html)
 
 

@@ -9,7 +9,7 @@ title: CreateIndex
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(table: Table, columnReferences: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;DbIdentifier&gt;, clustered: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html), unique: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html), indexName: DbIdentifier? = null, tablespace: Tablespace? = null)
 
 

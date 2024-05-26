@@ -9,7 +9,7 @@ title: ifExists
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ifExists](if-exists.html)(): [DropIndexBuilder](index.html)
 
 

@@ -9,7 +9,7 @@ title: resource
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [resource](resource.html)(path: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [CreateProcedure.CreateProcedureBuilder](index.html)
 
 

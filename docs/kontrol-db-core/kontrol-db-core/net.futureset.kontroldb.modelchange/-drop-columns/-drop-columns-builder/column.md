@@ -9,7 +9,7 @@ title: column
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [column](column.html)(vararg columns: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [DropColumns.DropColumnsBuilder](index.html)
 
 

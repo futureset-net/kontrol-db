@@ -9,7 +9,7 @@ title: row
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [row](row.html)(lambda: [ValuesBuilder](../../-values-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [InsertOrUpdateRow.InsertOrUpdateRowBuilder](index.html)
 
 

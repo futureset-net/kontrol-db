@@ -9,7 +9,7 @@ title: nullableByDefault
 
 
 
-[hsqldb extensions for kontrol-db]\
+[jvm]\
 open override val [nullableByDefault](nullable-by-default.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = true
 
 

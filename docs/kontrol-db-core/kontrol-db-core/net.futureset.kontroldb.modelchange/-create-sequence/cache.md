@@ -9,7 +9,7 @@ title: cache
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [cache](cache.html): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)
 
 

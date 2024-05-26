@@ -9,7 +9,7 @@ title: fromQuery
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [fromQuery](from-query.html)(lambda: [SelectQuery.SelectQueryBuilder](../../-select-query/-select-query-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [InsertRows.InsertRowsBuilder](index.html)
 
 

@@ -9,7 +9,7 @@ title: getName
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [getName](get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

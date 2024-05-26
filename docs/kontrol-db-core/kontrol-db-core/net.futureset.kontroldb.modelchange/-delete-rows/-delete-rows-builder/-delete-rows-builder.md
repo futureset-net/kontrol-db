@@ -9,7 +9,7 @@ title: DeleteRowsBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(alias: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)? = null, predicate: [SqlPredicate](../../-sql-predicate/index.html) = AllOf(emptyList()))
 
 

@@ -9,7 +9,7 @@ title: column
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [column](column.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), type: ColumnType, block: ColumnDefinition.ColumnDefinitionBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = { }): [AddColumns.AddColumnsBuilder](index.html)
 
 

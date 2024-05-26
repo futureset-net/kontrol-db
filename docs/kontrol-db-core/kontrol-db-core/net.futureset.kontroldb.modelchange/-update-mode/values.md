@@ -9,7 +9,7 @@ title: values
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [values](values.html)(): [Array](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html)&lt;[UpdateMode](index.html)&gt;
 
 

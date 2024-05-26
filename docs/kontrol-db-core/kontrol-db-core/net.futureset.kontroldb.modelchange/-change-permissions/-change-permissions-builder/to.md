@@ -9,7 +9,7 @@ title: to
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [to](to.html)(vararg grantees: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ChangePermissions.ChangePermissionsBuilder](index.html)
 
 

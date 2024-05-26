@@ -9,7 +9,7 @@ title: language
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [language](language.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
 
 

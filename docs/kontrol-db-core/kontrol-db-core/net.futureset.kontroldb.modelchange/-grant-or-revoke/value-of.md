@@ -9,7 +9,7 @@ title: valueOf
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [valueOf](value-of.html)(value: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [GrantOrRevoke](index.html)
 
 

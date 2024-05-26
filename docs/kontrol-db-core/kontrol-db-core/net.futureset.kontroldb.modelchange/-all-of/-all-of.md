@@ -9,7 +9,7 @@ title: AllOf
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(predicates: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[SqlPredicate](../-sql-predicate/index.html)&gt;)
 
 

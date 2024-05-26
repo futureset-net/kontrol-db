@@ -9,7 +9,7 @@ title: AddColumnsBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 class [AddColumnsBuilder](index.html)(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;ColumnDefinition&gt; = mutableListOf()) : Builder&lt;[AddColumns.AddColumnsBuilder](index.html), [AddColumns](../index.html)&gt;
 
 
@@ -19,7 +19,7 @@ class [AddColumnsBuilder](index.html)(tableName: [String](https://kotlinlang.org
 
 | | |
 |---|---|
-| [AddColumnsBuilder](-add-columns-builder.html) | [core engine and default templates for kontrol-db]<br>constructor(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;ColumnDefinition&gt; = mutableListOf()) |
+| [AddColumnsBuilder](-add-columns-builder.html) | [jvm]<br>constructor(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;ColumnDefinition&gt; = mutableListOf()) |
 
 
 ## Functions
@@ -27,7 +27,7 @@ class [AddColumnsBuilder](index.html)(tableName: [String](https://kotlinlang.org
 
 | Name | Summary |
 |---|---|
-| [build](build.html) | [core engine and default templates for kontrol-db]<br>open override fun [build](build.html)(): [AddColumns](../index.html) |
-| [column](column.html) | [core engine and default templates for kontrol-db]<br>fun [column](column.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), type: ColumnType, block: ColumnDefinition.ColumnDefinitionBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = { }): [AddColumns.AddColumnsBuilder](index.html) |
-| [table](table.html) | [core engine and default templates for kontrol-db]<br>fun [table](table.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [AddColumns.AddColumnsBuilder](index.html) |
+| [build](build.html) | [jvm]<br>open override fun [build](build.html)(): [AddColumns](../index.html) |
+| [column](column.html) | [jvm]<br>fun [column](column.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), type: ColumnType, block: ColumnDefinition.ColumnDefinitionBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html) = { }): [AddColumns.AddColumnsBuilder](index.html) |
+| [table](table.html) | [jvm]<br>fun [table](table.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [AddColumns.AddColumnsBuilder](index.html) |
 

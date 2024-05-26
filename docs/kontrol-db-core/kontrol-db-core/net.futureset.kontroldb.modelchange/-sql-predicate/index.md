@@ -31,7 +31,7 @@ interface [SqlPredicate](index.html) : SqlString
 
 | Name | Summary |
 |---|---|
-| [isEmpty](is-empty.html) | [core engine and default templates for kontrol-db]<br>open fun [isEmpty](is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [plus](plus.html) | [core engine and default templates for kontrol-db]<br>open operator fun [plus](plus.html)(predicate: [SqlPredicate](index.html)): [SqlPredicate](index.html) |
-| [toSql](../-operand/index.html#1035997089%2FFunctions%2F894165660) | [core engine and default templates for kontrol-db]<br>abstract fun [toSql](../-operand/index.html#1035997089%2FFunctions%2F894165660)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [isEmpty](is-empty.html) | [jvm]<br>open fun [isEmpty](is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [plus](plus.html) | [jvm]<br>open operator fun [plus](plus.html)(predicate: [SqlPredicate](index.html)): [SqlPredicate](index.html) |
+| [toSql](../-operand/index.html#1035997089%2FFunctions%2F1904592438) | [jvm]<br>abstract fun [toSql](../-operand/index.html#1035997089%2FFunctions%2F1904592438)(effectiveSettings: EffectiveSettings): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

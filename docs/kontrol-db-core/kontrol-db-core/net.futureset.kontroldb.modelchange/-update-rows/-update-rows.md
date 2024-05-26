@@ -9,7 +9,7 @@ title: UpdateRows
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(table: [TableAlias](../-table-alias/index.html), columnValues: [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;ColumnAndValue&gt;, predicate: [SqlPredicate](../-sql-predicate/index.html))
 
 

@@ -9,7 +9,7 @@ title: text
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [text](text.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

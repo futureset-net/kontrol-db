@@ -9,7 +9,7 @@ title: primaryKey
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [primaryKey](primary-key.html)(constraintName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [AddPrimaryKey.AddPrimaryKeyBuilder](../../-add-primary-key/-add-primary-key-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateTable.CreateTableBuilder](index.html)
 
 

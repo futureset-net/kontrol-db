@@ -9,7 +9,7 @@ title: PredicateBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(predicate: [SqlPredicate](../-sql-predicate/index.html) = AllOf(predicates = emptyList()))
 
 

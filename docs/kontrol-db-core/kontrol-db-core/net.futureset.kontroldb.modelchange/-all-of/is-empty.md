@@ -9,7 +9,7 @@ title: isEmpty
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open override fun [isEmpty](is-empty.html)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

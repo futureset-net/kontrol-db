@@ -9,7 +9,7 @@ title: ChangePermissions
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(grantOrRevoke: [GrantOrRevoke](../-grant-or-revoke/index.html), grantees: [Set](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html)&lt;DbIdentifier&gt;, permissions: [Set](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html)&lt;[String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)&gt;, targetObject: SchemaObject, targetObjectType: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
 
 

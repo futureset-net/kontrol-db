@@ -9,7 +9,7 @@ title: indexName
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [indexName](index-name.html): DbIdentifier? = null
 
 

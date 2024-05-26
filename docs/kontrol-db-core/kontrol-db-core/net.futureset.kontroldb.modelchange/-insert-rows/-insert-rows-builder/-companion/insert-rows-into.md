@@ -9,7 +9,7 @@ title: insertRowsInto
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [insertRowsInto](insert-rows-into.html)(table: Table, block: [InsertRows.InsertRowsBuilder](../index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [InsertRows](../../index.html)
 
 

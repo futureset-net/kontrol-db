@@ -9,7 +9,7 @@ title: incrementBy
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [incrementBy](increment-by.html)(incrementBy: [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)): [CreateSequence.CreateSequenceBuilder](index.html)
 
 

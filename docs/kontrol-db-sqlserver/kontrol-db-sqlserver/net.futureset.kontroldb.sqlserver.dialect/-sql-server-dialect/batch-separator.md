@@ -9,7 +9,7 @@ title: batchSeparator
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override val [batchSeparator](batch-separator.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

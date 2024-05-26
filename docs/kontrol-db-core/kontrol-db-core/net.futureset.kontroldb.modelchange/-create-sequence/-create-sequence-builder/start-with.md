@@ -9,7 +9,7 @@ title: startWith
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [startWith](start-with.html)(startWith: [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)): [CreateSequence.CreateSequenceBuilder](index.html)
 
 

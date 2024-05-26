@@ -9,7 +9,7 @@ title: procedure
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [procedure](procedure.html)(lambda: SchemaObjectBuilder.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [CreateProcedure.CreateProcedureBuilder](index.html)
 
 

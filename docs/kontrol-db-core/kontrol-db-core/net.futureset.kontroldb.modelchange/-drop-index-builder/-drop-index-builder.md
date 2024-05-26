@@ -9,7 +9,7 @@ title: DropIndexBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(indexName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html))
 
 

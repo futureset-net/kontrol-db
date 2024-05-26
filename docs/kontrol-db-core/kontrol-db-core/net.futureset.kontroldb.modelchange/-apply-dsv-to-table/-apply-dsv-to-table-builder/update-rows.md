@@ -9,7 +9,7 @@ title: updateRows
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [updateRows](update-rows.html)(updateRows: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [ApplyDsvToTable.ApplyDsvToTableBuilder](index.html)
 
 

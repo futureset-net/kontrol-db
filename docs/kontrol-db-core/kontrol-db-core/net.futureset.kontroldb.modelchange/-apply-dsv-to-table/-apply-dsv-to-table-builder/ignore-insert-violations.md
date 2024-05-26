@@ -9,7 +9,7 @@ title: ignoreInsertViolations
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ignoreInsertViolations](ignore-insert-violations.html)(ignoreInsertViolations: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)): [ApplyDsvToTable.ApplyDsvToTableBuilder](index.html)
 
 

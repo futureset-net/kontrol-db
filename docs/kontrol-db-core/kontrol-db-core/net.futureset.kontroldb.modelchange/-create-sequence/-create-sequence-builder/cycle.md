@@ -9,7 +9,7 @@ title: cycle
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [cycle](cycle.html)(): [CreateSequence.CreateSequenceBuilder](index.html)
 
 

@@ -9,7 +9,7 @@ title: targetObjectType
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [targetObjectType](target-object-type.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
 
 

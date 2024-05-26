@@ -9,7 +9,7 @@ title: tempTable
 
 
 
-[sqlserver extensions for kontrol-db]\
+[jvm]\
 open override fun [tempTable](temp-table.html)(table: Table): Table
 
 

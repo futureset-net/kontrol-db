@@ -9,7 +9,7 @@ title: referencing
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [referencing](referencing.html)(fromAndTo: [ReferencingColumn](../../-referencing-column/index.html)): [AddForeignKey.AddForeignKeyBuilder](index.html)
 
 

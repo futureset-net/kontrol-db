@@ -9,7 +9,7 @@ title: DropColumnsBuilder
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 constructor(tableName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), columns: [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;DbIdentifier&gt; = mutableListOf())
 
 

@@ -9,7 +9,7 @@ title: file
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [file](file.html)(file: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [ApplyDsvToTable.ApplyDsvToTableBuilder](index.html)
 
 

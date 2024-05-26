@@ -9,7 +9,7 @@ title: plus
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open operator override fun [plus](plus.html)(predicate: [SqlPredicate](../-sql-predicate/index.html)): [AnyOf](index.html)
 
 

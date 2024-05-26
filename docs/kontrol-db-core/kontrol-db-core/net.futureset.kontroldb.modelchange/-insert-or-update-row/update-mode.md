@@ -9,7 +9,7 @@ title: updateMode
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [updateMode](update-mode.html): [UpdateMode](../-update-mode/index.html)
 
 

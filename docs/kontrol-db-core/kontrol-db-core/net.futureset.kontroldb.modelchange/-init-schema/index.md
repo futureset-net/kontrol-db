@@ -9,7 +9,7 @@ title: InitSchema
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [InitSchema](index.html)(val schema: DbIdentifier) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [InitSchema](index.html)(val schema: DbIdentifier) : [ModelChange](..
 
 | | |
 |---|---|
-| [InitSchema](-init-schema.html) | [core engine and default templates for kontrol-db]<br>constructor(schema: DbIdentifier) |
+| [InitSchema](-init-schema.html) | [jvm]<br>constructor(schema: DbIdentifier) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [InitSchema](index.html)(val schema: DbIdentifier) : [ModelChange](..
 
 | Name | Summary |
 |---|---|
-| [schema](schema.html) | [core engine and default templates for kontrol-db]<br>val [schema](schema.html): DbIdentifier |
+| [schema](schema.html) | [jvm]<br>val [schema](schema.html): DbIdentifier |
 
 
 ## Functions
@@ -35,6 +35,6 @@ data class [InitSchema](index.html)(val schema: DbIdentifier) : [ModelChange](..
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

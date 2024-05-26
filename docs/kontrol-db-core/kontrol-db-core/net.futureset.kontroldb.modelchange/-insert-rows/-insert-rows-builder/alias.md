@@ -9,7 +9,7 @@ title: alias
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open override var [alias](alias.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)?
 
 

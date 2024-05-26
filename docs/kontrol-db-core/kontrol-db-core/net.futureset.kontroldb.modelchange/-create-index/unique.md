@@ -9,7 +9,7 @@ title: unique
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [unique](unique.html): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

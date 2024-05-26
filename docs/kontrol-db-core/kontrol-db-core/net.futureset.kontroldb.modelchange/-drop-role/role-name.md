@@ -9,7 +9,7 @@ title: roleName
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [roleName](role-name.html): DbIdentifier
 
 

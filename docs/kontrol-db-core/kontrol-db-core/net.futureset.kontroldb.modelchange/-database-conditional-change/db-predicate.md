@@ -9,7 +9,7 @@ title: dbPredicate
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [dbPredicate](db-predicate.html): ([String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)) -&gt; [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 

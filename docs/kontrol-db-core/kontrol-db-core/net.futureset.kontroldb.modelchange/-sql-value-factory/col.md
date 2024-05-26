@@ -9,7 +9,7 @@ title: col
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open fun [col](col.html)(name: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): DbIdentifier
 
 

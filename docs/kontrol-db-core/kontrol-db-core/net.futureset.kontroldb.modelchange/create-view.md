@@ -9,7 +9,7 @@ title: createView
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 fun [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html).[createView](create-view.html)(viewName: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), lambda: [CreateView.CreateViewBuilder](-create-view/-create-view-builder/index.html).() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [ModelChangesBuilder](../net.futureset.kontroldb.dsl/-model-changes-builder/index.html)
 
 
@@ -37,7 +37,7 @@ Create a view
 #### Parameters
 
 
-core engine and default templates for kontrol-db
+jvm
 
 | |
 |---|

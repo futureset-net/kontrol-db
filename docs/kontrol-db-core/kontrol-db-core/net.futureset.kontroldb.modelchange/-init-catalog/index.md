@@ -9,7 +9,7 @@ title: InitCatalog
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [InitCatalog](index.html)(val catalog: DbIdentifier) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [InitCatalog](index.html)(val catalog: DbIdentifier) : [ModelChange](
 
 | | |
 |---|---|
-| [InitCatalog](-init-catalog.html) | [core engine and default templates for kontrol-db]<br>constructor(catalog: DbIdentifier) |
+| [InitCatalog](-init-catalog.html) | [jvm]<br>constructor(catalog: DbIdentifier) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [InitCatalog](index.html)(val catalog: DbIdentifier) : [ModelChange](
 
 | Name | Summary |
 |---|---|
-| [catalog](catalog.html) | [core engine and default templates for kontrol-db]<br>val [catalog](catalog.html): DbIdentifier |
+| [catalog](catalog.html) | [jvm]<br>val [catalog](catalog.html): DbIdentifier |
 
 
 ## Functions
@@ -35,6 +35,6 @@ data class [InitCatalog](index.html)(val catalog: DbIdentifier) : [ModelChange](
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

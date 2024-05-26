@@ -9,7 +9,7 @@ title: lte
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 infix fun [Operand](../-operand/index.html).[lte](lte.html)(operand: [Operand](../-operand/index.html)): [Operand](../-operand/index.html)
 
 infix fun [Operand](../-operand/index.html).[lte](lte.html)(operand: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [Operand](../-operand/index.html)

@@ -9,7 +9,7 @@ title: build
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 open override fun [build](build.html)(): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[ModelChange](../../net.futureset.kontroldb.modelchange/-model-change/index.html)&gt;
 
 

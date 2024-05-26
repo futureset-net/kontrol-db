@@ -9,7 +9,7 @@ title: ChangeToDefaultCatalogAndSchema
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 data class [ChangeToDefaultCatalogAndSchema](index.html)(val message: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) = &quot;Change to default catalog and schema in settings&quot;) : [ModelChange](../-model-change/index.html)
 
 
@@ -19,7 +19,7 @@ data class [ChangeToDefaultCatalogAndSchema](index.html)(val message: [String](h
 
 | | |
 |---|---|
-| [ChangeToDefaultCatalogAndSchema](-change-to-default-catalog-and-schema.html) | [core engine and default templates for kontrol-db]<br>constructor(message: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) = &quot;Change to default catalog and schema in settings&quot;) |
+| [ChangeToDefaultCatalogAndSchema](-change-to-default-catalog-and-schema.html) | [jvm]<br>constructor(message: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) = &quot;Change to default catalog and schema in settings&quot;) |
 
 
 ## Properties
@@ -27,7 +27,7 @@ data class [ChangeToDefaultCatalogAndSchema](index.html)(val message: [String](h
 
 | Name | Summary |
 |---|---|
-| [message](message.html) | [core engine and default templates for kontrol-db]<br>val [message](message.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [message](message.html) | [jvm]<br>val [message](message.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 
 
 ## Functions
@@ -35,6 +35,6 @@ data class [ChangeToDefaultCatalogAndSchema](index.html)(val message: [String](h
 
 | Name | Summary |
 |---|---|
-| [checksum](../-model-change/checksum.html) | [core engine and default templates for kontrol-db]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
-| [getName](../-model-change/get-name.html) | [core engine and default templates for kontrol-db]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
+| [checksum](../-model-change/checksum.html) | [jvm]<br>open fun [checksum](../-model-change/checksum.html)(resourceResolver: ResourceResolver): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [getName](../-model-change/get-name.html) | [jvm]<br>open fun [getName](../-model-change/get-name.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html) |
 

@@ -9,7 +9,7 @@ title: columnReferences
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [columnReferences](column-references.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;DbIdentifier&gt;
 
 

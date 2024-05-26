@@ -14,5 +14,5 @@ title: net.futureset.kontroldb.hsqldb.dialect
 
 | Name | Summary |
 |---|---|
-| [HsqlDbDialect](-hsql-db-dialect/index.html) | [hsqldb extensions for kontrol-db]<br>class [HsqlDbDialect](-hsql-db-dialect/index.html) : AnsiDialect |
+| [HsqlDbDialect](-hsql-db-dialect/index.html) | [jvm]<br>class [HsqlDbDialect](-hsql-db-dialect/index.html) : AnsiDialect |
 

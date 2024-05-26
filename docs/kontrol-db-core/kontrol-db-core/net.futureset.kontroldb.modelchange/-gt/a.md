@@ -9,7 +9,7 @@ title: a
 
 
 
-[core engine and default templates for kontrol-db]\
+[jvm]\
 val [a](a.html): [Operand](../-operand/index.html)
 
 
