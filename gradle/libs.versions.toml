@@ -1,5 +1,5 @@
 [versions]
-dokka ="1.9.10"
+dokka ="1.9.20"
 spotless = "6.25.0"
 jacoco = "0.8.10"
 mockito = "5.12.0"
