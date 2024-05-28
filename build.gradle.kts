@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
@@ -62,14 +64,10 @@ subprojects {
     }
 }
 
-tasks.named<Delete>("clean") {
-    delete("docs")
-}
-
 tasks.dokkaJekyllMultiModule.configure {
     moduleName.set(project.name)
     includes.from(file("extra.md"))
-    this.outputDirectory.set(project.layout.projectDirectory.dir("docs"))
+    this.outputDirectory.set(project.layout.buildDirectory.dir("docs"))
 }
 
 tasks.assemble {
