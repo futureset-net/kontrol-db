@@ -27,11 +27,12 @@ class WriteChangesToFileMigrationHandler(
 
     override fun end() {
         val line = "-".repeat(80) + effectiveSettings.operatingSystem.lineSeparator
+        allLines.add(line)
+        effectiveSettings.changeScript(allLines, "kontrol-db")
         outputDirectory.resolve("output.sql").writeText(
             allLines.joinToString(
                 prefix = line,
                 separator = effectiveSettings.operatingSystem.lineSeparator,
-                postfix = line,
             ),
         )
     }

@@ -27,8 +27,8 @@ fun Connection.executeSql(sql: String, resultSetHandler: ((ResultSet) -> Unit)? 
                     }
                 } while (stmt.moreResults)
             }
+            success = true
         }
-        success = true
     } finally {
         if (!success) {
             sqlLogger.error("connection <$this> Failed\n    $sql".trimIndent())
