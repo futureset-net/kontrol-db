@@ -61,7 +61,7 @@ data class CreateProcedure(
  * @return [CreateProcedure]
  * @receiver [ModelChangesBuilder] container for a collection of changes
  *
- * @sample net.futureset.kontroldb.samples.CreateAProcedure
+ * @sample net.futureset.kontroldb.samples.AllSamples.createProcedure
  */
 fun ModelChangesBuilder.createProcedure(name: String, lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) =
     CreateProcedure.CreateProcedureBuilder().procedure { name(name) }.apply(lambda).build().also(changes::add)

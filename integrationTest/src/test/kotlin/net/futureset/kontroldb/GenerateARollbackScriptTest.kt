@@ -14,7 +14,7 @@ import kotlin.io.path.readText
 class GenerateARollbackScriptTest {
 
     @Test
-    fun `Can generate a rollback script`(@TempDir tempDir: Path) {
+    fun `Can generate a rollback script`(@TempDir tempDir: Path, @DialectName dialectName: String) {
         dsl {
             dialect("default") // will be overridden by loadConfig, but included for coverage
             loadConfig("test-config.yml")
@@ -24,7 +24,7 @@ class GenerateARollbackScriptTest {
                 isOutputSchema(true)
             }
             dbSettings {
-                defaultSchema("dbo")
+                defaultSchema(if (dialectName == "oracle") "TEST_DB" else "dbo")
                 defaultTablespace("MY_TABLESPACE")
                 defaultIndexTablespace("MY_INDEX_TABLESPACE")
             }

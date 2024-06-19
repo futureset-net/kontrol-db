@@ -59,7 +59,7 @@ data class KontrolDbEngine(
 
     val refactorings = allRefactoring.toSortedSet()
 
-    val version by lazy {
+    val version: String by lazy {
 
         val uri = javaClass.getResource(javaClass.simpleName + ".class")?.toURI()
         if (uri?.scheme == "jar") {

@@ -66,7 +66,7 @@ data class CreateTable(
  * @receiver [ModelChangesBuilder] the container for changes
  * @return [CreateTable] the immutable data for the table definition
  *
- * @sample net.futureset.kontroldb.samples.CreateATable
+ * @sample net.futureset.kontroldb.samples.AllSamples.createTable
  */
 fun ModelChangesBuilder.createTable(tableName: String, lambda: CreateTable.CreateTableBuilder.() -> Unit): CreateTable =
     CreateTable.CreateTableBuilder().table(tableName).apply(lambda).build().apply(changes::add)

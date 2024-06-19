@@ -5,11 +5,12 @@ import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.template.DbAwareTemplate
 import net.futureset.kontroldb.template.SqlTemplate
+import net.futureset.kontroldb.template.TemplatePriority
 import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class InsertOrUpdateRowTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertOrUpdateRow>(db) {
+class InsertOrUpdateRowTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertOrUpdateRow>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<InsertOrUpdateRow> {
         return InsertOrUpdateRow::class
     }

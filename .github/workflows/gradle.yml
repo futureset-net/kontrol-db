@@ -45,6 +45,16 @@ jobs:
         env:
           POSTGRES_USER: 'SA'
           POSTGRES_PASSWORD: 'Th1sIsW0rking'
+      kontrol-db-oracle:
+        image: gvenzl/oracle-free:latest
+        volumes:
+          - /home/runner/work:/var/outputdir
+        options: >-
+          --name kontrol-db-oracle
+        ports:
+          - 1526:1521
+        env:
+          ORACLE_PASSWORD: 'Th1sIsW0rking'
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 20
@@ -53,7 +63,7 @@ jobs:
           java-version: '20'
           distribution: 'temurin'
       - name: Run build
-        uses: gradle/gradle-build-action@v3.3.2
+        uses: gradle/gradle-build-action@v3.4.1
         with:
           arguments: build --scan
       - name: Add coverage to PR

@@ -26,6 +26,7 @@ class AddAndDropColumnsTest {
                             when (dialectName) {
                                 "sqlserver" -> "dbo"
                                 "postgres" -> "public"
+                                "oracle" -> "TEST_DB"
                                 else -> "PUBLIC" },
                         )
                     }.bind(Refactoring::class)

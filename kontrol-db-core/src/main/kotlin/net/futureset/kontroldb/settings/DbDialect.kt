@@ -26,6 +26,10 @@ interface DbDialect : Comparable<DbDialect> {
     val literalFalse: String
     val order: Int
 
+    fun changeScript(scriptLines: MutableList<String>, targetTool: String) {
+        // Do nothing by default
+    }
+
     fun getNativeType(columnType: ColumnType): String
 
     fun dbNowTimestamp(): String

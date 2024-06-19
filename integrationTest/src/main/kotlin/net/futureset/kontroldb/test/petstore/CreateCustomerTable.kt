@@ -18,7 +18,9 @@ class CreateCustomerTable : Refactoring(
         createTable("CUSTOMER") {
             column("CUST_ID", INT32)
             column("FIRSTNAME", Varchar(20))
-            column("LASTNAME", Varchar(25))
+            column("LASTNAME", Varchar(25)) {
+                nullable()
+            }
             column("ADDRESS", Varchar(32))
             column("CITY", Varchar(20))
             column("STATE", Varchar(2))

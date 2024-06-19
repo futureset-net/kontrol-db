@@ -1,0 +1,10 @@
+dialect: oracle
+modules:
+  - 'net.futureset.kontroldb.oracle.OracleModule'
+  - 'net.futureset.kontroldb.oracle.TestModule'
+targetSettings:
+  jdbcUrl : 'jdbc:oracle:thin:@localhost:1526/FREEPDB1'
+  username : TEST_DB
+  password : APasswordForTesting123
+  defaultSchema: TEST_DB
+  
