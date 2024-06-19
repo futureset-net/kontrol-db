@@ -33,10 +33,10 @@ jobs:
         with:
           java-version: '20'
           distribution: 'temurin'        
-      - name: create docs
-        uses: gradle/gradle-build-action@v3.4.1
-        with:
-          arguments: dokkaJekyllMultiModule --scan        
+      - name: inti gradle
+        uses: gradle/actions/setup-gradle@v3.4.1
+      - name: generate docs
+        run: ./gradlew dokkaJekyllMultiModule --scan
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Build with Jekyll
