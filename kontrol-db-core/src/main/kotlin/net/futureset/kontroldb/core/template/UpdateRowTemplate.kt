@@ -14,9 +14,11 @@ class UpdateRowTemplate(db: EffectiveSettings) : DbAwareTemplate<UpdateRows>(db,
         return UpdateRows::class
     }
 
-    override fun convertToSingleStatement(change: UpdateRows): String = """
-        UPDATE ${change.table.toSql()}
-        SET ${forEach(change.columnValues)}         
-        ${change.predicate.takeUnless { it.isEmpty() }.toSql {"WHERE $it"} }
-    """.trimIndent()
+    override fun convertSingle(): UpdateRows.() -> String? = {
+        """
+        UPDATE ${table.toSql()}
+        SET ${forEach(columnValues)}         
+        ${predicate.takeUnless { it.isEmpty() }.toSql {"WHERE $it"} }
+        """.trimIndent()
+    }
 }

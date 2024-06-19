@@ -13,11 +13,12 @@ class AddNotNullTemplate(db: EffectiveSettings) : DbAwareTemplate<AddNotNull>(db
     override fun type(): KClass<AddNotNull> {
         return AddNotNull::class
     }
+
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = effectiveSettings.databaseName == "oracle"
 
-    override fun convertToSingleStatement(change: AddNotNull): String {
-        return """
-${change.table.toSql{"ALTER TABLE $it MODIFY ${change.column.columnName.toSql()} NOT NULL"}}
+    override fun convertSingle(): AddNotNull.() -> String? = {
+        """
+${table.toSql { "ALTER TABLE $it MODIFY ${column.columnName.toSql()} NOT NULL" }}
         """.trimIndent()
     }
 }

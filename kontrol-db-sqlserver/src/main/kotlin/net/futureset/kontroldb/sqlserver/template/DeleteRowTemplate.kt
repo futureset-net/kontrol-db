@@ -14,11 +14,11 @@ class DeleteRowTemplate(db: EffectiveSettings) : DbAwareTemplate<DeleteRows>(db,
         return DeleteRows::class
     }
 
-    override fun convertToSingleStatement(change: DeleteRows): String {
-        return """
-DELETE ${change.table.alias ?: "X"}   
-FROM ${change.table.copy(alias = change.table.alias ?: "X").toSql()}        
-${change.predicate.toSql {"WHERE $it"}}         
+    override fun convertSingle(): DeleteRows.() -> String? = {
+        """
+DELETE ${table.alias ?: "X"}   
+FROM ${table.copy(alias = table.alias ?: "X").toSql()}        
+${predicate.toSql { "WHERE $it" }}         
         """.trimIndent()
     }
 }

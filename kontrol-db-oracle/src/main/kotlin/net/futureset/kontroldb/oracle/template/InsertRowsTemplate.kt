@@ -16,24 +16,30 @@ class InsertRowsTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertRows>(db
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = effectiveSettings.databaseName == "oracle"
 
-    override fun convertToSingleStatement(change: InsertRows): String {
-        return if (change.fromSelect != null) {
+    override fun convertSingle(): InsertRows.() -> String? = {
+        if (fromSelect != null) {
             """
-                INSERT INTO ${change.table.toSql()}
-                (${change.fromSelect!!.columns.map { it.columnName }.columnNames()})      
-                ${otherTemplate(change.fromSelect!!)}
+                INSERT INTO ${table.toSql()}
+                (${fromSelect!!.columns.map { it.columnName }.columnNames()})      
+                ${otherTemplate(fromSelect!!)}
             """.trimIndent()
-        } else if (change.columnValues.size < 2) {
+        } else if (columnValues.size < 2) {
             """
-                INSERT INTO ${change.table.toSql()}
-                    (${change.columnValues.first().keys.columnNames()})            
+                INSERT INTO ${table.toSql()}
+                    (${columnValues.first().keys.columnNames()})            
                 VALUES
-                    ${change.columnValues.joinToString(separator = "),\n                (", prefix = "(", postfix = ")") {row -> forEach(row.values) }}
+                    ${
+                columnValues.joinToString(
+                    separator = "),\n                (",
+                    prefix = "(",
+                    postfix = ")",
+                ) { row -> forEach(row.values) }
+            }
             """.trimIndent()
         } else {
             "INSERT ALL\n" +
-                change.columnValues.joinToString(separator = "\n") { row ->
-                    "    INTO ${change.table.toSql()} (${row.keys.columnNames()}) VALUES (${forEach(row.values)} )"
+                columnValues.joinToString(separator = "\n") { row ->
+                    "    INTO ${table.toSql()} (${row.keys.columnNames()}) VALUES (${forEach(row.values)} )"
                 } + "\nSELECT * FROM DUAL"
         }
     }

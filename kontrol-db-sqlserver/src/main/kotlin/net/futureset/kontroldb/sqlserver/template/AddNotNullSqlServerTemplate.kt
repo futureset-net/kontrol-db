@@ -18,9 +18,7 @@ class AddNotNullSqlServerTemplate(db: EffectiveSettings) : DbAwareTemplate<AddNo
         return effectiveSettings.databaseName == "sqlserver"
     }
 
-    override fun convertToSingleStatement(change: AddNotNull): String {
-        return """
-${change.table.toSql{"ALTER TABLE $it ALTER COLUMN ${change.column.toSql()}"}}
-        """.trimIndent()
+    override fun convertSingle(): AddNotNull.() -> String? = {
+        table.toSql { "ALTER TABLE $it" } + column.toSql { " ALTER COLUMN $it" }
     }
 }

@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 class InitCatalogTemplate(effectiveSettings: EffectiveSettings) :
     DbAwareTemplate<InitCatalog>(effectiveSettings, TemplatePriority.DATABASE) {
     override fun type(): KClass<InitCatalog> = InitCatalog::class
-    override fun convertToSingleStatement(change: InitCatalog): String {
-        return "ALTER CATALOG PUBLIC RENAME TO ${change.catalog.toSql()}"
+    override fun convertSingle(): InitCatalog.() -> String? = {
+        catalog.toSql { "ALTER CATALOG PUBLIC RENAME TO $it" }
     }
 }

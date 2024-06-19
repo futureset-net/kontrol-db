@@ -19,8 +19,4 @@ class InitSchemaTemplate(override val effectiveSettings: EffectiveSettings) :
             effectiveSettings.username?.let { un -> "ALTER USER $un SET INITIAL SCHEMA ${change.schema.toSql()}" },
         )
     }
-
-    override fun convertToSingleStatement(change: InitSchema): String {
-        return "CREATE SCHEMA ${change.schema.toSql()}"
-    }
 }

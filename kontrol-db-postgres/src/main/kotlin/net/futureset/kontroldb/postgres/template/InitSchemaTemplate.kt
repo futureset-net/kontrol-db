@@ -14,13 +14,9 @@ class InitSchemaTemplate(effectiveSettings: EffectiveSettings) :
     override fun type(): KClass<InitSchema> = InitSchema::class
 
     override fun convert(change: InitSchema): List<String> {
-        return listOfNotNull(
-            "CREATE SCHEMA IF NOT EXISTS ${change.schema.toSql()}",
-            "SET search_path TO ${change.schema.toSql()}",
-        )
-    }
-
-    override fun convertToSingleStatement(change: InitSchema): String {
-        return "CREATE SCHEMA ${change.schema.toSql()}"
+        return listOf(
+            change.schema.toSql { "CREATE SCHEMA IF NOT EXISTS $it" },
+            change.schema.toSql { "SET search_path TO $it" },
+        ).filter { it.isNotBlank() }
     }
 }

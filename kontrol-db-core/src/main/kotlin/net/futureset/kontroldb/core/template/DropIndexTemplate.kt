@@ -14,6 +14,7 @@ class DropIndexTemplate(db: EffectiveSettings) : DbAwareTemplate<DropIndex>(db, 
         return DropIndex::class
     }
 
-    override fun convertToSingleStatement(change: DropIndex): String =
-        change.index.toSql { "DROP INDEX ${if (change.ifExists) "IF EXISTS " else ""}$it" }
+    override fun convertSingle(): DropIndex.() -> String? = {
+        index.toSql { "DROP INDEX ${if (ifExists) "IF EXISTS " else ""}$it" }
+    }
 }

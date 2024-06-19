@@ -17,8 +17,6 @@ class DropColumnsTemplate(db: EffectiveSettings) : DbAwareTemplate<DropColumns>(
         return DropColumns::class
     }
 
-    override fun convert(change: DropColumns): List<String> {
-        return change.columns
-            .map { col -> change.table.toSql { "ALTER TABLE $it DROP COLUMN ${col.toSql()}" } }
-    }
+    override fun convert(change: DropColumns): List<String> = change.columns
+        .map { col -> change.table.toSql { "ALTER TABLE $it" } + col.toSql { " DROP COLUMN $it" } }
 }

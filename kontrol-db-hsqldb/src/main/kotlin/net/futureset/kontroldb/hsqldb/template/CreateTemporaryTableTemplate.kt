@@ -17,25 +17,28 @@ class CreateTemporaryTableTemplate(private val db: EffectiveSettings) :
     }
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = db.databaseName == "hsqldb"
-    override fun convertToSingleStatement(change: CreateTable): String {
-        val colNames = change.columnDefinitions.takeUnless { it.isEmpty() }
-            ?: change.fromSelect?.columns?.map { it.columnName }.orEmpty()
-        return when (change.table.tablePersistence) {
+    override fun convertSingle(): CreateTable.() -> String? = {
+        val colNames = columnDefinitions.takeUnless { it.isEmpty() }
+            ?: fromSelect?.columns?.map { it.columnName }.orEmpty()
+        when (table.tablePersistence) {
             TablePersistence.TEMPORARY -> "DECLARE LOCAL TEMPORARY "
             TablePersistence.GLOBAL_TEMPORARY -> "CREATE GLOBAL TEMPORARY "
             TablePersistence.NORMAL -> "CREATE "
-        } + """ TABLE ${change.table.toSql()} (
+        } + """ TABLE ${table.toSql()} (
             ${forEach(colNames, separateBy = ",\n    ")}
-            ${change.primaryKey?.takeIf{change.table.tablePersistence == TablePersistence.NORMAL }?.let{ "," + otherTemplate(it) }.orEmpty()} 
+            ${
+            primaryKey?.takeIf { table.tablePersistence == TablePersistence.NORMAL }?.let { "," + otherTemplate(it) }
+                .orEmpty()
+        } 
             )${
-            change.fromSelect?.let {
+            fromSelect?.let {
                 " AS (${
                     template(it)?.convert(it)?.first()
                 }) WITH ${if (it.includeData) "" else "NO "}DATA"
             }.orEmpty()
         }
             ${
-            "ON COMMIT PRESERVE ROWS".takeIf { change.preserveRowsOnCommit && change.table.tablePersistence != TablePersistence.NORMAL }
+            "ON COMMIT PRESERVE ROWS".takeIf { preserveRowsOnCommit && table.tablePersistence != TablePersistence.NORMAL }
                 .orEmpty()
         }
         """.trimIndent()

@@ -17,10 +17,14 @@ class AddForeignKeyTemplate(db: EffectiveSettings) : DbAwareTemplate<AddForeignK
         return AddForeignKey::class
     }
 
-    override fun convertToSingleStatement(change: AddForeignKey): String {
-        return """
-${change.table.toSql{"ALTER TABLE $it ADD"} }${change.constraintName.toSql{" CONSTRAINT $it"}} FOREIGN KEY(${forEach(change.columnMap.keys)}) 
-REFERENCES ${change.foreignTable.toSql()}(${forEach(change.columnMap.values)})
+    override fun convertSingle(): AddForeignKey.() -> String? = {
+        """
+        ${table.toSql { "ALTER TABLE $it ADD" }}${constraintName.toSql { " CONSTRAINT $it" }} FOREIGN KEY(${
+            forEach(
+                columnMap.keys,
+            )
+        })
+        REFERENCES ${foreignTable.toSql()}(${forEach(columnMap.values)})
         """.trimIndent()
     }
 }

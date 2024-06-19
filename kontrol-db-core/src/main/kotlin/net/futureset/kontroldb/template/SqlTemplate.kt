@@ -1,6 +1,5 @@
 package net.futureset.kontroldb.template
 
-import net.futureset.kontroldb.model.ColumnDefinition
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.modelchange.ModelChange
 import net.futureset.kontroldb.settings.EffectiveSettings
@@ -23,7 +22,6 @@ interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
     fun canApply() = true
 
     fun Collection<DbIdentifier>.columnNames(): String = joinToString(", ") { it.toSql(effectiveSettings) }
-    fun Map<DbIdentifier, ColumnDefinition>.columnDefinitions(): String = entries.joinToString(", ") { (name, def) -> name.toSql(effectiveSettings) + " " + def.toSql(effectiveSettings) }
 
     fun convert(change: T): List<String?>
 }

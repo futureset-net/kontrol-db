@@ -12,7 +12,8 @@ import kotlin.reflect.KClass
 class ChangeToDefaultCatalogAndSchemaTemplate(val db: EffectiveSettings) : DbAwareTemplate<ChangeToDefaultCatalogAndSchema>(db, TemplatePriority.DEFAULT) {
 
     override fun type(): KClass<ChangeToDefaultCatalogAndSchema> = ChangeToDefaultCatalogAndSchema::class
-    override fun convertToSingleStatement(change: ChangeToDefaultCatalogAndSchema): String? {
-        return db.defaultSchema?.toSql { "SET SCHEMA $it" }
+
+    override fun convertSingle(): ChangeToDefaultCatalogAndSchema.() -> String? = {
+        db.defaultSchema?.toSql { "SET SCHEMA $it" }
     }
 }

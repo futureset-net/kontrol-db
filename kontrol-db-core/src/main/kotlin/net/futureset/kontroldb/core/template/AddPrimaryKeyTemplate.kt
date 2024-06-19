@@ -14,9 +14,9 @@ class AddPrimaryKeyTemplate(db: EffectiveSettings) : DbAwareTemplate<AddPrimaryK
         return AddPrimaryKey::class
     }
 
-    override fun convertToSingleStatement(change: AddPrimaryKey): String {
-        return change.table.takeUnless { change.inline }.toSql { "ALTER TABLE $it ADD" } +
-            change.constraintName.toSql { " CONSTRAINT $it" } +
-            " PRIMARY KEY(" + forEach(change.columnReferences) + ")"
+    override fun convertSingle(): AddPrimaryKey.() -> String? = {
+        table.takeUnless { inline }.toSql { "ALTER TABLE $it ADD" } +
+            constraintName.toSql { " CONSTRAINT $it" } +
+            " PRIMARY KEY(" + forEach(columnReferences) + ")"
     }
 }

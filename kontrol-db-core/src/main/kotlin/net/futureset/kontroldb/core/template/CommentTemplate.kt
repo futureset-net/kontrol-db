@@ -14,9 +14,9 @@ class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<ScriptComment>(db
         return ScriptComment::class
     }
 
-    override fun convertToSingleStatement(change: ScriptComment): String {
-        val text = change.text.trim()
-        return if (text.count { it == '\n' } > 0) {
+    override fun convertSingle(): ScriptComment.() -> String = {
+        val text = text.trim()
+        if (text.count { it == '\n' } > 0) {
             val lines = text.split("\n")
             val maxLineLength = lines.maxOfOrNull { it.length } ?: 0
             lines.joinToString(
@@ -25,7 +25,7 @@ class CommentTemplate(db: EffectiveSettings) : DbAwareTemplate<ScriptComment>(db
                 postfix = "\n" + "*".repeat(maxLineLength + 1) + "/",
             )
         } else {
-            change.text.split("\n").joinToString(prefix = "-- ", separator = "\n-- ")
+            text.split("\n").joinToString(prefix = "-- ", separator = "\n-- ")
         }
     }
 }

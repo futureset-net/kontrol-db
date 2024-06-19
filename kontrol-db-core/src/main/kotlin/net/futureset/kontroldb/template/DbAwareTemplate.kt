@@ -31,13 +31,15 @@ abstract class DbAwareTemplate<T : ModelChange>(
         require(result.size < 2)
         return result.firstOrNull() ?: ""
     }
+
     fun otherTemplateOutput(change: ModelChange): List<String> {
         return templateResolver.findTemplate(change)?.convert(change)?.filterNotNull() ?: emptyList()
     }
-    open fun convertToSingleStatement(change: T): String? = null
+
+    open fun convertSingle(): T.() -> String? = { null }
 
     override fun convert(change: T): List<String> {
-        return listOfNotNull(convertToSingleStatement(change))
+        return listOfNotNull(convertSingle().invoke(change))
     }
 
     final override fun canApply(): Boolean {
@@ -49,6 +51,7 @@ abstract class DbAwareTemplate<T : ModelChange>(
     fun Resource.reader(): BufferedReader {
         return effectiveSettings.resourceResolver.reader(this)
     }
+
     open fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean {
         return true
     }

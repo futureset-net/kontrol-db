@@ -14,6 +14,7 @@ class DropRoleTemplate(db: EffectiveSettings) : DbAwareTemplate<DropRole>(db, Te
         return DropRole::class
     }
 
-    override fun convertToSingleStatement(change: DropRole): String =
-        change.roleName.toSql { "DROP ROLE $it" }
+    override fun convertSingle(): DropRole.() -> String? = {
+        roleName.toSql { "DROP ROLE $it" }
+    }
 }
