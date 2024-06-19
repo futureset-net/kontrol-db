@@ -45,12 +45,9 @@ fun ModelChangesBuilder.dropProcedureIfExists(name: String, lambda: SchemaObject
 fun ModelChangesBuilder.dropTableIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
     changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.TABLE).ifExists().build())
 }
+
 fun ModelChangesBuilder.dropViewIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
     changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.VIEW).ifExists().build())
-}
-
-fun ModelChangesBuilder.dropView(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
-    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.VIEW).build())
 }
 
 /**
