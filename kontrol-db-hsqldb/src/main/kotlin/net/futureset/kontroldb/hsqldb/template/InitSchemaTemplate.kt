@@ -9,7 +9,7 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class InitSchemaTemplate(private val effectiveSettings: EffectiveSettings) :
+class InitSchemaTemplate(override val effectiveSettings: EffectiveSettings) :
     DbAwareTemplate<InitSchema>(effectiveSettings, TemplatePriority.DATABASE) {
     override fun type(): KClass<InitSchema> = InitSchema::class
 
@@ -18,9 +18,5 @@ class InitSchemaTemplate(private val effectiveSettings: EffectiveSettings) :
             "CREATE SCHEMA IF NOT EXISTS ${change.schema.toSql()}",
             effectiveSettings.username?.let { un -> "ALTER USER $un SET INITIAL SCHEMA ${change.schema.toSql()}" },
         )
-    }
-
-    override fun convertToSingleStatement(change: InitSchema): String {
-        return "CREATE SCHEMA ${change.schema.toSql()}"
     }
 }

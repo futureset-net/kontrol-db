@@ -12,8 +12,9 @@ import kotlin.reflect.KClass
 class DropIfExistsTemplate(db: EffectiveSettings) : DbAwareTemplate<DropIfExists>(db, TemplatePriority.DATABASE) {
     override fun type(): KClass<DropIfExists> = DropIfExists::class
 
-    override fun convertToSingleStatement(change: DropIfExists): String =
-        """DROP ${change.objectType} IF EXISTS ${change.objectName.toSql()}"""
+    override fun convertSingle(): DropIfExists.() -> String = {
+        objectName.toSql { "DROP $objectType IF EXISTS $it" }
+    }
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean =
         effectiveSettings.databaseName == "postgres"

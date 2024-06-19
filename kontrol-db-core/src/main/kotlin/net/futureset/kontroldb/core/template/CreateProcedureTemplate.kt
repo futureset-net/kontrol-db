@@ -12,8 +12,9 @@ class CreateProcedureTemplate(db: EffectiveSettings) :
     DbAwareTemplate<CreateProcedure>(db, TemplatePriority.DEFAULT) {
     override fun type() = CreateProcedure::class
 
-    override fun convertToSingleStatement(change: CreateProcedure): String? {
-        val body = change.body ?: change.path?.text()
-        return if (change.wholeDefinition) body else "CREATE $body"
+    override fun convertSingle(): CreateProcedure.() -> String? = {
+        (body ?: path?.text()).let {
+            if (wholeDefinition) it else "CREATE $it"
+        }
     }
 }

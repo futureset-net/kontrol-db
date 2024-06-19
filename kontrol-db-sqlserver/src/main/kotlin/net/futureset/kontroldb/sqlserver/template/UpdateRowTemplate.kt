@@ -18,12 +18,12 @@ class UpdateRowTemplate(db: EffectiveSettings) : DbAwareTemplate<UpdateRows>(db,
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean =
         effectiveSettings.databaseName == "sqlserver"
 
-    override fun convertToSingleStatement(change: UpdateRows): String {
-        return """
-            UPDATE ${change.table.alias ?: change.table.table.toSql()}
-            SET ${forEach(change.columnValues)}         
-            ${if (change.table.alias != null) change.table.toSql { " FROM $it" } else ""}
-            ${change.predicate.takeUnless { it.isEmpty() }.toSql {"WHERE $it"} }
+    override fun convertSingle(): UpdateRows.() -> String? = {
+        """
+            UPDATE ${table.alias ?: table.table.toSql()}
+            SET ${forEach(columnValues)}         
+            ${if (table.alias != null) table.toSql { " FROM $it" } else ""}
+            ${predicate.takeUnless { it.isEmpty() }.toSql { "WHERE $it" }}
         """.trimIndent().trimBlankLines()
     }
 }

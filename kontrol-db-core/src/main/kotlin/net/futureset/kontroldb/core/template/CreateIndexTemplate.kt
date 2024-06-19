@@ -9,14 +9,17 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class CreateIndexTemplate(private val db: EffectiveSettings) : DbAwareTemplate<CreateIndex>(db, TemplatePriority.DEFAULT) {
+class CreateIndexTemplate(private val db: EffectiveSettings) :
+    DbAwareTemplate<CreateIndex>(db, TemplatePriority.DEFAULT) {
     override fun type(): KClass<CreateIndex> {
         return CreateIndex::class
     }
 
-    override fun convertToSingleStatement(change: CreateIndex): String {
-        return """
-CREATE ${"UNIQUE ".takeIf { change.unique }.orEmpty()}INDEX ${change.indexName.toSql() } ON ${change.table.toSql()}(${forEach(change.columnReferences)}) ${(change.tablespace ?: db.defaultIndexTablespace).toSql{" TABLESPACE $it "}}
+    override fun convertSingle(): CreateIndex.() -> String? = {
+        """
+CREATE ${
+            "UNIQUE ".takeIf { unique }.orEmpty()
+        }INDEX ${indexName.toSql()} ON ${table.toSql()}(${forEach(columnReferences)}) ${(tablespace ?: db.defaultIndexTablespace).toSql { " TABLESPACE $it " }}
         """.trimIndent()
     }
 }

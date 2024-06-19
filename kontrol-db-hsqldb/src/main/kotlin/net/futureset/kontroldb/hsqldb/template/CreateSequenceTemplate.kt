@@ -16,15 +16,14 @@ class CreateSequenceTemplate(db: EffectiveSettings) : DbAwareTemplate<CreateSequ
         return effectiveSettings.databaseName == "hsqldb"
     }
 
-    override fun convertToSingleStatement(change: CreateSequence): String =
-        change.run {
-            """CREATE SEQUENCE ${schemaObject.toSql()}
+    override fun convertSingle(): CreateSequence.() -> String? = {
+        """CREATE SEQUENCE ${schemaObject.toSql()}
                 ${columnType?.let { "AS ${it.toSql()}" }.orEmpty()}
                 START WITH $startWith
                 ${incrementBy.takeUnless { it == 1L }?.let { "INCREMENT BY $it" }.orEmpty()}
                 ${minValue?.let { "MINVALUE $it" }.orEmpty()}
                 ${maxValue?.let { "MAXVALUE $it" }.orEmpty()}
                 ${cycle?.let { if (it) "CYCLE" else "NO CYCLE" }.orEmpty()}
-            """.trimMargin().trimBlankLines()
-        }
+        """.trimMargin().trimBlankLines()
+    }
 }

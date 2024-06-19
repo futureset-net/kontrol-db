@@ -9,12 +9,14 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class ChangeToDefaultCatalogAndSchemaTemplate(val db: EffectiveSettings) : DbAwareTemplate<ChangeToDefaultCatalogAndSchema>(db, TemplatePriority.DATABASE) {
+class ChangeToDefaultCatalogAndSchemaTemplate(val db: EffectiveSettings) :
+    DbAwareTemplate<ChangeToDefaultCatalogAndSchema>(db, TemplatePriority.DATABASE) {
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = db.databaseName == "oracle"
 
     override fun type(): KClass<ChangeToDefaultCatalogAndSchema> = ChangeToDefaultCatalogAndSchema::class
-    override fun convertToSingleStatement(change: ChangeToDefaultCatalogAndSchema): String? {
-        return db.defaultSchema?.toSql { "ALTER SESSION SET CURRENT_SCHEMA=$it" }
+
+    override fun convertSingle(): ChangeToDefaultCatalogAndSchema.() -> String? = {
+        db.defaultSchema?.toSql { "ALTER SESSION SET CURRENT_SCHEMA=$it" }
     }
 }

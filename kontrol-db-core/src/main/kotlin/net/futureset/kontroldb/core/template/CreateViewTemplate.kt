@@ -11,8 +11,7 @@ import org.koin.core.annotation.Singleton
 class CreateViewTemplate(db: EffectiveSettings) : DbAwareTemplate<CreateView>(db, TemplatePriority.DEFAULT) {
     override fun type() = CreateView::class
 
-    override fun convertToSingleStatement(change: CreateView): String? {
-        val body = change.body ?: change.path?.text()
-        return if (change.wholeDefinition) body else "CREATE $body"
+    override fun convertSingle(): CreateView.() -> String? = {
+        (body ?: path?.text()).let { if (wholeDefinition) it else "CREATE $it" }
     }
 }

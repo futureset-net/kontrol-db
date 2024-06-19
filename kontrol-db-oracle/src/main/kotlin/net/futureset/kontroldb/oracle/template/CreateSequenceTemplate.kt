@@ -14,15 +14,14 @@ class CreateSequenceTemplate(db: EffectiveSettings) : DbAwareTemplate<CreateSequ
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = effectiveSettings.databaseName == "oracle"
 
-    override fun convertToSingleStatement(change: CreateSequence): String =
-        change.run {
-            """CREATE SEQUENCE ${schemaObject.name.toSql()}
+    override fun convertSingle(): CreateSequence.() -> String? = {
+        """CREATE SEQUENCE ${schemaObject.name.toSql()}
                 START WITH $startWith
                 ${incrementBy.takeUnless { it == 1L }?.let { "INCREMENT BY $it" }.orEmpty()}
                 ${minValue?.let { "MINVALUE $it" }.orEmpty()}
                 ${maxValue?.let { "MAXVALUE $it" }.orEmpty()}
                 ${cycle?.let { if (it) "CYCLE" else "NO CYCLE" }.orEmpty()}
                 ${cache.takeUnless { it == 0 }?.let { "CACHE $it" }.orEmpty()}
-            """.trimMargin().trimBlankLines()
-        }
+        """.trimMargin().trimBlankLines()
+    }
 }

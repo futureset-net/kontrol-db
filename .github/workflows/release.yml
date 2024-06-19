@@ -16,7 +16,7 @@ jobs:
           java-version: '20'
           distribution: 'temurin'
       - name: Set up gradle
-        uses: gradle/gradle-build-action@v3.4.1
+        uses: gradle/actions/setup-gradle@v3.4.1
       - name: Publish
         id: gradle
         run: ./gradlew publish --info -Pversion=$RELEASE_VERSION

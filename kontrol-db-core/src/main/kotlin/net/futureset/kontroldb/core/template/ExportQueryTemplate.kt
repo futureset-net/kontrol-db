@@ -15,12 +15,12 @@ class ExportQueryTemplate(db: EffectiveSettings) :
         return ExportQuery::class
     }
 
-    override fun convertToSingleStatement(change: ExportQuery): String {
-        return """
+    override fun convertSingle(): ExportQuery.() -> String? = {
+        """
 SELECT
-    ${forEach(change.selectQuery.columns, separateBy = ",\n    ")}
-    ${change.selectQuery.table.toSql {"FROM $it"}}
-    ${change.selectQuery.predicate.toSql {"WHERE $it"}}
+${forEach(selectQuery.columns, separateBy = ",\n    ")}
+${selectQuery.table.toSql { "FROM $it" }}
+${selectQuery.predicate.toSql { "WHERE $it" }}
         """.trimIndent()
     }
 }

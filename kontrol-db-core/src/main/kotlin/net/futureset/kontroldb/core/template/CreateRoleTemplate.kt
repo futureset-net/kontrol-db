@@ -14,6 +14,7 @@ class CreateRoleTemplate(db: EffectiveSettings) : DbAwareTemplate<CreateRole>(db
         return CreateRole::class
     }
 
-    override fun convertToSingleStatement(change: CreateRole): String =
-        change.roleName.toSql { "CREATE ROLE $it" }
+    override fun convertSingle(): CreateRole.() -> String? = {
+        roleName.toSql { "CREATE ROLE $it" }
+    }
 }

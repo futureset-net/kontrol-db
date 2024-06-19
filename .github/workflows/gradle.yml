@@ -63,9 +63,9 @@ jobs:
           java-version: '20'
           distribution: 'temurin'
       - name: Run build
-        uses: gradle/gradle-build-action@v3.4.1
-        with:
-          arguments: build --scan
+        uses: gradle/actions/setup-gradle@v3.4.1
+      - name: Build the project
+        run: ./gradlew build --scan
       - name: Add coverage to PR
         id: jacoco
         uses: madrapps/jacoco-report@v1.6.1

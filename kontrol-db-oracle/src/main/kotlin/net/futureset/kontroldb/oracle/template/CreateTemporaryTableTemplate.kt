@@ -17,22 +17,33 @@ class CreateTemporaryTableTemplate(db: EffectiveSettings) :
     }
 
     override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = effectiveSettings.databaseName == "oracle"
-    override fun convertToSingleStatement(change: CreateTable): String {
-        val colNames = change.fromSelect?.columns?.map { it.columnName } ?: change.columnDefinitions.takeUnless { it.isEmpty() }.orEmpty()
-        return """
+
+    override fun convertSingle(): CreateTable.() -> String? = {
+        val colNames =
+            fromSelect?.columns?.map { it.columnName } ?: columnDefinitions.takeUnless { it.isEmpty() }.orEmpty()
+        """
             ${
-            when (change.table.tablePersistence) {
+            when (table.tablePersistence) {
                 TablePersistence.TEMPORARY -> "CREATE GLOBAL TEMPORARY "
                 TablePersistence.GLOBAL_TEMPORARY -> "CREATE GLOBAL TEMPORARY "
                 TablePersistence.NORMAL -> "CREATE "
             }
-        }TABLE ${change.table.toSql()} (
-            ${forEach(colNames, separateBy = ",\n    ")}${change.primaryKey?.takeIf{change.table.tablePersistence == TablePersistence.NORMAL }?.let{ "," + otherTemplate(it) }.orEmpty()} )
-                       ${"ON COMMIT ${if (change.preserveRowsOnCommit) "PRESERVE" else "DELETE"} ROWS".takeIf { change.table.tablePersistence != TablePersistence.NORMAL }
-            .orEmpty()
+        }TABLE ${table.toSql()} (
+            ${
+            forEach(
+                colNames,
+                separateBy = ",\n    ",
+            )
+        }${
+            primaryKey?.takeIf { table.tablePersistence == TablePersistence.NORMAL }?.let { "," + otherTemplate(it) }
+                .orEmpty()
+        } )
+                       ${
+            "ON COMMIT ${if (preserveRowsOnCommit) "PRESERVE" else "DELETE"} ROWS".takeIf { table.tablePersistence != TablePersistence.NORMAL }
+                .orEmpty()
         }
         ${
-            change.fromSelect?.let { selectQuery ->
+            fromSelect?.let { selectQuery ->
                 " AS (" +
                     template(selectQuery)?.convert(selectQuery)?.first() +
                     (if (selectQuery.predicate?.isEmpty() != false) " WHERE 1=0" else " AND 1=0")
