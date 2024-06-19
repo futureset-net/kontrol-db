@@ -8,6 +8,7 @@ import net.futureset.kontroldb.modelchange.insertRowsInto
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.settings.TransactionScope
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,7 +22,8 @@ class FailedMigrationScenariosTest {
 
     @ParameterizedTest
     @MethodSource("scenarios")
-    fun expectedFailurePosition(expectedScenario: ExpectedScenario) {
+    fun expectedFailurePosition(expectedScenario: ExpectedScenario, @DialectName dialectName: String) {
+        Assumptions.assumeFalse(expectedScenario.transactionScope != TransactionScope.STATEMENT && dialectName == "oracle")
         dsl {
             loadConfig("test-config.yml")
             executionSettings {
@@ -39,7 +41,7 @@ class FailedMigrationScenariosTest {
                 engine.applySql()
             }.onFailure {
                 val versionControlTableExists = 1 == engine.applySqlDirectly.withConnection {
-                    it.executeQuery("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='KONTROL_DB_VERSIONING'") { rs ->
+                    it.executeQuery("SELECT COUNT(*) FROM ${if (dialectName == "oracle") "ALL_TABLES" else "INFORMATION_SCHEMA.TABLES"} WHERE TABLE_NAME='KONTROL_DB_VERSIONING'") { rs ->
                         rs.getInt(1)
                     }.first()
                 }

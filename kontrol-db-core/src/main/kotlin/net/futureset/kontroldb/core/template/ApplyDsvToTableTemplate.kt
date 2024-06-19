@@ -124,9 +124,9 @@ class ApplyDsvToTableTemplate(db: EffectiveSettings) :
                             not {
                                 existsSelect {
                                     column("COL", "1")
-                                    table(tempTable)
+                                    table(tempTable).alias("P")
                                     where {
-                                        change.primaryKeys.forEach { it eq it.alias("A") }
+                                        change.primaryKeys.forEach { it.alias("P") eq it.alias("A") }
                                     }
                                 }
                             }

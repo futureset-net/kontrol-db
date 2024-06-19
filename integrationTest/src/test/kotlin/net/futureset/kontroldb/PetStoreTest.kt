@@ -66,6 +66,20 @@ internal class PetStoreTest {
                         ).describedAs("shell command failed").isZero()
                     }
                 }
+                "oracle" -> {
+                    val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
+                    println(destOutputSqlFile.absolutePathString())
+                    Files.createDirectories(destOutputSqlFile.parent)
+                    Files.copy(outputSqlFile, destOutputSqlFile, StandardCopyOption.REPLACE_EXISTING)
+                    engine.effectiveSettings.run {
+                        assertThat(
+                            (
+                                "docker exec -i kontrol-db-oracle sqlplus -l $username/$password@kontrol-db-oracle:1521/freepdb1 @/var/outputdir/output.sql"
+                                )
+                                .executeAsShell(),
+                        ).describedAs("shell command failed").isZero()
+                    }
+                }
                 else -> throw UnsupportedOperationException("Unsupported dialect $dialect")
             }
         }

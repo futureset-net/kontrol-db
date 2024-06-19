@@ -28,10 +28,22 @@ val createServer by tasks.registering(DockerCreateContainer::class) {
     hostName.convention(dockerExtension.containerName)
     envVars.convention(dockerExtension.envProperties)
     imageId.convention(dockerExtension.imageId)
-    hostConfig.portBindings.convention(dockerExtension.internalToExternalPortMap.map { f -> f.entries.map { "${it.value}:${it.key}" } })
+    cmd.convention(dockerExtension.commandLine)
+    tty = true
+    hostConfig.portBindings.convention(
+        dockerExtension.internalToExternalPortMap.map { f -> f.entries.map { "${it.value}:${it.key}" } },
+    )
     hostConfig.binds.put(project.layout.buildDirectory.get().toString(), "/var/outputdir")
+    hostConfig.binds.putAll(dockerExtension.mountPoints)
     hostConfig.autoRemove = true
-    exposePorts("tcp", hostConfig.portBindings.map { l -> l.map { it.split(":").last().toInt() } }.get())
+    exposedPorts.convention(
+        dockerExtension.internalToExternalPortMap.map {
+            DockerCreateContainer.ExposedPort(
+                "tcp",
+                it.keys.toList(),
+            )
+        }.flatMap { ports -> project.objects.listProperty(DockerCreateContainer.ExposedPort::class).also { it.addAll(ports) } },
+    )
     dependsOn(downloadImage)
 }
 
@@ -52,6 +64,7 @@ val startServer by tasks.registering(DockerStartContainer::class) {
 
 val logContainer by tasks.registering(DockerLogsContainer::class) {
     enabled = dockerExtension.dockerEnabled.get()
+    group = "docker"
     outputs.upToDateWhen { false }
     dependsOn(startServer)
     targetContainerId(dockerExtension.containerName)
@@ -95,6 +108,32 @@ tasks.named("clean") {
     dependsOn(stopServer)
 }
 
+tasks.register("showdockercommandline") {
+    group = "docker"
+    description = "prints docker command line to console"
+
+    doLast {
+        println(
+            (
+                listOf(
+                    "docker",
+                    "run",
+                    "-d",
+                    "-it",
+                    "--name",
+                    dockerExtension.containerName.get(),
+                    "-v",
+                    "${project.layout.buildDirectory.get()}/:/var/outputdir",
+                ) +
+                    dockerExtension.internalToExternalPortMap.map { f -> f.entries.map { "-p ${it.value}:${it.key}" } }
+                        .get() +
+                    dockerExtension.envProperties.get().entries.map { "-e ${it.key}=${it.value}" } +
+                    listOf(dockerExtension.imageId.getOrElse("specify-image-id-here"))
+                ).joinToString(" "),
+        )
+    }
+}
+
 tasks.register("showgithubcontainerconfig") {
     group = "docker"
     description = "prints github container service to console"
@@ -111,7 +150,12 @@ tasks.register("showgithubcontainerconfig") {
             ports:
 ${createServer.get().hostConfig.portBindings.get().joinToString(separator = "\n") { "              - $it" }}
             env:
-${createServer.get().envVars.get().entries.joinToString(separator = "\n", postfix = "\n") { "              ${it.key}: '${it.value}'"}}
+${
+                createServer.get().envVars.get().entries.joinToString(
+                    separator = "\n",
+                    postfix = "\n",
+                ) { "              ${it.key}: '${it.value}'" }
+            }
             """.trimIndent(),
         )
     }

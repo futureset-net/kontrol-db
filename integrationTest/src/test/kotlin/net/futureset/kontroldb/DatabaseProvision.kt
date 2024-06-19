@@ -41,6 +41,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
         return when (dialect) {
             "hsqldb" -> DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "sa", "")
             "postgres" -> DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "SA", "Th1sIsW0rking")
+            "oracle" -> DriverManager.getConnection("jdbc:oracle:thin:@localhost:1526/FREEPDB1", "SYSTEM", "Th1sIsW0rking")
             "sqlserver" -> DriverManager.getConnection(
                 "jdbc:sqlserver://localhost:6283;trustServerCertificate=true",
                 "SA",
@@ -70,6 +71,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
                 "DROP USER \"deploymentUser\"",
             )
             "hsqldb" -> executeSql("SHUTDOWN")
+            "oracle" -> executeSql("DROP USER TEST_DB CASCADE")
             else -> println("No way to provision $dialect")
         }
         connectionHolder.close()
@@ -90,6 +92,21 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
                 """ALTER DATABASE "TEST_DB" OWNER TO "deploymentUser"""",
                 """ALTER USER "deploymentUser" CREATEROLE""",
 //                """GRANT ALL ON SCHEMA "public" TO "deploymentUser"""",
+            )
+            "oracle" -> executeSql(
+                """CREATE USER TEST_DB IDENTIFIED BY "APasswordForTesting123" QUOTA UNLIMITED ON USERS""",
+                "GRANT CONNECT, RESOURCE, CREATE VIEW, CREATE MATERIALIZED VIEW, CREATE SYNONYM, CREATE ROLE TO TEST_DB",
+                """
+DECLARE
+    TablespaceExistsExcep	EXCEPTION;
+    PRAGMA EXCEPTION_INIT(TablespaceExistsExcep,-1543);
+BEGIN
+    EXECUTE IMMEDIATE 'CREATE TABLESPACE MY_INDEX_TS DATAFILE ''/opt/oracle/oradata/FREE/FREEPDB1/index_ts.dbf'' SIZE 10M AUTOEXTEND ON NEXT 2M MAXSIZE UNLIMITED';    
+EXCEPTION
+    WHEN TablespaceExistsExcep THEN
+        NULL;
+END;
+""",
             )
             else -> println("No DB provision log for $dialect")
         }

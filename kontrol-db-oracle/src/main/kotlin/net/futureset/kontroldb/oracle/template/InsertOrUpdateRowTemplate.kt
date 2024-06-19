@@ -1,4 +1,4 @@
-package net.futureset.kontroldb.core.template
+package net.futureset.kontroldb.oracle.template
 
 import net.futureset.kontroldb.modelchange.InsertOrUpdateRow
 import net.futureset.kontroldb.modelchange.UpdateMode
@@ -10,20 +10,21 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlTemplate::class])
-class InsertOrUpdateRowTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertOrUpdateRow>(db, TemplatePriority.DEFAULT) {
+class InsertOrUpdateRowTemplate(db: EffectiveSettings) : DbAwareTemplate<InsertOrUpdateRow>(db, TemplatePriority.DATABASE) {
     override fun type(): KClass<InsertOrUpdateRow> {
         return InsertOrUpdateRow::class
     }
+
+    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = effectiveSettings.databaseName == "oracle"
 
     override fun convertToSingleStatement(change: InsertOrUpdateRow): String {
         val columnNames = change.columnValues.first().keys
         val lines = mutableListOf(
             """
         MERGE INTO ${change.table.toSql()} s
-        USING (VALUES 
-            ${change.columnValues.joinToString(separator = "),\n            (", prefix = "(", postfix = ")") {row -> forEach(row.values) }}
-        ) AS t (${forEach(columnNames)})
-        ON ${forEach(change.primaryKeys, separateBy = " AND ") {"s.${it.toSql()} = t.${it.toSql()}"}}
+        USING ( 
+            ${change.columnValues.joinToString(separator = "\n UNION ALL\n") {row -> "SELECT " + row.entries.joinToString {"${it.value.toSql()} ${it.key.toSql()}"} + " FROM DUAL" }}
+        ) t ON (${forEach(change.primaryKeys, separateBy = " AND ") {"s.${it.toSql()} = t.${it.toSql()}"}})
             """.trimIndent(),
         )
         if (change.updateMode != UpdateMode.INSERT) {
