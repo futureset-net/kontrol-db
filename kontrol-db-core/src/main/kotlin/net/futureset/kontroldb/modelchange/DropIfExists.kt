@@ -36,7 +36,7 @@ class DropIfExistsBuilder : Builder<DropIfExistsBuilder, DropIfExists> {
  * @param lambda configure other procedure options e.g. schema
  * @receiver [ModelChangesBuilder] collection of changes
  *
- * @sample net.futureset.kontroldb.samples.CreateAProcedure
+ * @sample net.futureset.kontroldb.samples.AllSamples.createProcedure
  */
 fun ModelChangesBuilder.dropProcedureIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
     changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.PROCEDURE).ifExists().build())
@@ -57,21 +57,8 @@ fun ModelChangesBuilder.dropViewIfExists(name: String, lambda: SchemaObjectBuild
  * @param lambda sequence attributes
  * @receiver [ModelChangesBuilder] container for a set of changes
  *
- * @sample net.futureset.kontroldb.samples.CreateASequence
+ * @sample net.futureset.kontroldb.samples.AllSamples.createSequence
  */
 fun ModelChangesBuilder.dropSequenceIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
     changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.SEQUENCE).ifExists().build())
-}
-
-/**
- * Drop sequence
- *
- * @param name the name of the sequence
- * @param lambda sequence attributes
- * @receiver [ModelChangesBuilder] container for a set of changes
- *
- * @sample net.futureset.kontroldb.samples.CreateASequence
- */
-fun ModelChangesBuilder.dropSequence(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
-    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.SEQUENCE).build())
 }

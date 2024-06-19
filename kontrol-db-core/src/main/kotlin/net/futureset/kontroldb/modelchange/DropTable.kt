@@ -25,7 +25,7 @@ data class DropTable(
  * @receiver [ModelChangesBuilder] container for the changes
  * @return [DropTable] the immutable data needed to drop the table
  *
- * @sample net.futureset.kontroldb.samples.CreateATable
+ * @sample net.futureset.kontroldb.samples.AllSamples.createTable
  */
 fun ModelChangesBuilder.dropTable(
     tableName: String,

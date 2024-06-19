@@ -79,7 +79,7 @@ data class CreateSequence(
  * @param name the name of the sequence to create
  * @param lambda a block containing other sequence attributes
  * @return [CreateSequence]
- * @sample [net.futureset.kontroldb.samples.CreateASequence]
+ * @sample net.futureset.kontroldb.samples.AllSamples.createSequence
  */
 fun ModelChangesBuilder.createSequence(name: String, lambda: CreateSequence.CreateSequenceBuilder.() -> Unit): CreateSequence =
     CreateSequence.CreateSequenceBuilder(name).apply(lambda).build().also(changes::add)

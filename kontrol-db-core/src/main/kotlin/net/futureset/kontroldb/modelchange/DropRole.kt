@@ -15,7 +15,7 @@ data class DropRole(
  *
  * @receiver [ModelChangesBuilder] a container for a collection of model changes
  *
- * @sample [net.futureset.kontroldb.samples.CreateARole]
+ * @sample net.futureset.kontroldb.samples.AllSamples.createRole
  */
 fun ModelChangesBuilder.dropRole(roleName: String): DropRole =
     DropRole(roleName = DbIdentifier(roleName)).apply(changes::add)
