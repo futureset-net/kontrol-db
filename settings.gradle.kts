@@ -5,6 +5,16 @@ include(":kontrol-db-sqlserver")
 include(":kontrol-db-postgres")
 include(":kontrol-db-oracle")
 include(":integrationTest")
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    plugins {
+        id("org.jetbrains.kotlin.jvm") version "1.9.22"
+    }
+}
 dependencyResolutionManagement {
     repositories {
         mavenCentral()

@@ -101,7 +101,7 @@ data class ApplyDsvToTable(
 /**
  * Load a delimiter separated file into a table
  *
- * @sample [net.futureset.kontroldb.samples.LoadACsvFile]
+ * @sample net.futureset.kontroldb.samples.AllSamples.loadCsvFile
  * @param lambda DSL to configure what to load
  * @receiver [ModelChangesBuilder] a container for a collection of changes
  * @return [ApplyDsvToTable] the immutable data
