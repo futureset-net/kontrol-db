@@ -173,8 +173,6 @@ tasks.check {
     dependsOn(integrationTestCodeCoverageReport, jacocoIntegrationTestCoverageVerification)
 }
 
-val verGradle: String by project
-
 tasks.wrapper {
-    gradleVersion = verGradle
+    gradleVersion = libs.versions.gradle.get()
 }
