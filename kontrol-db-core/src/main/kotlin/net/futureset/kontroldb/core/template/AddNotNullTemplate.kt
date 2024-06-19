@@ -14,9 +14,7 @@ class AddNotNullTemplate(db: EffectiveSettings) : DbAwareTemplate<AddNotNull>(db
         return AddNotNull::class
     }
 
-    override fun convertToSingleStatement(change: AddNotNull): String {
-        return """
+    override fun convertToSingleStatement(change: AddNotNull): String = """
 ${change.table.toSql{"ALTER TABLE $it ALTER COLUMN ${change.column.columnName.toSql()} SET NOT NULL"}}
-        """.trimIndent()
-    }
+    """.trimIndent()
 }

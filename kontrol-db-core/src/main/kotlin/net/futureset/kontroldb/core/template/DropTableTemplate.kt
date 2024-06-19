@@ -14,9 +14,5 @@ class DropTableTemplate(db: EffectiveSettings) : DbAwareTemplate<DropTable>(db, 
         return DropTable::class
     }
 
-    override fun convertToSingleStatement(change: DropTable): String {
-        return """
-DROP TABLE ${change.table.toSql()}
-        """.trimIndent()
-    }
+    override fun convertToSingleStatement(change: DropTable): String = change.table.toSql { "DROP TABLE $it" }
 }

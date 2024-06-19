@@ -22,6 +22,6 @@ class DropColumnsTemplate(db: EffectiveSettings) : DbAwareTemplate<DropColumns>(
     }
 
     override fun convertToSingleStatement(change: DropColumns): String {
-        return change.table.toSql { tab -> "ALTER TABLE $tab DROP COLUMN ${change.columns.joinToString { it.toSql() }}" }
+        return change.table.toSql { tab -> "ALTER TABLE $tab DROP COLUMN ${change.columns.columnNames()}" }
     }
 }

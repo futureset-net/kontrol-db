@@ -20,14 +20,11 @@ class CreateTemporaryTableTemplate(private val db: EffectiveSettings) :
     override fun convertToSingleStatement(change: CreateTable): String {
         val colNames = change.columnDefinitions.takeUnless { it.isEmpty() }
             ?: change.fromSelect?.columns?.map { it.columnName }.orEmpty()
-        return """
-            ${
-            when (change.table.tablePersistence) {
-                TablePersistence.TEMPORARY -> "DECLARE LOCAL TEMPORARY "
-                TablePersistence.GLOBAL_TEMPORARY -> "CREATE GLOBAL TEMPORARY "
-                TablePersistence.NORMAL -> "CREATE "
-            }
-        }TABLE ${change.table.toSql()} (
+        return when (change.table.tablePersistence) {
+            TablePersistence.TEMPORARY -> "DECLARE LOCAL TEMPORARY "
+            TablePersistence.GLOBAL_TEMPORARY -> "CREATE GLOBAL TEMPORARY "
+            TablePersistence.NORMAL -> "CREATE "
+        } + """ TABLE ${change.table.toSql()} (
             ${forEach(colNames, separateBy = ",\n    ")}
             ${change.primaryKey?.takeIf{change.table.tablePersistence == TablePersistence.NORMAL }?.let{ "," + otherTemplate(it) }.orEmpty()} 
             )${

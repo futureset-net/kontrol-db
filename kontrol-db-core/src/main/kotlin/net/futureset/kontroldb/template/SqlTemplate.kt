@@ -1,12 +1,16 @@
 package net.futureset.kontroldb.template
 
+import net.futureset.kontroldb.model.ColumnDefinition
+import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.modelchange.ModelChange
+import net.futureset.kontroldb.settings.EffectiveSettings
 import kotlin.reflect.KClass
 
 interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
 
     var templateResolver: TemplateResolver
     val priority: TemplatePriority
+    val effectiveSettings: EffectiveSettings
 
     fun type(): KClass<T>
     override fun compareTo(other: SqlTemplate<T>): Int {
@@ -17,6 +21,9 @@ interface SqlTemplate<T : ModelChange> : Comparable<SqlTemplate<T>> {
         return templateResolver.findTemplate(t)
     }
     fun canApply() = true
+
+    fun Collection<DbIdentifier>.columnNames(): String = joinToString(", ") { it.toSql(effectiveSettings) }
+    fun Map<DbIdentifier, ColumnDefinition>.columnDefinitions(): String = entries.joinToString(", ") { (name, def) -> name.toSql(effectiveSettings) + " " + def.toSql(effectiveSettings) }
 
     fun convert(change: T): List<String?>
 }

@@ -7,7 +7,7 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import java.io.BufferedReader
 
 abstract class DbAwareTemplate<T : ModelChange>(
-    private val effectiveSettings: EffectiveSettings,
+    override val effectiveSettings: EffectiveSettings,
     override val priority: TemplatePriority = TemplatePriority.CUSTOM,
 ) : SqlTemplate<T> {
 
