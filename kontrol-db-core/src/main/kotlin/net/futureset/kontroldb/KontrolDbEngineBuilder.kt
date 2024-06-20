@@ -3,6 +3,8 @@ package net.futureset.kontroldb
 import net.futureset.kontroldb.config.ConfigFileControl
 import net.futureset.kontroldb.config.KontrolDbConfig
 import net.futureset.kontroldb.core.CoreModule
+import net.futureset.kontroldb.generator.SqlGenerator
+import net.futureset.kontroldb.generator.SqlGeneratorResolver
 import net.futureset.kontroldb.migration.ApplyDirectlyMigrationHandler
 import net.futureset.kontroldb.migration.WriteChangesToFileMigrationHandler
 import net.futureset.kontroldb.model.DbIdentifier
@@ -20,8 +22,6 @@ import net.futureset.kontroldb.settings.IExecutionSettings
 import net.futureset.kontroldb.settings.ITargetSettings
 import net.futureset.kontroldb.settings.TargetSettings
 import net.futureset.kontroldb.settings.TargetSettingsBuilder
-import net.futureset.kontroldb.template.SqlTemplate
-import net.futureset.kontroldb.template.TemplateResolver
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 import org.koin.core.module.Module
@@ -64,9 +64,9 @@ data class KontrolDbEngineBuilder(
                 )
             }
             single {
-                val templates = getAll<SqlTemplate<ModelChange>>()
-                val result = TemplateResolver(templates)
-                templates.forEach { it.templateResolver = result }
+                val templates = getAll<SqlGenerator<ModelChange>>()
+                val result = SqlGeneratorResolver(templates)
+                templates.forEach { it.sqlGeneratorResolver = result }
                 result
             }
             single<TargetSettings> { targetSettings }.bind(ITargetSettings::class)

@@ -30,7 +30,7 @@ data class ColumnValue(
         }
     }
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return when (value) {
             is LocalDate -> {
                 effectiveSettings.literalDate(value)

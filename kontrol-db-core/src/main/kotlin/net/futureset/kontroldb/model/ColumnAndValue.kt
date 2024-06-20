@@ -8,10 +8,10 @@ data class ColumnAndValue(
     val separator: String = "AS",
     val columnFirst: Boolean = separator == "=",
 ) : SqlString {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(
-            columnName.toSql(effectiveSettings),
-            value?.toSql(effectiveSettings),
+            columnName.toQuoted(effectiveSettings),
+            value?.toQuoted(effectiveSettings),
         ).let { it.takeIf { columnFirst } ?: it.reversed() }.joinToString(separator = " $separator ")
     }
 }

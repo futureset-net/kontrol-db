@@ -7,7 +7,7 @@ data class ColumnAlias(
     val columnName: DbIdentifier,
     val alias: String?,
 ) : SqlString, Operand {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
-        return (alias?.let { "$it." } ?: "") + columnName.toSql(effectiveSettings)
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
+        return (alias?.let { "$it." } ?: "") + columnName.toQuoted(effectiveSettings)
     }
 }

@@ -7,11 +7,11 @@ interface Schema : SqlString {
 }
 
 class CatalogAndSchema(val catalogName: DbIdentifier?, override val schemaName: DbIdentifier) : Schema {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(
             catalogName?.takeIf { effectiveSettings.isOutputCatalog } ?: effectiveSettings.defaultCatalog,
             schemaName.takeIf { effectiveSettings.isOutputSchema || it != effectiveSettings.defaultSchema } ?: effectiveSettings.defaultSchema,
         )
-            .joinToString(separator = ".") { di -> di.toSql(effectiveSettings) }
+            .joinToString(separator = ".") { di -> di.toQuoted(effectiveSettings) }
     }
 }

@@ -9,7 +9,7 @@ data class TableAlias(
     val table: Table,
 ) : ModelChange, SqlString {
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
-        return table.toSql(effectiveSettings) + alias?.let { " $it" }.orEmpty()
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
+        return table.toQuoted(effectiveSettings) + alias?.let { " $it" }.orEmpty()
     }
 }
