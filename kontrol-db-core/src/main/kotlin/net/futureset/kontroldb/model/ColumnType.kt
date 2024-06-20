@@ -8,7 +8,7 @@ interface ColumnType : SqlString {
 
     fun size(): String
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return effectiveSettings.getNativeType(this)
     }
 }
@@ -25,7 +25,7 @@ sealed class StandardColumnTypes : ColumnType {
 
     override fun size(): String = ""
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return effectiveSettings.getNativeType(this)
     }
 

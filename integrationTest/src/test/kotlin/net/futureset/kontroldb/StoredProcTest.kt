@@ -65,6 +65,21 @@ class CreateAProcedure : Refactoring(
             )
             wholeDefinition(true)
         }.onlyIfDatabase { it == "postgres" }
+        createProcedure("NEW_CUSTOMER") {
+            body(
+                """
+                CREATE PROCEDURE "NEW_CUSTOMER"(
+                    firstname VARCHAR (50),
+                    lastname VARCHAR (50),
+                    address VARCHAR (100))
+                  BEGIN
+                INSERT INTO "CUSTOMER"("CUST_ID", "FIRSTNAME", "LASTNAME", "ADDRESS", "CITY", "STATE", "ZIP")
+                VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
+                END
+                """.trimIndent(),
+            )
+            wholeDefinition(true)
+        }.onlyIfDatabase { it == "oracle" }
     },
     rollback = changes {
         dropProcedureIfExists("NEW_CUSTOMER")

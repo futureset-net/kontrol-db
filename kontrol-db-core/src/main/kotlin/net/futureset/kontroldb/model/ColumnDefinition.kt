@@ -9,10 +9,10 @@ data class ColumnDefinition(
     val columnType: ColumnType,
     val nullable: Boolean = false,
 ) : SqlString {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(
-            columnName.toSql(effectiveSettings),
-            columnType.toSql(effectiveSettings),
+            columnName.toQuoted(effectiveSettings),
+            columnType.toQuoted(effectiveSettings),
             when (nullable) {
                 effectiveSettings.nullableByDefault -> null
                 true -> "NULL"

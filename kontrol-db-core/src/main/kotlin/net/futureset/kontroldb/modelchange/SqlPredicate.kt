@@ -31,12 +31,12 @@ data class AllOf(val predicates: List<SqlPredicate>) : SqlPredicate {
             this.copy(predicates = predicates.toMutableList().apply { add(predicate) })
         }
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return when (predicates.size) {
             0 -> ""
-            1 -> predicates.first().toSql(effectiveSettings)
+            1 -> predicates.first().toQuoted(effectiveSettings)
             else -> predicates.joinToString(separator = " AND ", prefix = "(", postfix = ")") {
-                it.toSql(effectiveSettings)
+                it.toQuoted(effectiveSettings)
             }
         }
     }
@@ -54,61 +54,61 @@ data class AnyOf(val predicates: List<SqlPredicate>) : SqlPredicate {
             this.copy(predicates = predicates.toMutableList().apply { add(predicate) })
         }
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return when (predicates.size) {
             0 -> ""
-            1 -> predicates.first().toSql(effectiveSettings)
+            1 -> predicates.first().toQuoted(effectiveSettings)
             else -> predicates.joinToString(separator = " OR ", prefix = "(", postfix = ")") {
-                it.toSql(effectiveSettings)
+                it.toQuoted(effectiveSettings)
             }
         }
     }
 }
 
 data class Not(val predicate: SqlPredicate) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
-        return "NOT ${predicate.toSql(effectiveSettings)}"
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
+        return "NOT ${predicate.toQuoted(effectiveSettings)}"
     }
 }
 
 data class Exists(private val selectQuery: SelectQuery) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return "EXISTS (${
-            effectiveSettings.templateResolver.findTemplate(selectQuery)?.convert(selectQuery)
+            effectiveSettings.sqlGeneratorResolver.resolveGenerator(selectQuery)?.convert(selectQuery)
                 ?.joinToString(separator = "\n")
         })"
     }
 }
 
 data class Eq(val a: Operand, val b: Operand) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings) =
-        a.toSql(effectiveSettings) + (" = ".takeUnless { b.isNull() } ?: " IS ") + b.toSql(effectiveSettings)
+    override fun toQuoted(effectiveSettings: EffectiveSettings) =
+        a.toQuoted(effectiveSettings) + (" = ".takeUnless { b.isNull() } ?: " IS ") + b.toQuoted(effectiveSettings)
 }
 
 data class Gt(val a: Operand, val b: Operand) : SqlPredicate {
 
-    override fun toSql(effectiveSettings: EffectiveSettings) =
-        a.toSql(effectiveSettings) + " > " + b.toSql(effectiveSettings)
+    override fun toQuoted(effectiveSettings: EffectiveSettings) =
+        a.toQuoted(effectiveSettings) + " > " + b.toQuoted(effectiveSettings)
 }
 
 data class Lt(val a: Operand, val b: Operand) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings) =
-        a.toSql(effectiveSettings) + " < " + b.toSql(effectiveSettings)
+    override fun toQuoted(effectiveSettings: EffectiveSettings) =
+        a.toQuoted(effectiveSettings) + " < " + b.toQuoted(effectiveSettings)
 }
 
 data class Lte(val a: Operand, val b: Operand) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings) =
-        a.toSql(effectiveSettings) + " <= " + b.toSql(effectiveSettings)
+    override fun toQuoted(effectiveSettings: EffectiveSettings) =
+        a.toQuoted(effectiveSettings) + " <= " + b.toQuoted(effectiveSettings)
 }
 
 data class Gte(val a: Operand, val b: Operand) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings) =
-        a.toSql(effectiveSettings) + " >= " + b.toSql(effectiveSettings)
+    override fun toQuoted(effectiveSettings: EffectiveSettings) =
+        a.toQuoted(effectiveSettings) + " >= " + b.toQuoted(effectiveSettings)
 }
 
 data class Between(val subject: Operand, val a: Operand, val b: Operand) : SqlPredicate {
-    override fun toSql(effectiveSettings: EffectiveSettings) =
-        subject.toSql(effectiveSettings) + " BETWEEN " + a.toSql(effectiveSettings) + " AND " + b.toSql(
+    override fun toQuoted(effectiveSettings: EffectiveSettings) =
+        subject.toQuoted(effectiveSettings) + " BETWEEN " + a.toQuoted(effectiveSettings) + " AND " + b.toQuoted(
             effectiveSettings,
         )
 }

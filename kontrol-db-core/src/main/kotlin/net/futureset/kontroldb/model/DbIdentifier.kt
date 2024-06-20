@@ -6,7 +6,7 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 
 data class DbIdentifier(@JsonValue val name: String) : SqlString, Operand {
 
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return effectiveSettings.openQuote + name + effectiveSettings.closeQuote
     }
 

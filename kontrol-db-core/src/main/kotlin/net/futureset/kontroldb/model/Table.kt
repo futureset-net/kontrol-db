@@ -6,8 +6,8 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 
 data class Table(val schemaObject: SchemaObject, val tablePersistence: TablePersistence = TablePersistence.NORMAL) :
     SqlString {
-    override fun toSql(effectiveSettings: EffectiveSettings): String {
-        return listOfNotNull(schemaObject.schema, effectiveSettings.tempTable(this).schemaObject.name).joinToString(separator = ".") { it.toSql(effectiveSettings) }
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
+        return listOfNotNull(schemaObject.schema, effectiveSettings.tempTable(this).schemaObject.name).joinToString(separator = ".") { it.toQuoted(effectiveSettings) }
     }
 
     fun alias(label: String? = null): TableAlias {

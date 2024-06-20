@@ -4,5 +4,5 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 
 interface SqlString {
 
-    fun toSql(effectiveSettings: EffectiveSettings): String
+    fun toQuoted(effectiveSettings: EffectiveSettings): String
 }

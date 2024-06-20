@@ -1,5 +1,6 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.generator.SqlGeneratorResolver
 import net.futureset.kontroldb.migration.ApplyDirectlyMigrationHandler
 import net.futureset.kontroldb.migration.MigrationHandler
 import net.futureset.kontroldb.migration.WriteChangesToFileMigrationHandler
@@ -39,7 +40,6 @@ import net.futureset.kontroldb.refactoring.StartMigration
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.settings.TransactionScope.MIGRATION
 import net.futureset.kontroldb.settings.TransactionScope.REFACTORING
-import net.futureset.kontroldb.template.TemplateResolver
 import org.koin.core.context.stopKoin
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -52,7 +52,7 @@ import kotlin.reflect.KClass
 data class KontrolDbEngine(
     private val allRefactoring: List<Refactoring>,
     val effectiveSettings: EffectiveSettings,
-    private val templateResolver: TemplateResolver,
+    private val sqlGeneratorResolver: SqlGeneratorResolver,
     val applySqlDirectly: ApplyDirectlyMigrationHandler,
     val applySqlToScript: WriteChangesToFileMigrationHandler,
 ) : KontrolDbCommands, AutoCloseable {
@@ -75,7 +75,7 @@ data class KontrolDbEngine(
     private val resourceResolver = ResourceResolver(effectiveSettings.externalFileRoot)
 
     init {
-        effectiveSettings.templateResolver = templateResolver
+        effectiveSettings.sqlGeneratorResolver = sqlGeneratorResolver
         require(refactorings.size == allRefactoring.size) {
             "Each refactoring must be unique"
         }
@@ -107,7 +107,7 @@ data class KontrolDbEngine(
             effectiveSettings.defaultSchema?.let(::InitSchema),
             effectiveSettings.defaultSchema?.let { ChangeToDefaultCatalogAndSchema() },
         ).onEach { modelChange ->
-            val t = templateResolver.findTemplate(modelChange)
+            val t = sqlGeneratorResolver.resolveGenerator(modelChange)
             applySqlDirectly.executeModelChange(modelChange, t?.convert(modelChange)?.filterNotNull().orEmpty())
         }
     }
@@ -239,9 +239,9 @@ data class KontrolDbEngine(
                     "SELECT " +
                         listOf(EXECUTION_ORDER, ID_COLUMN, CHECK_SUM, EXECUTED_SEQUENCE, ROLLED_BACK)
                             .map(::DbIdentifier)
-                            .joinToString { d -> d.toSql(effectiveSettings) } +
+                            .joinToString { d -> d.toQuoted(effectiveSettings) } +
                         " FROM " +
-                        effectiveSettings.versionControlTable.toSql(effectiveSettings),
+                        effectiveSettings.versionControlTable.toQuoted(effectiveSettings),
                 ) { rs ->
                     AppliedRefactoring(
                         executionOrder = ExecutionOrder.fromStringValue(rs.getString(1)),
@@ -305,7 +305,7 @@ data class KontrolDbEngine(
                 set(LAST_APPLIED to ColumnValue.expression(effectiveSettings.dbNowTimestamp()))
                 set(
                     EXECUTION_COUNT to ColumnValue.expression(
-                        column(EXECUTION_COUNT).toSql(effectiveSettings) +
+                        column(EXECUTION_COUNT).toQuoted(effectiveSettings) +
                             if (!rollback || refactoring is AStartEndMarker) " + 1" else " - 1",
                     ),
                 )
@@ -336,7 +336,7 @@ data class KontrolDbEngine(
     }
 
     private fun ModelChange.lines(): List<String> {
-        return templateResolver.findTemplate(this)?.convert(this)?.filterNotNull() ?: emptyList()
+        return sqlGeneratorResolver.resolveGenerator(this)?.convert(this)?.filterNotNull() ?: emptyList()
     }
 
     override fun close() {
