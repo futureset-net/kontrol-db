@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class CommentGenerator(db: EffectiveSettings) : DbAwareGenerator<ScriptComment>(db, GeneratorPriority.DEFAULT) {
+class CommentGenerator(db: EffectiveSettings) : DbAwareGenerator<ScriptComment>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<ScriptComment> {
         return ScriptComment::class
     }

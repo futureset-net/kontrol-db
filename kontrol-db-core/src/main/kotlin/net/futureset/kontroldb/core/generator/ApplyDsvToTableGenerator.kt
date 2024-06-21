@@ -35,7 +35,10 @@ import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class ApplyDsvToTableGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<ApplyDsvToTable>(db, GeneratorPriority.DEFAULT) {
+    DbAwareGenerator<ApplyDsvToTable>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<ApplyDsvToTable> {
         return ApplyDsvToTable::class
     }

@@ -11,7 +11,9 @@ import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class InsertOrUpdateRowGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<InsertOrUpdateRow>(db, GeneratorPriority.DEFAULT) {
+    DbAwareGenerator<InsertOrUpdateRow>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
 
     override fun type(): KClass<InsertOrUpdateRow> {
         return InsertOrUpdateRow::class

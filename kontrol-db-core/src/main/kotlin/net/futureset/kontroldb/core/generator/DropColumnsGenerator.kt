@@ -11,8 +11,10 @@ import kotlin.reflect.KClass
 @Singleton(binds = [SqlGenerator::class])
 class DropColumnsGenerator(db: EffectiveSettings) : DbAwareGenerator<DropColumns>(
     db,
-    GeneratorPriority.DEFAULT,
 ) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<DropColumns> {
         return DropColumns::class
     }

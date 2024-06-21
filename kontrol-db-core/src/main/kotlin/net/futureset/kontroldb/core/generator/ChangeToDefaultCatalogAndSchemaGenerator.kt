@@ -9,7 +9,11 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class ChangeToDefaultCatalogAndSchemaGenerator(val db: EffectiveSettings) : DbAwareGenerator<ChangeToDefaultCatalogAndSchema>(db, GeneratorPriority.DEFAULT) {
+class ChangeToDefaultCatalogAndSchemaGenerator(val db: EffectiveSettings) : DbAwareGenerator<ChangeToDefaultCatalogAndSchema>(
+    db,
+) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
     override fun type(): KClass<ChangeToDefaultCatalogAndSchema> = ChangeToDefaultCatalogAndSchema::class
 

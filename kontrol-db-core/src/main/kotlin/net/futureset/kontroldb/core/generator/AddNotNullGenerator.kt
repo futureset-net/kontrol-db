@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class AddNotNullGenerator(db: EffectiveSettings) : DbAwareGenerator<AddNotNull>(db, GeneratorPriority.DEFAULT) {
+class AddNotNullGenerator(db: EffectiveSettings) : DbAwareGenerator<AddNotNull>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<AddNotNull> {
         return AddNotNull::class
     }

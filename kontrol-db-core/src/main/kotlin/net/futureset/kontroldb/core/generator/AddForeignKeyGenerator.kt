@@ -11,8 +11,10 @@ import kotlin.reflect.KClass
 @Singleton(binds = [SqlGenerator::class])
 class AddForeignKeyGenerator(db: EffectiveSettings) : DbAwareGenerator<AddForeignKey>(
     db,
-    GeneratorPriority.DEFAULT,
 ) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<AddForeignKey> {
         return AddForeignKey::class
     }

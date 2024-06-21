@@ -9,9 +9,10 @@ interface SqlGenerator<T : ModelChange> : Comparable<SqlGenerator<T>> {
 
     var sqlGeneratorResolver: SqlGeneratorResolver
     val priority: GeneratorPriority
-    val effectiveSettings: EffectiveSettings
+    val es: EffectiveSettings
 
     fun type(): KClass<T>
+
     override fun compareTo(other: SqlGenerator<T>): Int {
         return priority.compareTo(other.priority)
     }
@@ -21,7 +22,7 @@ interface SqlGenerator<T : ModelChange> : Comparable<SqlGenerator<T>> {
     }
     fun canApply() = true
 
-    fun Collection<DbIdentifier>.columnNames(): String = joinToString(", ") { it.toQuoted(effectiveSettings) }
+    fun Collection<DbIdentifier>.columnNames(): String = joinToString(", ") { it.toQuoted(es) }
 
     fun convert(change: T): List<String?>
 }

@@ -5,15 +5,21 @@ import net.futureset.kontroldb.model.SqlString
 import net.futureset.kontroldb.modelchange.ModelChange
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.io.BufferedReader
+import kotlin.reflect.KClass
 
 abstract class DbAwareGenerator<T : ModelChange>(
-    override val effectiveSettings: EffectiveSettings,
-    override val priority: GeneratorPriority = GeneratorPriority.CUSTOM,
+    override val es: EffectiveSettings,
 ) : SqlGenerator<T> {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DATABASE
 
     override lateinit var sqlGeneratorResolver: SqlGeneratorResolver
     fun SqlString?.toQuoted(block: (String) -> String = { it }): String {
-        return this?.toQuoted(effectiveSettings)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
+        return this?.toQuoted(es)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
+    }
+
+    override fun type(): KClass<T> {
+        return this::class.constructors.first().parameters.first().type.classifier as KClass<T>
     }
 
     fun <T : SqlString> joinQuotableValues(
@@ -41,16 +47,16 @@ abstract class DbAwareGenerator<T : ModelChange>(
     }
 
     final override fun canApply(): Boolean {
-        return canApplyTo(effectiveSettings)
+        return canApplyTo(es)
     }
 
-    fun Resource.text() = effectiveSettings.resourceResolver.resourceText(this)
+    fun Resource.text() = es.resourceResolver.resourceText(this)
 
     fun Resource.reader(): BufferedReader {
-        return effectiveSettings.resourceResolver.reader(this)
+        return es.resourceResolver.reader(this)
     }
 
-    open fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean {
+    open fun canApplyTo(es: EffectiveSettings): Boolean {
         return true
     }
 }

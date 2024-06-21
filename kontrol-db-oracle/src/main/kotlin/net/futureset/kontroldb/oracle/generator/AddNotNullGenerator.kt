@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.oracle.generator
 
 import net.futureset.kontroldb.generator.DbAwareGenerator
-import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.AddNotNull
 import net.futureset.kontroldb.settings.EffectiveSettings
@@ -9,12 +8,11 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class AddNotNullGenerator(db: EffectiveSettings) : DbAwareGenerator<AddNotNull>(db, GeneratorPriority.DATABASE) {
-    override fun type(): KClass<AddNotNull> {
-        return AddNotNull::class
-    }
+class AddNotNullGenerator(es: EffectiveSettings) : DbAwareGenerator<AddNotNull>(es) {
 
-    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = effectiveSettings.databaseName == "oracle"
+    override fun type(): KClass<AddNotNull> = AddNotNull::class
+
+    override fun canApplyTo(es: EffectiveSettings): Boolean = es.databaseName == "oracle"
 
     override fun convertSingle(): AddNotNull.() -> String? = {
         """

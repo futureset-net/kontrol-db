@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class AddPrimaryKeyGenerator(db: EffectiveSettings) : DbAwareGenerator<AddPrimaryKey>(db, GeneratorPriority.DEFAULT) {
+class AddPrimaryKeyGenerator(db: EffectiveSettings) : DbAwareGenerator<AddPrimaryKey>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<AddPrimaryKey> {
         return AddPrimaryKey::class
     }

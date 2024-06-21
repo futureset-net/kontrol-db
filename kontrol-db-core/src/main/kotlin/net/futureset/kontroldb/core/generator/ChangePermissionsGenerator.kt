@@ -11,7 +11,10 @@ import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class ChangePermissionsGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<ChangePermissions>(db, GeneratorPriority.DEFAULT) {
+    DbAwareGenerator<ChangePermissions>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<ChangePermissions> {
         return ChangePermissions::class
     }
