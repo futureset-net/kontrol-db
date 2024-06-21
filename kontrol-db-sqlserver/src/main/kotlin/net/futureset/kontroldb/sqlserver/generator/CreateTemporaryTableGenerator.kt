@@ -1,23 +1,19 @@
 package net.futureset.kontroldb.sqlserver.generator
 
 import net.futureset.kontroldb.generator.DbAwareGenerator
-import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.generator.trimBlankLines
 import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class CreateTemporaryTableGenerator(private val db: EffectiveSettings) :
-    DbAwareGenerator<CreateTable>(db, GeneratorPriority.DATABASE) {
-    override fun type(): KClass<CreateTable> {
-        return CreateTable::class
-    }
+class CreateTemporaryTableGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateTable>(es) {
 
-    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = db.databaseName == "sqlserver"
+    override fun type() = CreateTable::class
+
+    override fun canApplyTo(es: EffectiveSettings): Boolean = this.es.databaseName == "sqlserver"
 
     override fun convertSingle(): CreateTable.() -> String = {
         val colNames = columnDefinitions.takeUnless { it.isEmpty() }

@@ -10,7 +10,10 @@ import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class ExportQueryGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<ExportQuery>(db, GeneratorPriority.DEFAULT) {
+    DbAwareGenerator<ExportQuery>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<ExportQuery> {
         return ExportQuery::class
     }

@@ -10,7 +10,10 @@ import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class CreateIndexGenerator(private val db: EffectiveSettings) :
-    DbAwareGenerator<CreateIndex>(db, GeneratorPriority.DEFAULT) {
+    DbAwareGenerator<CreateIndex>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<CreateIndex> {
         return CreateIndex::class
     }

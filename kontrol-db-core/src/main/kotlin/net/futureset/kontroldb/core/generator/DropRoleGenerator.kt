@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class DropRoleGenerator(db: EffectiveSettings) : DbAwareGenerator<DropRole>(db, GeneratorPriority.DEFAULT) {
+class DropRoleGenerator(db: EffectiveSettings) : DbAwareGenerator<DropRole>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<DropRole> {
         return DropRole::class
     }

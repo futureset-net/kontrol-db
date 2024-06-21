@@ -9,6 +9,9 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class EndMigrationGenerator(db: EffectiveSettings) : DbAwareGenerator<EndBanner>(db, GeneratorPriority.DEFAULT) {
+class EndMigrationGenerator(db: EffectiveSettings) : DbAwareGenerator<EndBanner>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<EndBanner> = EndBanner::class
 }

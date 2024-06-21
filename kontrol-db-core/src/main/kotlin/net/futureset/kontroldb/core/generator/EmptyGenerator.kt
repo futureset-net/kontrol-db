@@ -7,9 +7,10 @@ import net.futureset.kontroldb.modelchange.ModelChange
 import kotlin.reflect.KClass
 
 abstract class EmptyGenerator<T : ModelChange>(private val clazz: KClass<T>) : SqlGenerator<T> {
-    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+    override val priority = GeneratorPriority.DEFAULT
 
     override lateinit var sqlGeneratorResolver: SqlGeneratorResolver
+
     override fun type(): KClass<T> = clazz
     override fun convert(change: T) = emptyList<String>()
 }

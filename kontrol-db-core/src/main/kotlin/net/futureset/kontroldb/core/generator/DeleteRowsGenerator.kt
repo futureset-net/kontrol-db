@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class DeleteRowsGenerator(db: EffectiveSettings) : DbAwareGenerator<DeleteRows>(db, GeneratorPriority.DEFAULT) {
+class DeleteRowsGenerator(db: EffectiveSettings) : DbAwareGenerator<DeleteRows>(db) {
+
+    override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<DeleteRows> {
         return DeleteRows::class
     }

@@ -10,7 +10,10 @@ import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class SelectQueryGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<SelectQuery>(db, GeneratorPriority.DEFAULT) {
+    DbAwareGenerator<SelectQuery>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<SelectQuery> {
         return SelectQuery::class
     }

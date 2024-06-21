@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class DropIfExistsGenerator(db: EffectiveSettings) : DbAwareGenerator<DropIfExists>(db, GeneratorPriority.DEFAULT) {
+class DropIfExistsGenerator(db: EffectiveSettings) : DbAwareGenerator<DropIfExists>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<DropIfExists> = DropIfExists::class
 
     override fun convertSingle(): DropIfExists.() -> String? = {

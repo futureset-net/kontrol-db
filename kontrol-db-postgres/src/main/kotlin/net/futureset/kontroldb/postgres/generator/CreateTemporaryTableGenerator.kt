@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.postgres.generator
 
 import net.futureset.kontroldb.generator.DbAwareGenerator
-import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.modelchange.TablePersistence
@@ -10,13 +9,11 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class CreateTemporaryTableGenerator(private val db: EffectiveSettings) :
-    DbAwareGenerator<CreateTable>(db, GeneratorPriority.DATABASE) {
-    override fun type(): KClass<CreateTable> {
-        return CreateTable::class
-    }
+class CreateTemporaryTableGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateTable>(es) {
 
-    override fun canApplyTo(effectiveSettings: EffectiveSettings): Boolean = db.databaseName == "postgres"
+    override fun type(): KClass<CreateTable> = CreateTable::class
+
+    override fun canApplyTo(es: EffectiveSettings): Boolean = this.es.databaseName == "postgres"
 
     override fun convertSingle(): CreateTable.() -> String = {
         val colNames = columnDefinitions.takeUnless { it.isEmpty() }

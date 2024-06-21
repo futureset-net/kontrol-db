@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class UpdateRowGenerator(db: EffectiveSettings) : DbAwareGenerator<UpdateRows>(db, GeneratorPriority.DEFAULT) {
+class UpdateRowGenerator(db: EffectiveSettings) : DbAwareGenerator<UpdateRows>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<UpdateRows> {
         return UpdateRows::class
     }

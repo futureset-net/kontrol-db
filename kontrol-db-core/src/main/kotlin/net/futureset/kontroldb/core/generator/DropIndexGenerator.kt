@@ -9,7 +9,10 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class DropIndexGenerator(db: EffectiveSettings) : DbAwareGenerator<DropIndex>(db, GeneratorPriority.DEFAULT) {
+class DropIndexGenerator(db: EffectiveSettings) : DbAwareGenerator<DropIndex>(db) {
+
+    override val priority = GeneratorPriority.DEFAULT
+
     override fun type(): KClass<DropIndex> {
         return DropIndex::class
     }
