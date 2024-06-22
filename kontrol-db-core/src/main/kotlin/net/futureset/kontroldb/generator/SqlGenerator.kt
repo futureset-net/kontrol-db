@@ -10,8 +10,7 @@ interface SqlGenerator<T : ModelChange> : Comparable<SqlGenerator<T>> {
     var sqlGeneratorResolver: SqlGeneratorResolver
     val priority: GeneratorPriority
     val es: EffectiveSettings
-
-    fun type(): KClass<T>
+    val type: KClass<T>
 
     override fun compareTo(other: SqlGenerator<T>): Int {
         return priority.compareTo(other.priority)

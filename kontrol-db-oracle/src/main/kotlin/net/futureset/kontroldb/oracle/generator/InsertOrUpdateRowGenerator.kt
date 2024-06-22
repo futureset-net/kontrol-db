@@ -6,12 +6,9 @@ import net.futureset.kontroldb.modelchange.InsertOrUpdateRow
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class InsertOrUpdateRowGenerator(es: EffectiveSettings) : DbAwareGenerator<InsertOrUpdateRow>(es) {
-
-    override fun type(): KClass<InsertOrUpdateRow> = InsertOrUpdateRow::class
+class InsertOrUpdateRowGenerator(es: EffectiveSettings) : DbAwareGenerator<InsertOrUpdateRow>(es, InsertOrUpdateRow::class) {
 
     override fun canApplyTo(es: EffectiveSettings): Boolean = es.databaseName == "oracle"
 

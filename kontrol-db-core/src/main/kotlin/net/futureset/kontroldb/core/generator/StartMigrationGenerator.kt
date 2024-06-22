@@ -7,17 +7,14 @@ import net.futureset.kontroldb.modelchange.ScriptComment
 import net.futureset.kontroldb.modelchange.StartBanner
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class StartMigrationGenerator(val db: EffectiveSettings) : DbAwareGenerator<StartBanner>(db) {
+class StartMigrationGenerator(es: EffectiveSettings) : DbAwareGenerator<StartBanner>(es, StartBanner::class) {
 
     override val priority = GeneratorPriority.DEFAULT
 
-    override fun type(): KClass<StartBanner> = StartBanner::class
-
     override fun convert(change: StartBanner): List<String> {
-        val state = db.startState
+        val state = es.startState
         return ScriptComment(state.toString()).let { template(it)?.convert(it)?.filterNotNull().orEmpty() }
     }
 }

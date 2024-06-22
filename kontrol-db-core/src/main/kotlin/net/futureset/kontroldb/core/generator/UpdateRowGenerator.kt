@@ -6,16 +6,11 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.UpdateRows
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class UpdateRowGenerator(db: EffectiveSettings) : DbAwareGenerator<UpdateRows>(db) {
+class UpdateRowGenerator(es: EffectiveSettings) : DbAwareGenerator<UpdateRows>(es, UpdateRows::class) {
 
     override val priority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<UpdateRows> {
-        return UpdateRows::class
-    }
 
     override fun convertSingle(): UpdateRows.() -> String? = {
         table.toQuoted { "UPDATE $it SET " } +

@@ -9,11 +9,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [SqlGenerator::class])
 class CreateProcedureGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<CreateProcedure>(db) {
+    DbAwareGenerator<CreateProcedure>(db, CreateProcedure::class) {
 
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
-
-    override fun type() = CreateProcedure::class
 
     override fun convertSingle(): CreateProcedure.() -> String? = {
         (body ?: path?.text()).let {

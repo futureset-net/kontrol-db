@@ -8,11 +8,9 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [SqlGenerator::class])
-class CreateViewGenerator(db: EffectiveSettings) : DbAwareGenerator<CreateView>(db) {
+class CreateViewGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateView>(es, CreateView::class) {
 
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
-
-    override fun type() = CreateView::class
 
     override fun convertSingle(): CreateView.() -> String? = {
         (body ?: path?.text()).let { if (wholeDefinition) it else "CREATE $it" }

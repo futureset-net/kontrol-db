@@ -9,11 +9,9 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [SqlGenerator::class])
-class CreateSequenceGenerator(db: EffectiveSettings) : DbAwareGenerator<CreateSequence>(db) {
+class CreateSequenceGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateSequence>(es, CreateSequence::class) {
 
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
-
-    override fun type() = CreateSequence::class
 
     override fun convertSingle(): CreateSequence.() -> String? = {
         """CREATE SEQUENCE ${schemaObject.name.toQuoted()}

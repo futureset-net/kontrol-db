@@ -31,17 +31,11 @@ import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
 import org.koin.core.annotation.Singleton
 import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class ApplyDsvToTableGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<ApplyDsvToTable>(db) {
+class ApplyDsvToTableGenerator(es: EffectiveSettings) : DbAwareGenerator<ApplyDsvToTable>(es, ApplyDsvToTable::class) {
 
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<ApplyDsvToTable> {
-        return ApplyDsvToTable::class
-    }
 
     override fun convert(change: ApplyDsvToTable): List<String> {
         require(!change.useDbLoadingTool)

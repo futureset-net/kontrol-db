@@ -9,9 +9,7 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [SqlGenerator::class])
-class CreateTemporaryTableGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateTable>(es) {
-
-    override fun type() = CreateTable::class
+class CreateTemporaryTableGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateTable>(es, CreateTable::class) {
 
     override fun canApplyTo(es: EffectiveSettings): Boolean = this.es.databaseName == "sqlserver"
 

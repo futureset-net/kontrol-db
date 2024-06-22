@@ -7,12 +7,9 @@ import net.futureset.kontroldb.modelchange.GrantOrRevoke.GRANT
 import net.futureset.kontroldb.modelchange.GrantOrRevoke.REVOKE
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class ChangePermissionsGenerator(es: EffectiveSettings) : DbAwareGenerator<ChangePermissions>(es) {
-
-    override fun type(): KClass<ChangePermissions> = ChangePermissions::class
+class ChangePermissionsGenerator(es: EffectiveSettings) : DbAwareGenerator<ChangePermissions>(es, ChangePermissions::class) {
 
     override fun convert(change: ChangePermissions): List<String> {
         return change.grantees.flatMap { grantee ->

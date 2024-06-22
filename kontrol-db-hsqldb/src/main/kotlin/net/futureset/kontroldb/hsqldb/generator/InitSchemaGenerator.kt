@@ -5,12 +5,9 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.InitSchema
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class InitSchemaGenerator(override val es: EffectiveSettings) : DbAwareGenerator<InitSchema>(es) {
-
-    override fun type(): KClass<InitSchema> = InitSchema::class
+class InitSchemaGenerator(override val es: EffectiveSettings) : DbAwareGenerator<InitSchema>(es, InitSchema::class) {
 
     override fun convert(change: InitSchema): List<String> {
         return listOfNotNull(

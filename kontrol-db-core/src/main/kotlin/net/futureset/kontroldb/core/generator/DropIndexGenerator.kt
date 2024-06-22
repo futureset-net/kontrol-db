@@ -6,16 +6,11 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.DropIndex
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class DropIndexGenerator(db: EffectiveSettings) : DbAwareGenerator<DropIndex>(db) {
+class DropIndexGenerator(es: EffectiveSettings) : DbAwareGenerator<DropIndex>(es, DropIndex::class) {
 
     override val priority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<DropIndex> {
-        return DropIndex::class
-    }
 
     override fun convertSingle(): DropIndex.() -> String? = {
         index.toQuoted { "DROP INDEX ${if (ifExists) "IF EXISTS " else ""}$it" }

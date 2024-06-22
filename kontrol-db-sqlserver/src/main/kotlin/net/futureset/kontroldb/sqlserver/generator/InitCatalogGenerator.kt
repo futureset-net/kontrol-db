@@ -5,12 +5,10 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.InitCatalog
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class InitCatalogGenerator(es: EffectiveSettings) : DbAwareGenerator<InitCatalog>(es) {
+class InitCatalogGenerator(es: EffectiveSettings) : DbAwareGenerator<InitCatalog>(es, InitCatalog::class) {
 
-    override fun type(): KClass<InitCatalog> = InitCatalog::class
     override fun convert(change: InitCatalog): List<String> {
         return listOf(
             change.catalog.toQuoted { "USE $it" },
