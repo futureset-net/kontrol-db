@@ -6,18 +6,14 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.ChangeToDefaultCatalogAndSchema
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class ChangeToDefaultCatalogAndSchemaGenerator(val db: EffectiveSettings) : DbAwareGenerator<ChangeToDefaultCatalogAndSchema>(
-    db,
-) {
+class ChangeToDefaultCatalogAndSchemaGenerator(es: EffectiveSettings) :
+    DbAwareGenerator<ChangeToDefaultCatalogAndSchema>(es, ChangeToDefaultCatalogAndSchema::class) {
 
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
-    override fun type(): KClass<ChangeToDefaultCatalogAndSchema> = ChangeToDefaultCatalogAndSchema::class
-
     override fun convertSingle(): ChangeToDefaultCatalogAndSchema.() -> String? = {
-        db.defaultSchema?.toQuoted { "SET SCHEMA $it" }
+        es.defaultSchema?.toQuoted { "SET SCHEMA $it" }
     }
 }

@@ -5,12 +5,9 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.DeleteRows
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class DeleteRowGenerator(es: EffectiveSettings) : DbAwareGenerator<DeleteRows>(es) {
-
-    override fun type(): KClass<DeleteRows> = DeleteRows::class
+class DeleteRowGenerator(es: EffectiveSettings) : DbAwareGenerator<DeleteRows>(es, DeleteRows::class) {
 
     override fun convertSingle(): DeleteRows.() -> String? = {
         """

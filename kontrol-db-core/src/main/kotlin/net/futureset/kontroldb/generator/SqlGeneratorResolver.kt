@@ -11,7 +11,7 @@ class SqlGeneratorResolver(templates: List<SqlGenerator<ModelChange>>) {
     init {
         require(templates.isNotEmpty()) { "Could not find any templates" }
         templates.forEach {
-            templatesByType.computeIfAbsent(it.type()) { sortedSetOf() }.add(it)
+            templatesByType.computeIfAbsent(it.type) { sortedSetOf() }.add(it)
         }
     }
 

@@ -6,16 +6,11 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.AddColumns
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class AddColumnsGenerator(db: EffectiveSettings) : DbAwareGenerator<AddColumns>(db) {
+class AddColumnsGenerator(es: EffectiveSettings) : DbAwareGenerator<AddColumns>(es, AddColumns::class) {
 
     override val priority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<AddColumns> {
-        return AddColumns::class
-    }
 
     override fun convert(change: AddColumns): List<String> {
         return change.columnDefinitions

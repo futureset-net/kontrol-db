@@ -7,19 +7,13 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import java.io.BufferedReader
 import kotlin.reflect.KClass
 
-abstract class DbAwareGenerator<T : ModelChange>(
-    override val es: EffectiveSettings,
-) : SqlGenerator<T> {
+abstract class DbAwareGenerator<T : ModelChange>(override val es: EffectiveSettings, override val type: KClass<T>) : SqlGenerator<T> {
 
     override val priority: GeneratorPriority = GeneratorPriority.DATABASE
 
     override lateinit var sqlGeneratorResolver: SqlGeneratorResolver
     fun SqlString?.toQuoted(block: (String) -> String = { it }): String {
         return this?.toQuoted(es)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
-    }
-
-    override fun type(): KClass<T> {
-        return this::class.constructors.first().parameters.first().type.classifier as KClass<T>
     }
 
     fun <T : SqlString> joinQuotableValues(

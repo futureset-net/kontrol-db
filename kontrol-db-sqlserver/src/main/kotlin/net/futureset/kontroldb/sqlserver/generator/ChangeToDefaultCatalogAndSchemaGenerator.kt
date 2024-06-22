@@ -5,13 +5,11 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.ChangeToDefaultCatalogAndSchema
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class ChangeToDefaultCatalogAndSchemaGenerator(es: EffectiveSettings) :
-    DbAwareGenerator<ChangeToDefaultCatalogAndSchema>(es) {
+    DbAwareGenerator<ChangeToDefaultCatalogAndSchema>(es, ChangeToDefaultCatalogAndSchema::class) {
 
-    override fun type(): KClass<ChangeToDefaultCatalogAndSchema> = ChangeToDefaultCatalogAndSchema::class
     override fun convert(change: ChangeToDefaultCatalogAndSchema): List<String> {
         return listOfNotNull(
             es.defaultCatalog?.toQuoted { "USE $it" },

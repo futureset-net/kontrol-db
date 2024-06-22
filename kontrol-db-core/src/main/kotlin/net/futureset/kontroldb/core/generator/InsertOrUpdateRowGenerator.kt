@@ -7,17 +7,12 @@ import net.futureset.kontroldb.modelchange.InsertOrUpdateRow
 import net.futureset.kontroldb.modelchange.UpdateMode
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class InsertOrUpdateRowGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<InsertOrUpdateRow>(db) {
+    DbAwareGenerator<InsertOrUpdateRow>(db, InsertOrUpdateRow::class) {
 
     override val priority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<InsertOrUpdateRow> {
-        return InsertOrUpdateRow::class
-    }
 
     override fun convertSingle(): InsertOrUpdateRow.() -> String? = {
         val columnNames = columnValues.first().keys

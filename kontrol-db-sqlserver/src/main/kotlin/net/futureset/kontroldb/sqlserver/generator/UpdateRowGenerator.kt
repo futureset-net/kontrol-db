@@ -6,12 +6,9 @@ import net.futureset.kontroldb.generator.trimBlankLines
 import net.futureset.kontroldb.modelchange.UpdateRows
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class UpdateRowGenerator(es: EffectiveSettings) : DbAwareGenerator<UpdateRows>(es) {
-
-    override fun type(): KClass<UpdateRows> = UpdateRows::class
+class UpdateRowGenerator(es: EffectiveSettings) : DbAwareGenerator<UpdateRows>(es, UpdateRows::class) {
 
     override fun canApplyTo(es: EffectiveSettings): Boolean = es.databaseName == "sqlserver"
 

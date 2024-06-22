@@ -6,17 +6,12 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.ExportQuery
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
 class ExportQueryGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<ExportQuery>(db) {
+    DbAwareGenerator<ExportQuery>(db, ExportQuery::class) {
 
     override val priority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<ExportQuery> {
-        return ExportQuery::class
-    }
 
     override fun convertSingle(): ExportQuery.() -> String? = {
         """

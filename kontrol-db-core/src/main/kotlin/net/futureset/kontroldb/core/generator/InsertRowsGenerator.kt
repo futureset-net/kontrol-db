@@ -6,16 +6,11 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.InsertRows
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
-import kotlin.reflect.KClass
 
 @Singleton(binds = [SqlGenerator::class])
-class InsertRowsGenerator(db: EffectiveSettings) : DbAwareGenerator<InsertRows>(db) {
+class InsertRowsGenerator(es: EffectiveSettings) : DbAwareGenerator<InsertRows>(es, InsertRows::class) {
 
     override val priority = GeneratorPriority.DEFAULT
-
-    override fun type(): KClass<InsertRows> {
-        return InsertRows::class
-    }
 
     override fun convertSingle(): InsertRows.() -> String? = {
         if (fromSelect != null) {
