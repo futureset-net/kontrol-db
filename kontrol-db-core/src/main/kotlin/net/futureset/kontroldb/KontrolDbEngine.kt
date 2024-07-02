@@ -1,6 +1,6 @@
 package net.futureset.kontroldb
 
-import net.futureset.kontroldb.generator.SqlGeneratorResolver
+import net.futureset.kontroldb.generator.SqlGeneratorFactory
 import net.futureset.kontroldb.migration.ApplyDirectlyMigrationHandler
 import net.futureset.kontroldb.migration.MigrationHandler
 import net.futureset.kontroldb.migration.WriteChangesToFileMigrationHandler
@@ -52,7 +52,7 @@ import kotlin.reflect.KClass
 data class KontrolDbEngine(
     private val allRefactoring: List<Refactoring>,
     val effectiveSettings: EffectiveSettings,
-    private val sqlGeneratorResolver: SqlGeneratorResolver,
+    private val sqlGeneratorFactory: SqlGeneratorFactory,
     val applySqlDirectly: ApplyDirectlyMigrationHandler,
     val applySqlToScript: WriteChangesToFileMigrationHandler,
 ) : KontrolDbCommands, AutoCloseable {
@@ -75,7 +75,6 @@ data class KontrolDbEngine(
     private val resourceResolver = ResourceResolver(effectiveSettings.externalFileRoot)
 
     init {
-        effectiveSettings.sqlGeneratorResolver = sqlGeneratorResolver
         require(refactorings.size == allRefactoring.size) {
             "Each refactoring must be unique"
         }
@@ -107,8 +106,7 @@ data class KontrolDbEngine(
             effectiveSettings.defaultSchema?.let(::InitSchema),
             effectiveSettings.defaultSchema?.let { ChangeToDefaultCatalogAndSchema() },
         ).onEach { modelChange ->
-            val t = sqlGeneratorResolver.resolveGenerator(modelChange)
-            applySqlDirectly.executeModelChange(modelChange, t?.convert(modelChange)?.filterNotNull().orEmpty())
+            applySqlDirectly.executeModelChange(modelChange, sqlGeneratorFactory.generateSql(modelChange))
         }
     }
 
@@ -336,7 +334,7 @@ data class KontrolDbEngine(
     }
 
     private fun ModelChange.lines(): List<String> {
-        return sqlGeneratorResolver.resolveGenerator(this)?.convert(this)?.filterNotNull() ?: emptyList()
+        return sqlGeneratorFactory.generateSql(this)
     }
 
     override fun close() {

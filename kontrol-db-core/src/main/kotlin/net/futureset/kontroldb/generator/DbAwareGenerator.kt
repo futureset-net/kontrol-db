@@ -11,7 +11,6 @@ abstract class DbAwareGenerator<T : ModelChange>(override val es: EffectiveSetti
 
     override val priority: GeneratorPriority = GeneratorPriority.DATABASE
 
-    override lateinit var sqlGeneratorResolver: SqlGeneratorResolver
     fun SqlString?.toQuoted(block: (String) -> String = { it }): String {
         return this?.toQuoted(es)?.takeIf { it.isNotBlank() }?.let(block) ?: ""
     }
@@ -24,17 +23,7 @@ abstract class DbAwareGenerator<T : ModelChange>(override val es: EffectiveSetti
         return items.joinToString(separator = separateBy, transform = { block(it.toQuoted()) })
     }
 
-    fun generateSqlSingle(change: ModelChange): String {
-        val result = sqlGeneratorResolver.resolveGenerator(change)?.convert(change) ?: emptyList()
-        require(result.size < 2)
-        return result.firstOrNull() ?: ""
-    }
-
-    fun generateSql(change: ModelChange): List<String> {
-        return sqlGeneratorResolver.resolveGenerator(change)?.convert(change)?.filterNotNull() ?: emptyList()
-    }
-
-    open fun convertSingle(): T.() -> String? = { null }
+    protected open fun convertSingle(): T.() -> String? = { null }
 
     override fun convert(change: T): List<String> {
         return listOfNotNull(convertSingle().invoke(change))
@@ -44,9 +33,9 @@ abstract class DbAwareGenerator<T : ModelChange>(override val es: EffectiveSetti
         return canApplyTo(es)
     }
 
-    fun Resource.text() = es.resourceResolver.resourceText(this)
+    protected fun Resource.text() = es.resourceResolver.resourceText(this)
 
-    fun Resource.reader(): BufferedReader {
+    protected fun Resource.reader(): BufferedReader {
         return es.resourceResolver.reader(this)
     }
 

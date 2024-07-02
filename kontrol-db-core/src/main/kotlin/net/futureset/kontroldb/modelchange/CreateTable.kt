@@ -18,7 +18,7 @@ data class CreateTable(
 ) : ModelChange {
 
     @KontrolDbDslMarker
-    data class CreateTableBuilder(
+    class CreateTableBuilder(
         private var tablespace: String? = null,
         private val columns: MutableList<ColumnDefinition> = mutableListOf(),
         private var primaryKey: AddPrimaryKey? = null,
