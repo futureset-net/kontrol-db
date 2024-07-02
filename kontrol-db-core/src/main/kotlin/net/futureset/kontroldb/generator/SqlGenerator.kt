@@ -5,20 +5,11 @@ import net.futureset.kontroldb.modelchange.ModelChange
 import net.futureset.kontroldb.settings.EffectiveSettings
 import kotlin.reflect.KClass
 
-interface SqlGenerator<T : ModelChange> : Comparable<SqlGenerator<T>> {
+interface SqlGenerator<T : ModelChange> : Prioritised {
 
-    var sqlGeneratorResolver: SqlGeneratorResolver
-    val priority: GeneratorPriority
     val es: EffectiveSettings
     val type: KClass<T>
 
-    override fun compareTo(other: SqlGenerator<T>): Int {
-        return priority.compareTo(other.priority)
-    }
-
-    fun <U : ModelChange> template(t: U): SqlGenerator<U>? {
-        return sqlGeneratorResolver.resolveGenerator(t)
-    }
     fun canApply() = true
 
     fun Collection<DbIdentifier>.columnNames(): String = joinToString(", ") { it.toQuoted(es) }

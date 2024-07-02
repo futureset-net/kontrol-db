@@ -2,16 +2,16 @@ package net.futureset.kontroldb.settings
 
 import net.futureset.kontroldb.KontrolDbState
 import net.futureset.kontroldb.ResourceResolver
-import net.futureset.kontroldb.generator.SqlGeneratorResolver
+import net.futureset.kontroldb.generator.SqlGeneratorFactory
 
 class EffectiveSettings(
     private val dbDialect: DbDialect,
     private val executionSettings: IExecutionSettings,
     private val targetSettings: ITargetSettings,
+    val sqlGeneratorFactory: SqlGeneratorFactory,
 ) : DbDialect by dbDialect, ITargetSettings by targetSettings, IExecutionSettings by executionSettings {
 
     val migrationRunId: Long = System.currentTimeMillis()
-    lateinit var sqlGeneratorResolver: SqlGeneratorResolver
     val resourceResolver: ResourceResolver = ResourceResolver(externalFileRoot)
     var startState: KontrolDbState? = null
     override val isOutputTablespace = (dbDialect.supportsTablespace && executionSettings.isOutputTablespace)

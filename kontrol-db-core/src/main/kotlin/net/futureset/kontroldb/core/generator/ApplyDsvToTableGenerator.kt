@@ -3,6 +3,7 @@ package net.futureset.kontroldb.core.generator
 import net.futureset.kontroldb.generator.DbAwareGenerator
 import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
+import net.futureset.kontroldb.generator.SqlGeneratorFactory
 import net.futureset.kontroldb.model.ColumnAndValue
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.SchemaObject
@@ -33,8 +34,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Singleton(binds = [SqlGenerator::class])
-class ApplyDsvToTableGenerator(es: EffectiveSettings) : DbAwareGenerator<ApplyDsvToTable>(es, ApplyDsvToTable::class) {
-
+class ApplyDsvToTableGenerator(es: EffectiveSettings, private val sqlGeneratorFactory: SqlGeneratorFactory) : DbAwareGenerator<ApplyDsvToTable>(es, ApplyDsvToTable::class) {
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
     override fun convert(change: ApplyDsvToTable): List<String> {
@@ -130,7 +130,7 @@ class ApplyDsvToTableGenerator(es: EffectiveSettings) : DbAwareGenerator<ApplyDs
                         }.build(),
                 )
             }
-            changes.flatMap(::generateSql)
+            changes.flatMap { sqlGeneratorFactory.generateSql(it) }
         }
     }
 

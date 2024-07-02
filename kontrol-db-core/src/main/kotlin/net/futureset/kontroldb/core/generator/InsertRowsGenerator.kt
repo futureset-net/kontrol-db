@@ -3,12 +3,14 @@ package net.futureset.kontroldb.core.generator
 import net.futureset.kontroldb.generator.DbAwareGenerator
 import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
+import net.futureset.kontroldb.generator.SqlGeneratorFactory
 import net.futureset.kontroldb.modelchange.InsertRows
 import net.futureset.kontroldb.settings.EffectiveSettings
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [SqlGenerator::class])
-class InsertRowsGenerator(es: EffectiveSettings) : DbAwareGenerator<InsertRows>(es, InsertRows::class) {
+class InsertRowsGenerator(es: EffectiveSettings, private val sqlGeneratorFactory: SqlGeneratorFactory) :
+    DbAwareGenerator<InsertRows>(es, InsertRows::class) {
 
     override val priority = GeneratorPriority.DEFAULT
 
@@ -17,7 +19,7 @@ class InsertRowsGenerator(es: EffectiveSettings) : DbAwareGenerator<InsertRows>(
             """
                 INSERT INTO ${table.toQuoted()}
                 (${joinQuotableValues(fromSelect.columns.map { it.columnName })})      
-                ${generateSqlSingle(fromSelect)}
+                ${sqlGeneratorFactory.generateSqlSingle(fromSelect)}
             """.trimIndent()
         } else {
             """

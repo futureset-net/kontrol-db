@@ -74,8 +74,7 @@ data class Not(val predicate: SqlPredicate) : SqlPredicate {
 data class Exists(private val selectQuery: SelectQuery) : SqlPredicate {
     override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return "EXISTS (${
-            effectiveSettings.sqlGeneratorResolver.resolveGenerator(selectQuery)?.convert(selectQuery)
-                ?.joinToString(separator = "\n")
+            effectiveSettings.sqlGeneratorFactory.generateSql(selectQuery).joinToString(separator = "\n")
         })"
     }
 }

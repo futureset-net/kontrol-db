@@ -4,7 +4,7 @@ import net.futureset.kontroldb.config.ConfigFileControl
 import net.futureset.kontroldb.config.KontrolDbConfig
 import net.futureset.kontroldb.core.CoreModule
 import net.futureset.kontroldb.generator.SqlGenerator
-import net.futureset.kontroldb.generator.SqlGeneratorResolver
+import net.futureset.kontroldb.generator.SqlGeneratorFactory
 import net.futureset.kontroldb.migration.ApplyDirectlyMigrationHandler
 import net.futureset.kontroldb.migration.WriteChangesToFileMigrationHandler
 import net.futureset.kontroldb.model.DbIdentifier
@@ -52,6 +52,7 @@ data class KontrolDbEngineBuilder(
 
     override fun build(): KontrolDbEngine {
         val engineModule = module {
+            singleOf(::SqlGeneratorFactory)
             singleOf(::CreateVersionControlTable).bind(Refactoring::class)
             single {
                 EffectiveSettings(
@@ -61,13 +62,8 @@ data class KontrolDbEngineBuilder(
                     ) { "Could not find dialect named '$dialect'" },
                     get<IExecutionSettings>(),
                     get<ITargetSettings>(),
+                    get<SqlGeneratorFactory>(),
                 )
-            }
-            single {
-                val templates = getAll<SqlGenerator<ModelChange>>()
-                val result = SqlGeneratorResolver(templates)
-                templates.forEach { it.sqlGeneratorResolver = result }
-                result
             }
             single<TargetSettings> { targetSettings }.bind(ITargetSettings::class)
             single { executionSettings }.bind(IExecutionSettings::class)
@@ -82,6 +78,9 @@ data class KontrolDbEngineBuilder(
             logger(SLF4JLogger(level = Level.INFO))
             modules(engineModule)
             modules(modules.toList())
+        }
+        buildEngine.koin.get<SqlGeneratorFactory>().run {
+            buildEngine.koin.getAll<SqlGenerator<ModelChange>>().forEach(::register)
         }
         return buildEngine.koin.get<KontrolDbEngine>()
     }
@@ -105,6 +104,7 @@ data class KontrolDbEngineBuilder(
     fun dialect(dialect: String) = apply {
         this.dialect = dialect
     }
+
     fun dbSettings(block: TargetSettingsBuilder.() -> Unit) = apply {
         targetSettings = TargetSettingsBuilder(targetSettings).apply(block).build()
     }
@@ -116,6 +116,7 @@ data class KontrolDbEngineBuilder(
     fun changeModules(module: Module) = apply {
         modules.add(module)
     }
+
     companion object {
         fun dsl(lambda: KontrolDbEngineBuilder.() -> Unit): KontrolDbEngine {
             return KontrolDbEngineBuilder().apply(lambda).build()
