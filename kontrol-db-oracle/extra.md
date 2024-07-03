@@ -1,6 +1,6 @@
 # Module kontrol-db-oracle
 
-The Orqcle module of the KontrolDB database migration tool.
+The Oracle module of the KontrolDB database migration tool.
 
 ## Installation
 
