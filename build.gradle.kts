@@ -12,9 +12,6 @@ plugins {
     id("jacoco-report-aggregation")
 }
 
-group = "net.futureset"
-version = "local-SNAPSHOT"
-
 println("VERSION is $version")
 
 extensions.configure<SpotlessExtension> {
