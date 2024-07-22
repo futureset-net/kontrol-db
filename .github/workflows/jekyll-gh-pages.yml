@@ -34,7 +34,7 @@ jobs:
           java-version: '20'
           distribution: 'temurin'        
       - name: inti gradle
-        uses: gradle/actions/setup-gradle@v3.4.2
+        uses: gradle/actions/setup-gradle@v3.5.0
       - name: generate docs
         run: ./gradlew dokkaJekyllMultiModule --scan
       - name: Setup Pages
