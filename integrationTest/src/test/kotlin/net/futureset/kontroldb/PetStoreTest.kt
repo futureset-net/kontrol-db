@@ -44,7 +44,7 @@ internal class PetStoreTest {
                     engine.effectiveSettings.run {
                         assertThat(
                             (
-                                "docker exec -i kontrol-db-sqlserver /opt/mssql-tools/bin/sqlcmd " +
+                                "docker exec -i kontrol-db-sqlserver /opt/mssql-tools18/bin/sqlcmd " +
                                     "-U $username -P $password -e -H localhost -C -i /var/outputdir/output.sql"
                                 )
                                 .executeAsShell(),
