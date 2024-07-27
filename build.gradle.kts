@@ -26,7 +26,7 @@ extensions.configure<SpotlessExtension> {
     kotlin {
         // version, userData and editorConfigOverride are all optional
         ktlint(libs.versions.ktlint.get())
-        target("**/src/*/kotlin/**/*.kt", "**/*.gradle.kts")
+        target("*/src/*/kotlin/**/*.kt", "*.gradle.kts", "*/*.kts", "buildSrc/src/**/*.kts")
     }
 }
 

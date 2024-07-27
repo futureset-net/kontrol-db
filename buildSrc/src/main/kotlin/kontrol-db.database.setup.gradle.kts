@@ -7,10 +7,6 @@ plugins {
 
 val versionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-extensions.configure<JacocoPluginExtension> {
-    toolVersion = versionCatalog.findVersion("jacoco").get().requiredVersion
-}
-
 extensions.configure<TestingExtension> {
     suites {
         register<JvmTestSuite>("integrationTest") {
