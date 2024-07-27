@@ -90,7 +90,6 @@ subprojects {
             val test by getting(JvmTestSuite::class) {
                 useJUnitJupiter(rootProject.libs.versions.junit)
                 dependencies {
-                    implementation(rootProject.libs.junit.mockito)
                     implementation(rootProject.libs.assertj)
                 }
                 targets {
@@ -126,7 +125,6 @@ subprojects {
 
     dependencies {
 
-        testImplementation(enforcedPlatform(rootProject.libs.mockito.bom))
         testImplementation(enforcedPlatform(rootProject.libs.junit.bom))
 
         project(":kontrol-db-core")
