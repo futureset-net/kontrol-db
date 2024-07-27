@@ -1,9 +1,7 @@
 [versions]
 dokka = "1.9.20"
-gradle = "8.7"
+gradle = "8.9"
 spotless = "6.25.0"
-jacoco = "0.8.10"
-mockito = "5.12.0"
 junit = "5.10.3"
 assertj = "3.26.3"
 hsqldb = "2.7.3"
@@ -14,7 +12,6 @@ kotlin = "2.0.0"
 koin-compiler = "1.3.1"
 ktlint = "0.48.2"
 logback = "1.5.6"
-asciidoc-plugin = "4.0.3"
 sqlserver = "12.7.1.jre11-preview"
 docker-plugin = "9.3.7"
 oracle = "23.4.0.24.05"
@@ -23,18 +20,15 @@ postgres = "42.7.3"
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
-asciidoc = { id = "org.asciidoctor.jvm.convert", version.ref = "asciidoc-plugin" }
 docker = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-plugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [libraries]
 docker-remote-plugin = { group = "com.bmuschko.docker-remote-api", name = "com.bmuschko.docker-remote-api.gradle.plugin", version.ref = "docker-plugin" }
 logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
-mockito-bom = { group = "org.mockito", name = "mockito-bom", version.ref = "mockito" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
-junit-mockito = { group = "org.mockito", name = "mockito-junit-jupiter", version.ref = "mockito" }
 junit-vintage = { group = "org.junit.vintage", name = "junit-vintage-engine", version.ref = "junit" }
 assertj = { group = "org.assertj", name = "assertj-core", version.ref = "assertj" }
 hsqldb = { group = "org.hsqldb", name = "hsqldb", version.ref = "hsqldb" }
@@ -53,6 +47,6 @@ postgres = { group = "org.postgresql", name = "postgresql", version.ref = "postg
 sqlserver = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "sqlserver" }
 
 [bundles]
-junit5 = ["junit-jupiter", "junit-mockito", "junit-jupiter-api"]
+junit5 = ["junit-jupiter", "junit-jupiter-api"]
 jackson-yaml = ["jackson-kotlin", "jackson-yaml"]
 koin = ["koin-core", "koin-annotations", "koin-slf4j"]

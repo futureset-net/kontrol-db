@@ -7,10 +7,6 @@ plugins {
 
 val versionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-extensions.configure<JacocoPluginExtension> {
-    toolVersion = versionCatalog.findVersion("jacoco").get().requiredVersion
-}
-
 extensions.configure<TestingExtension> {
     suites {
         register<JvmTestSuite>("integrationTest") {
@@ -22,9 +18,6 @@ extensions.configure<TestingExtension> {
             useJUnitJupiter(versionCatalog.findVersion("junit").get().requiredVersion)
             testType = TestSuiteType.INTEGRATION_TEST
             dependencies {
-                versionCatalog.findLibrary("junit.mockito").ifPresent {
-                    implementation(it)
-                }
                 versionCatalog.findLibrary("assertj").ifPresent {
                     implementation(it)
                 }
