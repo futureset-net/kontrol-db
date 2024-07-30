@@ -10,6 +10,9 @@ dependencies {
 }
 
 extensions.configure<JavaPluginExtension> {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(versionCatalog.findVersion("java").get().requiredVersion)
+    }
     sourceSets {
         getByName("main") {
             kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
