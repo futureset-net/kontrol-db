@@ -12,6 +12,12 @@ plugins {
     id("jacoco-report-aggregation")
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
 println("VERSION is $version")
 
 extensions.configure<SpotlessExtension> {
@@ -30,6 +36,23 @@ extensions.configure<SpotlessExtension> {
     }
 }
 
+val referenceToLibs = libs
+allprojects {
+    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+        kotlin {
+            jvmToolchain {
+                languageVersion.set(referenceToLibs.versions.java.map(JavaLanguageVersion::of))
+            }
+        }
+    }
+    pluginManager.withPlugin("java") {
+        configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(referenceToLibs.versions.java.get())
+            }
+        }
+    }
+}
 subprojects {
     tasks.withType<DokkaTaskPartial>().configureEach {
         dokkaSourceSets.configureEach {

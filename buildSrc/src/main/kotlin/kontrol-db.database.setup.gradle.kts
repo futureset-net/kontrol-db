@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     kotlin("jvm")
     id("jacoco")
@@ -30,8 +32,6 @@ extensions.configure<TestingExtension> {
 }
 
 extensions.configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_20
-    targetCompatibility = JavaVersion.VERSION_20
     withSourcesJar()
 }
 
