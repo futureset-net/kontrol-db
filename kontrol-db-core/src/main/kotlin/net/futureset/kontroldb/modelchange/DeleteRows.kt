@@ -11,7 +11,7 @@ data class DeleteRows(
     class DeleteRowsBuilder(
 
         override var alias: String? = null,
-        var predicate: SqlPredicate = AllOf(emptyList()),
+        private var predicate: SqlPredicate = AllOf(emptyList()),
     ) : TableAliasBuilder<DeleteRowsBuilder, DeleteRows> {
 
         override lateinit var table: Table

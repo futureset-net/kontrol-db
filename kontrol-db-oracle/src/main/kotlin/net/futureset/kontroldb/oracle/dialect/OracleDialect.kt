@@ -5,8 +5,6 @@ import net.futureset.kontroldb.model.StandardColumnTypes
 import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Singleton
-import java.nio.file.Path
-import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -65,9 +63,5 @@ class OracleDialect : AnsiDialect {
 
     override fun literalDate(date: LocalDate): String {
         return "DATE " + super.literalDate(date)
-    }
-
-    override fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
-        TODO("Not yet implemented")
     }
 }

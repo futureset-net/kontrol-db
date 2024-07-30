@@ -4,9 +4,9 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 
 data class ColumnAndValue(
     val columnName: DbIdentifier,
-    val value: ColumnValue?,
-    val separator: String = "AS",
-    val columnFirst: Boolean = separator == "=",
+    private val value: ColumnValue?,
+    private val separator: String = "AS",
+    private val columnFirst: Boolean = separator == "=",
 ) : SqlString {
     override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(

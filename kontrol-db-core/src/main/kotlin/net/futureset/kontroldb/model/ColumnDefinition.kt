@@ -7,7 +7,7 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 data class ColumnDefinition(
     val columnName: DbIdentifier,
     val columnType: ColumnType,
-    val nullable: Boolean = false,
+    val nullable: Boolean,
 ) : SqlString {
     override fun toQuoted(effectiveSettings: EffectiveSettings): String {
         return listOfNotNull(

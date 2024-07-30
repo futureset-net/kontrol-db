@@ -11,7 +11,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-class ApplyDirectlyMigrationHandler(val effectiveSettings: EffectiveSettings) : MigrationHandler {
+class ApplyDirectlyMigrationHandler(private val effectiveSettings: EffectiveSettings) : MigrationHandler {
 
     private val connectionHolder = ConnectionHolder(this::makeConnection)
 

@@ -98,6 +98,10 @@ subprojects {
     apply(plugin = "jacoco")
     apply(plugin = "kotlin")
 
+    jacoco {
+        toolVersion = referenceToLibs.versions.jacoco.get()
+    }
+
     tasks.jar {
         manifest {
             attributes(
