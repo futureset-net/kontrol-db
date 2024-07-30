@@ -62,13 +62,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Run build
+      - name: Setup build
         uses: gradle/actions/setup-gradle@v3.5.0
         with:
           build-scan-publish: true
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
-      - name: Build the project
+          add-job-summary-as-pr-comment: always
+      - name : Run build
         run: ./gradlew build --scan
       - name: Add coverage to PR
         id: jacoco
