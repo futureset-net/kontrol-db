@@ -7,8 +7,6 @@ import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Singleton
-import java.nio.file.Path
-import java.sql.Connection
 
 @Singleton(binds = [DbDialect::class])
 class SqlServerDialect : AnsiDialect {
@@ -44,9 +42,5 @@ class SqlServerDialect : AnsiDialect {
             TablePersistence.GLOBAL_TEMPORARY -> table.copy(schemaObject = SchemaObject(name = DbIdentifier("##" + (table.schemaObject.name.name.trimStart('#')))))
             else -> table
         }
-    }
-
-    override fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
-        TODO("Not yet implemented")
     }
 }

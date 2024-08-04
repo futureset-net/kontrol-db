@@ -50,7 +50,9 @@ interface DbDialect : Comparable<DbDialect> {
     }
 
     fun tempTable(table: Table): Table = table
-    fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path)
+    fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
+        TODO("Not yet implemented")
+    }
 
     fun startTransaction(id: Int): String
     fun endTransaction(id: Int): String

@@ -10,6 +10,6 @@ data class DbIdentifier(@JsonValue val name: String) : SqlString, Operand {
         return effectiveSettings.openQuote + name + effectiveSettings.closeQuote
     }
 
-    fun alias(label: String? = null) =
+    fun alias(label: String) =
         ColumnAlias(this, label)
 }

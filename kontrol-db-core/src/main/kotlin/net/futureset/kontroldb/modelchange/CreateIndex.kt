@@ -11,8 +11,8 @@ data class CreateIndex(
     val columnReferences: List<DbIdentifier>,
     val clustered: Boolean,
     val unique: Boolean,
-    val indexName: DbIdentifier? = null,
-    val tablespace: Tablespace? = null,
+    val indexName: DbIdentifier?,
+    val tablespace: Tablespace?,
 ) : ModelChange {
 
     @KontrolDbDslMarker
