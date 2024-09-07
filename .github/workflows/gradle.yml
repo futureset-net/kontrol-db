@@ -63,7 +63,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Setup build
-        uses: gradle/actions/setup-gradle@v4.0.0
+        uses: gradle/actions/setup-gradle@v4.0.1
         with:
           build-scan-publish: true
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
@@ -73,7 +73,7 @@ jobs:
         run: ./gradlew build --scan
       - name: Add coverage to PR
         id: jacoco
-        uses: madrapps/jacoco-report@v1.6.1
+        uses: madrapps/jacoco-report@v1.7.0
         with:
           paths: |
             ${{ github.workspace }}/**/build/reports/jacoco/integrationTestCodeCoverageReport/integrationTestCodeCoverageReport.xml,
