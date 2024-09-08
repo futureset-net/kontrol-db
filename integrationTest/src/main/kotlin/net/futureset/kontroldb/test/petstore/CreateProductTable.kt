@@ -11,10 +11,11 @@ import net.futureset.kontroldb.modelchange.addPrimaryKey
 import net.futureset.kontroldb.modelchange.createTable
 import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.refactoring.Refactoring
+import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Single
 
 @Single
-class CreateProductTable : Refactoring(
+class CreateProductTable(private val dialect: DbDialect) : Refactoring(
 
     executionOrder {
         ymd(2023, 8, 27)
@@ -29,7 +30,9 @@ class CreateProductTable : Refactoring(
             column("CURRENT_INVENTORY_COUNT", INT16)
             column("STORE_COST", Decimal(10, 2))
             column("SALE_PRICE", Decimal(10, 2))
-            column("LAST_UPDATE_DATE", DATETIME)
+            column("LAST_UPDATE_DATE", DATETIME) {
+                defaultExpression(dialect.dbNowTimestamp())
+            }
             column("UPDATED_BY_USER", Varchar(30))
             column("PET_FLAG", BOOLEAN)
         }
