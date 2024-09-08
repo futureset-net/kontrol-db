@@ -67,7 +67,9 @@ class AddAndDropColumnsTest {
         forward = changes {
             addColumnsTo("FRED") {
                 column("TWO_COLUMN", INT32)
-                column("THREE_COLUMN", INT32)
+                column("THREE_COLUMN", INT32) {
+                    defaultValue(1)
+                }
                 column("FOUR_COLUMN", INT32)
                 column("FIVE_COLUMN", INT32)
                 table {

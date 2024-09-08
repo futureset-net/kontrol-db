@@ -67,6 +67,7 @@ data class ApplyDsvToTable(
                         DbIdentifier(columnName),
                         columnType,
                         nullable = true,
+                        defaultValue = null,
                     ),
                 )
                 if (primaryKey) {
