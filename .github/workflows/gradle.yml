@@ -73,7 +73,7 @@ jobs:
         run: ./gradlew build --scan
       - name: Add coverage to PR
         id: jacoco
-        uses: madrapps/jacoco-report@v1.7.0
+        uses: madrapps/jacoco-report@v1.7.1
         with:
           paths: |
             ${{ github.workspace }}/**/build/reports/jacoco/integrationTestCodeCoverageReport/integrationTestCodeCoverageReport.xml,
