@@ -17,6 +17,18 @@ dependencies {
 
 val unitTestCoverageLimit: String by project
 
+val jacocoExclude = listOf("**/generated/**")
+
+tasks.named<JacocoReport>("jacocoTestReport") {
+    classDirectories.setFrom(
+        classDirectories.files.map {
+            fileTree(it).matching {
+                exclude(jacocoExclude)
+            }
+        },
+    )
+}
+
 tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
     executionData(tasks.test.get())
     dependsOn(tasks.test)
