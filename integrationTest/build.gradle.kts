@@ -11,5 +11,6 @@ dependencies {
 
 tasks.test {
     finalizedBy("jacocoTestReport")
+
     enabled = false
 }

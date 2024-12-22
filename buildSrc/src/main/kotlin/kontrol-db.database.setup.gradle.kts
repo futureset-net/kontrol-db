@@ -37,7 +37,7 @@ extensions.configure<JavaPluginExtension> {
 
 val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
     group = "verification"
-    this.sourceSets(project.sourceSets["main"], project(":kontrol-db-core").sourceSets["main"])
+    this.sourceSets(project.sourceSets["main"])
     executionData(tasks.getByPath("integrationTest"))
 }
 

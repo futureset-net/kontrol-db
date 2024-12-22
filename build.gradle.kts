@@ -6,16 +6,10 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URI
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm").apply(false)
     alias(libs.plugins.spotless)
     alias(libs.plugins.dokka)
     id("jacoco-report-aggregation")
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
-    }
 }
 
 println("VERSION is $version")
@@ -38,13 +32,13 @@ extensions.configure<SpotlessExtension> {
 
 val referenceToLibs = libs
 allprojects {
-    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-        kotlin {
-            jvmToolchain {
-                languageVersion.set(referenceToLibs.versions.java.map(JavaLanguageVersion::of))
-            }
-        }
-    }
+//    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+//        configure<KotlinJvmPlugin> {
+//            jvmToolchain {
+//                languageVersion.set(referenceToLibs.versions.java.map(JavaLanguageVersion::of))
+//            }
+//        }
+//    }
     pluginManager.withPlugin("java") {
         configure<JavaPluginExtension> {
             toolchain {
@@ -102,7 +96,7 @@ subprojects {
         toolVersion = referenceToLibs.versions.jacoco.get()
     }
 
-    tasks.jar {
+    tasks.named<Jar>("jar") {
         manifest {
             attributes(
                 "Implementation-Title" to (project.description ?: project.name),
@@ -112,10 +106,11 @@ subprojects {
         }
     }
 
-    testing {
+    configure<TestingExtension> {
         suites {
             val test by getting(JvmTestSuite::class) {
                 useJUnitJupiter(rootProject.libs.versions.junit)
+                testType = TestSuiteType.UNIT_TEST
                 dependencies {
                     implementation(rootProject.libs.assertj)
                 }
@@ -142,7 +137,7 @@ subprojects {
         dependsOn("jacocoTestCoverageVerification")
     }
 
-    tasks.processResources {
+    tasks.named("processResources") {
         dependsOn(rootProject.tasks.named("spotlessApply"))
     }
 
@@ -152,10 +147,10 @@ subprojects {
 
     dependencies {
 
-        testImplementation(enforcedPlatform(rootProject.libs.junit.bom))
+        "testImplementation"(enforcedPlatform(rootProject.libs.junit.bom))
 
         project(":kontrol-db-core")
-        testImplementation(rootProject.libs.bundles.junit5) {
+        "testImplementation"(rootProject.libs.bundles.junit5) {
             exclude(group = "org.hamcrest")
         }
     }
@@ -163,6 +158,10 @@ subprojects {
 
 val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"), project(":kontrol-db-postgres"))
 
+dependencies {
+    databasesubprojects.forEach { jacocoAggregation(it) }
+    jacocoAggregation(project(":kontrol-db-core"))
+}
 reporting {
     reports {
         val integrationTestCodeCoverageReport by creating(JacocoCoverageReport::class) {
@@ -171,13 +170,20 @@ reporting {
     }
 }
 
-val integrationTestCodeCoverageReport = tasks.named<JacocoReport>("integrationTestCodeCoverageReport")
+val integrationTestCodeCoverageReport = tasks.named<JacocoReport>("integrationTestCodeCoverageReport") {
+    classDirectories.setFrom(
+        classDirectories.files.map {
+            fileTree(it).matching {
+                exclude("**/generated/**")
+            }
+        },
+    )
+}
+
 val integrationTestCoverageLimit: String by project
 
 val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
     group = "verification"
-    executionData(*databasesubprojects.map { it.tasks.named("integrationTest").get() }.toTypedArray())
-    sourceSets(*(databasesubprojects.map { it.sourceSets["main"] } + project(":kontrol-db-core").sourceSets["main"]).toTypedArray())
     doFirst {
         println("file://" + integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().path + "index.html")
     }
