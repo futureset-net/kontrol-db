@@ -2,7 +2,7 @@
 assertj = "3.27.3"
 docker-plugin = "9.3.7"
 dokka = "2.0.0"
-gradle = "8.9"
+gradle = "8.12.1"
 hsqldb = "2.7.4"
 jackson = "2.18.2"
 jacoco = "0.8.12"
