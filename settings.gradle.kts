@@ -12,7 +12,7 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        id("org.jetbrains.kotlin.jvm") version "2.1.10"
+        id("org.jetbrains.kotlin.jvm") version "2.1.20"
     }
 }
 dependencyResolutionManagement {
