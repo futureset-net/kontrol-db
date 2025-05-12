@@ -15,7 +15,7 @@ koin = "4.0.4"
 koin-compiler = "2.0.0"
 ktlint = "0.48.2"
 logback = "1.5.18"
-oracle = "23.7.0.25.01"
+oracle = "23.8.0.25.04"
 postgres = "42.7.5"
 spotless = "7.0.3"
 
