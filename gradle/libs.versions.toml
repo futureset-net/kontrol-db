@@ -1,5 +1,5 @@
 [versions]
-assertj = "3.27.3"
+assertj = "3.27.4"
 docker-plugin = "9.3.7"
 dokka = "2.0.0"
 gradle = "8.12.1"
