@@ -20,7 +20,7 @@ extensions.configure<SpotlessExtension> {
         target("*.md", ".gitignore")
 
         trimTrailingWhitespace()
-        indentWithSpaces()
+        leadingTabsToSpaces()
         endWithNewline()
     }
     kotlin {
@@ -32,13 +32,6 @@ extensions.configure<SpotlessExtension> {
 
 val referenceToLibs = libs
 allprojects {
-//    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
-//        configure<KotlinJvmPlugin> {
-//            jvmToolchain {
-//                languageVersion.set(referenceToLibs.versions.java.map(JavaLanguageVersion::of))
-//            }
-//        }
-//    }
     pluginManager.withPlugin("java") {
         configure<JavaPluginExtension> {
             toolchain {
