@@ -87,7 +87,7 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
             "postgres" -> executeSql(
                 """CREATE DATABASE "TEST_DB"""",
                 """CREATE USER "deploymentUser" WITH PASSWORD 'sfnisdofskonm3'""",
-                """CREATE TABLESPACE "MY_INDEX_TS" OWNER "deploymentUser" LOCATION '/var/lib/postgresql/data'""",
+                """CREATE TABLESPACE "MY_INDEX_TS" OWNER "deploymentUser" LOCATION '/var/lib/postgresql/18/docker'""",
                 """GRANT ALL PRIVILEGES on database "TEST_DB" to "deploymentUser"""",
                 """ALTER DATABASE "TEST_DB" OWNER TO "deploymentUser"""",
                 """ALTER USER "deploymentUser" CREATEROLE""",

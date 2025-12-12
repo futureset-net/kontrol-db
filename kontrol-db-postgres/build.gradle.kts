@@ -7,7 +7,7 @@ plugins {
 }
 
 extensions.configure<DbDockerExtension> {
-    imageId.set("postgres:latest")
+    imageId.set("postgres:18.1")
     envProperties.put("POSTGRES_USER", "SA")
     envProperties.put("POSTGRES_PASSWORD", "Th1sIsW0rking")
     internalToExternalPortMap.put(5432, 5432)
