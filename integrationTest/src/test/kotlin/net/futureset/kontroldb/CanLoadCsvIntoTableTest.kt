@@ -38,42 +38,44 @@ import kotlin.io.path.writeText
 
 @ExtendWith(DatabaseProvision::class)
 internal class CanLoadCsvIntoTableTest {
-
-    class CreateCustomerTable : Refactoring(
-        executionOrder {
-            ymd(2023, 8, 27)
-            author("ben")
-        },
-        forward = changes {
-            createTable("CUSTOMER") {
-                column("CUST_ID", INT64)
-                column("FIRSTNAME", Varchar(256))
-                column("LASTNAME", Varchar(256))
-                column("FAVOURITE_LETTER", Char(1))
-                column("FAVOURITE_DECIMAL", Decimal(3, 2))
-                column("IS_AN_IDIOT", BOOLEAN)
-                column("NUMBER_OF_STAMPS", INT16)
-                column("DATE_OF_BIRTH", DATE)
-                column("TIME_RIGHT_NOW", LOCALDATETIME)
-            }
-            createIndex("UK_FIRSTNAME") {
-                unique(true)
-                table("CUSTOMER")
-                column("FIRSTNAME")
-            }
-            addPrimaryKey("CUSTOMER_PK") {
-                table("CUSTOMER")
-                column("CUST_ID")
-            }
-            addNotNull {
-                table("CUSTOMER")
-                column("LASTNAME", Varchar(25))
-            }
-        },
-        rollback = changes {
-            dropTable("CUSTOMER")
-        },
-    )
+    class CreateCustomerTable :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 8, 27)
+                author("ben")
+            },
+            forward =
+            changes {
+                createTable("CUSTOMER") {
+                    column("CUST_ID", INT64)
+                    column("FIRSTNAME", Varchar(256))
+                    column("LASTNAME", Varchar(256))
+                    column("FAVOURITE_LETTER", Char(1))
+                    column("FAVOURITE_DECIMAL", Decimal(3, 2))
+                    column("IS_AN_IDIOT", BOOLEAN)
+                    column("NUMBER_OF_STAMPS", INT16)
+                    column("DATE_OF_BIRTH", DATE)
+                    column("TIME_RIGHT_NOW", LOCALDATETIME)
+                }
+                createIndex("UK_FIRSTNAME") {
+                    unique(true)
+                    table("CUSTOMER")
+                    column("FIRSTNAME")
+                }
+                addPrimaryKey("CUSTOMER_PK") {
+                    table("CUSTOMER")
+                    column("CUST_ID")
+                }
+                addNotNull {
+                    table("CUSTOMER")
+                    column("LASTNAME", Varchar(25))
+                }
+            },
+            rollback =
+            changes {
+                dropTable("CUSTOMER")
+            },
+        )
 
     class LoadACsvFile(
         csvFile: Path,
@@ -89,7 +91,8 @@ internal class CanLoadCsvIntoTableTest {
             author("ben")
             sequence(seq)
         },
-        forward = changes {
+        forward =
+        changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
                 file(csvFile.toString())
@@ -112,7 +115,6 @@ internal class CanLoadCsvIntoTableTest {
             }
         },
         rollback = emptyList(),
-
     )
 
     class LoadACsvFileStage2(
@@ -128,7 +130,8 @@ internal class CanLoadCsvIntoTableTest {
             author("ben")
             sequence(seq)
         },
-        forward = changes {
+        forward =
+        changes {
             applyDsvToTable {
                 useDbLoadingTool(false)
                 file(csvFile.toString())
@@ -150,27 +153,32 @@ internal class CanLoadCsvIntoTableTest {
             }
         },
         rollback = emptyList(),
-
     )
 
     @ParameterizedTest
     @ValueSource(strings = ["|", ","])
-    fun loadACsvWithInsertsOnly(delimiter: String, @TempDir tempDir: Path) {
+    fun loadACsvWithInsertsOnly(
+        delimiter: String,
+        @TempDir tempDir: Path,
+    ) {
         val dsvFile = tempDir.resolve("customers.dsv")
         val createCount = 8
         dsvFile.writeLines(
             listOf(
-                "CUST_ID,FIRSTNAME,LASTNAME,FAVOURITE_LETTER,FAVOURITE_DECIMAL,IS_AN_IDIOT,NUMBER_OF_STAMPS,DATE_OF_BIRTH,TIME_RIGHT_NOW".split(
-                    ",",
-                ).joinToString(separator = delimiter),
-            ) + generateSequence(
-                1,
-            ) { it + 1 }.takeWhile { it <= createCount }
-                .map {
-                    "$it,Ben$it,Riley$it,A,3.14,${it % 2},$it,1974-10-26,${
-                        LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
-                    }".split(",").joinToString(separator = delimiter)
-                },
+                "CUST_ID,FIRSTNAME,LASTNAME,FAVOURITE_LETTER,FAVOURITE_DECIMAL,IS_AN_IDIOT,NUMBER_OF_STAMPS,DATE_OF_BIRTH,TIME_RIGHT_NOW"
+                    .split(
+                        ",",
+                    ).joinToString(separator = delimiter),
+            ) +
+                generateSequence(
+                    1,
+                ) { it + 1 }
+                    .takeWhile { it <= createCount }
+                    .map {
+                        "$it,Ben$it,Riley$it,A,3.14,${it % 2},$it,1974-10-26,${
+                            LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
+                        }".split(",").joinToString(separator = delimiter)
+                    },
         )
 
         dsl {
@@ -187,22 +195,25 @@ internal class CanLoadCsvIntoTableTest {
             )
         }.use { result ->
             result.applySql()
-            val customerCount = result.applySqlDirectly.withConnection {
-                it.executeQuery("SELECT COUNT(*) FROM ${result.effectiveSettings.quote("CUSTOMER")}") { rs ->
-                    rs.getInt(1)
-                }.first()
-            }
+            val customerCount =
+                result.applySqlDirectly.withConnection {
+                    it
+                        .executeQuery("SELECT COUNT(*) FROM ${result.effectiveSettings.quote("CUSTOMER")}") { rs ->
+                            rs.getInt(1)
+                        }.first()
+                }
             assertThat(customerCount).isEqualTo(createCount)
             assertThat(
                 result.applySqlDirectly.withConnection {
-                    it.executeQuery(
-                        result.effectiveSettings.run {
-                            "SELECT COUNT(*) FROM ${quote("CUSTOMER")} WHERE ${quote("IS_AN_IDIOT")}=$literalTrue"
-                        },
-                    ) { rs ->
+                    it
+                        .executeQuery(
+                            result.effectiveSettings.run {
+                                "SELECT COUNT(*) FROM ${quote("CUSTOMER")} WHERE ${quote("IS_AN_IDIOT")}=$literalTrue"
+                            },
+                        ) { rs ->
 
-                        rs.getInt(1)
-                    }.first()
+                            rs.getInt(1)
+                        }.first()
                 },
             ).isEqualTo(customerCount / 2)
         }
@@ -253,18 +264,25 @@ internal class CanLoadCsvIntoTableTest {
 
     @ParameterizedTest
     @MethodSource
-    fun loadACsvThenDoSomeUpdates(arg: DoUpdates, @TempDir tempDir: Path) {
+    fun loadACsvThenDoSomeUpdates(
+        arg: DoUpdates,
+        @TempDir tempDir: Path,
+    ) {
         val dsvFile = tempDir.resolve("customers.dsv")
         val createCount = 8
         dsvFile.writeLines(
-            listOf("CUST_ID,FIRSTNAME,LASTNAME,FAVOURITE_LETTER,FAVOURITE_DECIMAL,IS_AN_IDIOT,NUMBER_OF_STAMPS,DATE_OF_BIRTH,TIME_RIGHT_NOW") + generateSequence(
-                1,
-            ) { it + 1 }.takeWhile { it <= createCount }
-                .map {
-                    "$it,Ben$it,Riley$it,C,3.14,${it % 2},$it,1974-10-26,${
-                        LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
-                    }"
-                },
+            listOf(
+                "CUST_ID,FIRSTNAME,LASTNAME,FAVOURITE_LETTER,FAVOURITE_DECIMAL,IS_AN_IDIOT,NUMBER_OF_STAMPS,DATE_OF_BIRTH,TIME_RIGHT_NOW",
+            ) +
+                generateSequence(
+                    1,
+                ) { it + 1 }
+                    .takeWhile { it <= createCount }
+                    .map {
+                        "$it,Ben$it,Riley$it,C,3.14,${it % 2},$it,1974-10-26,${
+                            LocalDateTime.now().format(SQL_TIMESTAMP_FORMAT)
+                        }"
+                    },
         )
         assertThat(dsvFile).exists()
         val text = dsvFile.readText()
@@ -297,16 +315,24 @@ internal class CanLoadCsvIntoTableTest {
             )
         }.use { result ->
             result.applySql()
-            val customerCount = result.applySqlDirectly.withConnection {
-                it.executeQuery(result.effectiveSettings.run { "SELECT COUNT(*) FROM ${quote("CUSTOMER")}" }) { rs ->
-                    rs.getInt(1)
-                }.first()
-            }
-            val updateRecordCount = result.applySqlDirectly.withConnection {
-                it.executeQuery(result.effectiveSettings.run { "SELECT COUNT(*) FROM ${quote("CUSTOMER")} WHERE ${quote("LASTNAME")}='RileyChanged'" }) { rs ->
-                    rs.getInt(1)
-                }.first()
-            }
+            val customerCount =
+                result.applySqlDirectly.withConnection {
+                    it
+                        .executeQuery(result.effectiveSettings.run { "SELECT COUNT(*) FROM ${quote("CUSTOMER")}" }) { rs ->
+                            rs.getInt(1)
+                        }.first()
+                }
+            val updateRecordCount =
+                result.applySqlDirectly.withConnection {
+                    it
+                        .executeQuery(
+                            result.effectiveSettings.run {
+                                "SELECT COUNT(*) FROM ${quote("CUSTOMER")} WHERE ${quote("LASTNAME")}='RileyChanged'"
+                            },
+                        ) { rs ->
+                            rs.getInt(1)
+                        }.first()
+                }
             assertThat(updateRecordCount).isEqualTo(if (arg.updates) 1 else 0)
 
             if (arg.deletes) {
@@ -317,12 +343,15 @@ internal class CanLoadCsvIntoTableTest {
         }
     }
 
-    class ParameterizableCsvLoad(lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit) : Refactoring(
+    class ParameterizableCsvLoad(
+        lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit,
+    ) : Refactoring(
         executionOrder {
             ymd(2023, 10, 27)
             author("ben")
         },
-        forward = changes {
+        forward =
+        changes {
             applyDsvToTable(lambda)
         },
         rollback = emptyList(),
@@ -354,9 +383,8 @@ internal class CanLoadCsvIntoTableTest {
         }.onFailure {
             assertThat(it.cause?.cause?.message).isEqualTo(errorScenario.message)
             stopKoin()
+        }.onSuccess {
+            fail("Should fail")
         }
-            .onSuccess {
-                fail("Should fail")
-            }
     }
 }

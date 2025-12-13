@@ -12,14 +12,13 @@ enum class UpdateMode {
     INSERT,
     UPDATE_AND_INSERT,
 }
+
 data class InsertOrUpdateRow(
     val table: Table,
     val columnValues: List<Map<DbIdentifier, ColumnValue>>,
     val primaryKeys: Set<DbIdentifier>,
     val updateMode: UpdateMode,
-
 ) : ModelChange {
-
     @KontrolDbDslMarker
     class InsertOrUpdateRowBuilder(
         tableName: String,
@@ -27,8 +26,8 @@ data class InsertOrUpdateRow(
         private var primaryKeys: MutableSet<DbIdentifier> = mutableSetOf(),
         private var updateMode: UpdateMode = UpdateMode.UPDATE_AND_INSERT,
     ) : TableBuilder<InsertOrUpdateRowBuilder, InsertOrUpdateRow> {
-
         override var table: Table = Table(schemaObject = SchemaObject(name = DbIdentifier(tableName)))
+
         fun row(lambda: ValuesBuilder.() -> Unit) = apply {
             columnValues.add(ValuesBuilder().apply(lambda).build())
         }
@@ -36,6 +35,7 @@ data class InsertOrUpdateRow(
         fun mode(mode: UpdateMode) = apply {
             this.updateMode = mode
         }
+
         fun primaryKey(vararg column: String) = apply {
             primaryKeys.addAll(column.map(::DbIdentifier))
         }
@@ -43,11 +43,16 @@ data class InsertOrUpdateRow(
         fun addRows(rows: Iterable<Map<DbIdentifier, ColumnValue>>) = apply {
             columnValues.addAll(rows)
         }
-        override fun build(): InsertOrUpdateRow {
-            return InsertOrUpdateRow(table, columnValues = columnValues, primaryKeys = primaryKeys, updateMode)
-        }
+
+        override fun build(): InsertOrUpdateRow = InsertOrUpdateRow(table, columnValues = columnValues, primaryKeys = primaryKeys, updateMode)
     }
 }
 
-fun ModelChangesBuilder.insertOrUpdateRowsOf(name: String, block: InsertOrUpdateRow.InsertOrUpdateRowBuilder.() -> Unit): InsertOrUpdateRow =
-    InsertOrUpdateRow.InsertOrUpdateRowBuilder(name).apply(block).build().apply(changes::add)
+fun ModelChangesBuilder.insertOrUpdateRowsOf(
+    name: String,
+    block: InsertOrUpdateRow.InsertOrUpdateRowBuilder.() -> Unit,
+): InsertOrUpdateRow = InsertOrUpdateRow
+    .InsertOrUpdateRowBuilder(name)
+    .apply(block)
+    .build()
+    .apply(changes::add)

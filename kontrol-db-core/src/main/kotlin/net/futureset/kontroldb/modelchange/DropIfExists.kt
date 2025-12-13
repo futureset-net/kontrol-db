@@ -6,15 +6,21 @@ import net.futureset.kontroldb.model.DbObjectType
 import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.SchemaObjectBuilder
 
-data class DropIfExists(val objectName: SchemaObject, val objectType: DbObjectType, val ifExists: Boolean) : ModelChange
+data class DropIfExists(
+    val objectName: SchemaObject,
+    val objectType: DbObjectType,
+    val ifExists: Boolean,
+) : ModelChange
 
 class DropIfExistsBuilder : Builder<DropIfExistsBuilder, DropIfExists> {
-
     private lateinit var objectName: SchemaObject
     private lateinit var objectType: DbObjectType
     private var ifExists: Boolean = false
 
-    fun objectName(name: String, lambda: SchemaObjectBuilder.() -> Unit) = apply {
+    fun objectName(
+        name: String,
+        lambda: SchemaObjectBuilder.() -> Unit,
+    ) = apply {
         objectName = SchemaObjectBuilder().name(name).apply(lambda).build()
     }
 
@@ -38,16 +44,43 @@ class DropIfExistsBuilder : Builder<DropIfExistsBuilder, DropIfExists> {
  *
  * @sample net.futureset.kontroldb.samples.AllSamples.createProcedure
  */
-fun ModelChangesBuilder.dropProcedureIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
-    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.PROCEDURE).ifExists().build())
+fun ModelChangesBuilder.dropProcedureIfExists(
+    name: String,
+    lambda: SchemaObjectBuilder.() -> Unit = {},
+) {
+    changes.add(
+        DropIfExistsBuilder()
+            .objectName(name, lambda)
+            .objectType(DbObjectType.PROCEDURE)
+            .ifExists()
+            .build(),
+    )
 }
 
-fun ModelChangesBuilder.dropTableIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
-    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.TABLE).ifExists().build())
+fun ModelChangesBuilder.dropTableIfExists(
+    name: String,
+    lambda: SchemaObjectBuilder.() -> Unit = {},
+) {
+    changes.add(
+        DropIfExistsBuilder()
+            .objectName(name, lambda)
+            .objectType(DbObjectType.TABLE)
+            .ifExists()
+            .build(),
+    )
 }
 
-fun ModelChangesBuilder.dropViewIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
-    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.VIEW).ifExists().build())
+fun ModelChangesBuilder.dropViewIfExists(
+    name: String,
+    lambda: SchemaObjectBuilder.() -> Unit = {},
+) {
+    changes.add(
+        DropIfExistsBuilder()
+            .objectName(name, lambda)
+            .objectType(DbObjectType.VIEW)
+            .ifExists()
+            .build(),
+    )
 }
 
 /**
@@ -59,6 +92,15 @@ fun ModelChangesBuilder.dropViewIfExists(name: String, lambda: SchemaObjectBuild
  *
  * @sample net.futureset.kontroldb.samples.AllSamples.createSequence
  */
-fun ModelChangesBuilder.dropSequenceIfExists(name: String, lambda: SchemaObjectBuilder.() -> Unit = {}) {
-    changes.add(DropIfExistsBuilder().objectName(name, lambda).objectType(DbObjectType.SEQUENCE).ifExists().build())
+fun ModelChangesBuilder.dropSequenceIfExists(
+    name: String,
+    lambda: SchemaObjectBuilder.() -> Unit = {},
+) {
+    changes.add(
+        DropIfExistsBuilder()
+            .objectName(name, lambda)
+            .objectType(DbObjectType.SEQUENCE)
+            .ifExists()
+            .build(),
+    )
 }

@@ -13,8 +13,10 @@ import java.nio.file.Paths
 import java.sql.Connection
 import java.sql.DriverManager
 
-class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolver {
-
+class DatabaseProvision :
+    BeforeEachCallback,
+    AfterEachCallback,
+    ParameterResolver {
     val config: KontrolDbConfig by lazy {
         ConfigFileControl().configFile(
             Paths.get("test-config.yml"),
@@ -31,31 +33,32 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
     }
 
     private val connectionHolder = ConnectionHolder(this::connection)
+
     private fun executeSql(vararg sql: String) {
         connectionHolder.withConnection {
             sql.forEach { sql -> it.executeSql(sql) }
         }
     }
 
-    private fun connection(): Connection {
-        return when (dialect) {
-            "hsqldb" -> DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "sa", "")
-            "postgres" -> DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "SA", "Th1sIsW0rking")
-            "oracle" -> DriverManager.getConnection("jdbc:oracle:thin:@localhost:1526/FREEPDB1", "SYSTEM", "Th1sIsW0rking")
-            "sqlserver" -> DriverManager.getConnection(
+    private fun connection(): Connection = when (dialect) {
+        "hsqldb" -> DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "sa", "")
+        "postgres" -> DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "SA", "Th1sIsW0rking")
+        "oracle" -> DriverManager.getConnection("jdbc:oracle:thin:@localhost:1526/FREEPDB1", "SYSTEM", "Th1sIsW0rking")
+        "sqlserver" ->
+            DriverManager.getConnection(
                 "jdbc:sqlserver://localhost:6283;trustServerCertificate=true",
                 "SA",
                 "Th1sIsW0rking",
             )
 
-            else -> throw IllegalStateException("cannot provision $dialect")
-        }
+        else -> throw IllegalStateException("cannot provision $dialect")
     }
 
-    override fun afterEach(context: ExtensionContext?) {
+    override fun afterEach(context: ExtensionContext) {
         when (dialect) {
-            "sqlserver" -> executeSql(
-                """
+            "sqlserver" ->
+                executeSql(
+                    """
                         IF EXISTS (SELECT * FROM master.sys.databases WHERE name = 'TEST_DB')
                         BEGIN
                             USE master;
@@ -64,12 +67,13 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
                             DROP LOGIN [deploymentUser];  
                         END
          """,
-            )
-            "postgres" -> executeSql(
-                "DROP DATABASE \"TEST_DB\"",
-                "DROP TABLESPACE \"MY_INDEX_TS\"",
-                "DROP USER \"deploymentUser\"",
-            )
+                )
+            "postgres" ->
+                executeSql(
+                    "DROP DATABASE \"TEST_DB\"",
+                    "DROP TABLESPACE \"MY_INDEX_TS\"",
+                    "DROP USER \"deploymentUser\"",
+                )
             "hsqldb" -> executeSql("SHUTDOWN")
             "oracle" -> executeSql("DROP USER TEST_DB CASCADE")
             else -> println("No way to provision $dialect")
@@ -77,26 +81,29 @@ class DatabaseProvision : BeforeEachCallback, AfterEachCallback, ParameterResolv
         connectionHolder.close()
     }
 
-    override fun beforeEach(context: ExtensionContext?) {
+    override fun beforeEach(context: ExtensionContext) {
         when (dialect) {
-            "sqlserver" -> executeSql(
-                "CREATE DATABASE [TEST_DB];",
-                "CREATE LOGIN [deploymentUser] WITH PASSWORD = 'APasswordForTesting123', DEFAULT_DATABASE=[TEST_DB]",
-                "ALTER AUTHORIZATION ON DATABASE::[TEST_DB] TO [deploymentUser]",
-            )
-            "postgres" -> executeSql(
-                """CREATE DATABASE "TEST_DB"""",
-                """CREATE USER "deploymentUser" WITH PASSWORD 'sfnisdofskonm3'""",
-                """CREATE TABLESPACE "MY_INDEX_TS" OWNER "deploymentUser" LOCATION '/var/lib/postgresql/18/docker'""",
-                """GRANT ALL PRIVILEGES on database "TEST_DB" to "deploymentUser"""",
-                """ALTER DATABASE "TEST_DB" OWNER TO "deploymentUser"""",
-                """ALTER USER "deploymentUser" CREATEROLE""",
+            "sqlserver" ->
+                executeSql(
+                    "CREATE DATABASE [TEST_DB];",
+                    "CREATE LOGIN [deploymentUser] WITH PASSWORD = 'APasswordForTesting123', DEFAULT_DATABASE=[TEST_DB]",
+                    "ALTER AUTHORIZATION ON DATABASE::[TEST_DB] TO [deploymentUser]",
+                )
+            "postgres" ->
+                executeSql(
+                    """CREATE DATABASE "TEST_DB"""",
+                    """CREATE USER "deploymentUser" WITH PASSWORD 'sfnisdofskonm3'""",
+                    """CREATE TABLESPACE "MY_INDEX_TS" OWNER "deploymentUser" LOCATION '/var/lib/postgresql/18/docker'""",
+                    """GRANT ALL PRIVILEGES on database "TEST_DB" to "deploymentUser"""",
+                    """ALTER DATABASE "TEST_DB" OWNER TO "deploymentUser"""",
+                    """ALTER USER "deploymentUser" CREATEROLE""",
 //                """GRANT ALL ON SCHEMA "public" TO "deploymentUser"""",
-            )
-            "oracle" -> executeSql(
-                """CREATE USER TEST_DB IDENTIFIED BY "APasswordForTesting123" QUOTA UNLIMITED ON USERS""",
-                "GRANT CONNECT, RESOURCE, CREATE VIEW, CREATE MATERIALIZED VIEW, CREATE SYNONYM, CREATE ROLE TO TEST_DB",
-                """
+                )
+            "oracle" ->
+                executeSql(
+                    """CREATE USER TEST_DB IDENTIFIED BY "APasswordForTesting123" QUOTA UNLIMITED ON USERS""",
+                    "GRANT CONNECT, RESOURCE, CREATE VIEW, CREATE MATERIALIZED VIEW, CREATE SYNONYM, CREATE ROLE TO TEST_DB",
+                    """
 DECLARE
     TablespaceExistsExcep	EXCEPTION;
     PRAGMA EXCEPTION_INIT(TablespaceExistsExcep,-1543);
@@ -107,26 +114,28 @@ EXCEPTION
         NULL;
 END;
 """,
-            )
+                )
             else -> println("No DB provision log for $dialect")
         }
     }
 
-    override fun supportsParameter(parameterContext: ParameterContext?, extensionContext: ExtensionContext?): Boolean {
-        return when {
-            parameterContext?.parameter?.type == ConnectionHolder::class.java -> return true
-            parameterContext?.parameter?.type == String::class.java && parameterContext.isAnnotated(DialectName::class.java) -> return true
-            parameterContext?.parameter?.type == KontrolDbConfig::class.java -> return true
-            else -> false
-        }
+    override fun supportsParameter(
+        parameterContext: ParameterContext,
+        extensionContext: ExtensionContext,
+    ): Boolean = when {
+        parameterContext.parameter.type == ConnectionHolder::class.java -> true
+        parameterContext.parameter.type == String::class.java && parameterContext.isAnnotated(DialectName::class.java) -> true
+        parameterContext.parameter.type == KontrolDbConfig::class.java -> true
+        else -> false
     }
 
-    override fun resolveParameter(parameterContext: ParameterContext?, extensionContext: ExtensionContext?): Any {
-        return when (parameterContext?.parameter?.type) {
-            ConnectionHolder::class.java -> connectionHolder
-            String::class.java -> dialect
-            KontrolDbConfig::class.java -> config
-            else -> throw UnsupportedOperationException("Cannot resolve parameter")
-        }
+    override fun resolveParameter(
+        parameterContext: ParameterContext,
+        extensionContext: ExtensionContext,
+    ): Any = when (parameterContext.parameter.type) {
+        ConnectionHolder::class.java -> connectionHolder
+        String::class.java -> dialect
+        KontrolDbConfig::class.java -> config
+        else -> throw UnsupportedOperationException("Cannot resolve parameter")
     }
 }

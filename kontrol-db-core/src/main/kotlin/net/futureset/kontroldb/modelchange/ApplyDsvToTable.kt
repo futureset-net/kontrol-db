@@ -20,10 +20,7 @@ data class ApplyDsvToTable(
     val insertRows: Boolean,
     val ignoreInsertViolations: Boolean,
 ) : ModelChange {
-
-    override fun checksum(resourceResolver: ResourceResolver): Int {
-        return super.checksum(resourceResolver) + resourceResolver.resourceHash(file)
-    }
+    override fun checksum(resourceResolver: ResourceResolver): Int = super.checksum(resourceResolver) + resourceResolver.resourceHash(file)
 
     init {
         require(updateRows || insertRows || deleteRows) { "Must set at least one of deleteRows,updateRows or insertRows" }
@@ -38,7 +35,6 @@ data class ApplyDsvToTable(
     }
 
     class ApplyDsvToTableBuilder : TableBuilder<ApplyDsvToTableBuilder, ApplyDsvToTable> {
-
         override lateinit var table: Table
         private var useDbLoadingTool = false
         private var headerMappings = mutableListOf<Pair<String, ColumnDefinition>>()
@@ -55,47 +51,49 @@ data class ApplyDsvToTable(
         }
 
         fun useDbLoadingTool(useDbLoadingTool: Boolean) = apply { this.useDbLoadingTool = useDbLoadingTool }
+
         fun columnMapping(
             columnName: String,
             columnType: ColumnType,
             headerName: String? = null,
             primaryKey: Boolean = false,
-        ): ApplyDsvToTableBuilder =
-            apply {
-                headerMappings.add(
-                    (headerName ?: columnName).uppercase() to ColumnDefinition(
+        ): ApplyDsvToTableBuilder = apply {
+            headerMappings.add(
+                (headerName ?: columnName).uppercase() to
+                    ColumnDefinition(
                         DbIdentifier(columnName),
                         columnType,
                         nullable = true,
                         defaultValue = null,
                     ),
-                )
-                if (primaryKey) {
-                    primaryKeys.add(DbIdentifier(columnName))
-                }
+            )
+            if (primaryKey) {
+                primaryKeys.add(DbIdentifier(columnName))
             }
+        }
 
         fun separator(separator: String) = apply { this.separator = separator }
-        fun deleteRows(deleteRows: Boolean) = apply { this.deleteRows = deleteRows }
-        fun updateRows(updateRows: Boolean) = apply { this.updateRows = updateRows }
-        fun insertRows(insertRows: Boolean) = apply { this.insertRows = insertRows }
-        fun ignoreInsertViolations(ignoreInsertViolations: Boolean) =
-            apply { this.ignoreInsertViolations = ignoreInsertViolations }
 
-        override fun build(): ApplyDsvToTable {
-            return ApplyDsvToTable(
-                table = table,
-                file = file,
-                useDbLoadingTool = useDbLoadingTool,
-                headerMappings = headerMappings.associate { it },
-                primaryKeys = primaryKeys,
-                separator = separator,
-                deleteRows = deleteRows,
-                updateRows = updateRows,
-                insertRows = insertRows,
-                ignoreInsertViolations = ignoreInsertViolations,
-            )
-        }
+        fun deleteRows(deleteRows: Boolean) = apply { this.deleteRows = deleteRows }
+
+        fun updateRows(updateRows: Boolean) = apply { this.updateRows = updateRows }
+
+        fun insertRows(insertRows: Boolean) = apply { this.insertRows = insertRows }
+
+        fun ignoreInsertViolations(ignoreInsertViolations: Boolean) = apply { this.ignoreInsertViolations = ignoreInsertViolations }
+
+        override fun build(): ApplyDsvToTable = ApplyDsvToTable(
+            table = table,
+            file = file,
+            useDbLoadingTool = useDbLoadingTool,
+            headerMappings = headerMappings.associate { it },
+            primaryKeys = primaryKeys,
+            separator = separator,
+            deleteRows = deleteRows,
+            updateRows = updateRows,
+            insertRows = insertRows,
+            ignoreInsertViolations = ignoreInsertViolations,
+        )
     }
 }
 
@@ -107,5 +105,8 @@ data class ApplyDsvToTable(
  * @receiver [ModelChangesBuilder] a container for a collection of changes
  * @return [ApplyDsvToTable] the immutable data
  */
-fun ModelChangesBuilder.applyDsvToTable(lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit): ApplyDsvToTable =
-    ApplyDsvToTable.ApplyDsvToTableBuilder().apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.applyDsvToTable(lambda: ApplyDsvToTable.ApplyDsvToTableBuilder.() -> Unit): ApplyDsvToTable = ApplyDsvToTable
+    .ApplyDsvToTableBuilder()
+    .apply(lambda)
+    .build()
+    .apply(changes::add)

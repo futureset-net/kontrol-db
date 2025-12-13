@@ -4,8 +4,9 @@ import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.SQLException
 
-class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoCloseable {
-
+class ConnectionHolder(
+    private val connectionSupplier: () -> Connection,
+) : AutoCloseable {
     private var connection: Connection? = null
     private var autoCommit: Boolean = true
     private val logger = LoggerFactory.getLogger(ConnectionHolder::class.java)
@@ -88,10 +89,11 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
     }
 
     private fun cachedConnection(): Connection {
-        val currentConnection = connection ?: connectionSupplier().also {
-            autoCommit = true
-            connectionId++
-        }
+        val currentConnection =
+            connection ?: connectionSupplier().also {
+                autoCommit = true
+                connectionId++
+            }
         connection = currentConnection
         return currentConnection
     }
@@ -109,8 +111,7 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
         private val realConnection: Connection,
         private val connectionId: Int,
         private val currentAutoCommitState: () -> Boolean,
-    ) :
-        Connection by realConnection {
+    ) : Connection by realConnection {
         private val logger = LoggerFactory.getLogger(ConnectionHolder::class.java)
 
         override fun setAutoCommit(autoCommit: Boolean) {
@@ -119,9 +120,7 @@ class ConnectionHolder(private val connectionSupplier: () -> Connection) : AutoC
             }
         }
 
-        override fun toString(): String {
-            return "connectionId = $connectionId"
-        }
+        override fun toString(): String = "connectionId = $connectionId"
 
         override fun commit() {
             if (!autoCommit) {

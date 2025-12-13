@@ -21,13 +21,15 @@ import java.time.LocalDateTime
 
 @ExtendWith(DatabaseProvision::class)
 internal class SelectQueryTest {
-
-    class CreateATable(param: PredicateBuilder.() -> Unit) : Refactoring(
+    class CreateATable(
+        param: PredicateBuilder.() -> Unit,
+    ) : Refactoring(
         executionOrder {
             ymd(2023, 9, 24)
             author("ben")
         },
-        forward = changes {
+        forward =
+        changes {
             createTable("fred") {
                 column("TEST_COLUMN", INT32)
                 column("STRING_COLUMN", Varchar(5)) {
@@ -82,29 +84,32 @@ internal class SelectQueryTest {
 
             assertThat(
                 engine.applySqlDirectly.withConnection {
-                    it.executeQuery("""SELECT COUNT(*) FROM "results"""") { rs ->
-                        rs.getInt(1)
-                    }.first()
+                    it
+                        .executeQuery("""SELECT COUNT(*) FROM "results"""") { rs ->
+                            rs.getInt(1)
+                        }.first()
                 },
             ).isEqualTo(param.expectedResultCount)
         }
     }
 
-    class SelectResults : Refactoring(
-        executionOrder {
-            ymd(2023, 10, 27)
-            author("ben")
-        },
-        forward = changes {
-            select {
-                tableWithAlias("results", "A")
-                column("STRING_COLUMN")
-                column("TEST_COLUMN")
-                column("ANOTHER", "\"TEST_COLUMN\"")
-            }
-        },
-        rollback = emptyList(),
-    )
+    class SelectResults :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 10, 27)
+                author("ben")
+            },
+            forward =
+            changes {
+                select {
+                    tableWithAlias("results", "A")
+                    column("STRING_COLUMN")
+                    column("TEST_COLUMN")
+                    column("ANOTHER", "\"TEST_COLUMN\"")
+                }
+            },
+            rollback = emptyList(),
+        )
 
     @Test
     fun `select results into a console`() {

@@ -9,15 +9,19 @@ import net.futureset.kontroldb.model.SchemaObjectBuilder
 import net.futureset.kontroldb.model.Table
 
 interface TableBuilder<B : TableBuilder<B, T>, T : ModelChange> : Builder<B, T> {
-
     var table: Table
 
-    fun table(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) = apply {
-        table = Table(
-            schemaObject = SchemaObjectBuilder(
-                SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
-            ).apply(block).build(),
-        )
+    fun table(
+        name: String? = null,
+        block: SchemaObjectBuilder.() -> Unit = {},
+    ) = apply {
+        table =
+            Table(
+                schemaObject =
+                SchemaObjectBuilder(
+                    SchemaObject(name = (name ?: "unspecified").let(::DbIdentifier)),
+                ).apply(block).build(),
+            )
     } as B
 
     fun asLocalTemporaryTable() = apply {

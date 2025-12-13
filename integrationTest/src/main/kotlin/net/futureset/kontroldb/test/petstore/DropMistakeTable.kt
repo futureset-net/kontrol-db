@@ -7,20 +7,22 @@ import net.futureset.kontroldb.refactoring.Refactoring
 import org.koin.core.annotation.Single
 
 @Single
-class DropMistakeTable : Refactoring(
-
-    executionOrder {
-        ymd(2023, 9, 7)
-        author("ben")
-        sequence(2)
-    },
-    forward = changes {
-        dropTable("MISTAKE")
-    },
-    rollback = changes {
-        createTable("MISTAKE") {
-            column("ID", INT32)
-            tablespace("ANOTHER_TS")
-        }
-    },
-)
+class DropMistakeTable :
+    Refactoring(
+        executionOrder {
+            ymd(2023, 9, 7)
+            author("ben")
+            sequence(2)
+        },
+        forward =
+        changes {
+            dropTable("MISTAKE")
+        },
+        rollback =
+        changes {
+            createTable("MISTAKE") {
+                column("ID", INT32)
+                tablespace("ANOTHER_TS")
+            }
+        },
+    )

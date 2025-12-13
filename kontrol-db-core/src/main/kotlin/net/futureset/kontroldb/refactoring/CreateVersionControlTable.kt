@@ -35,9 +35,12 @@ const val CHECK_SUM = "CHECK_SUM"
 
 const val ROLLED_BACK = "ROLLED_BACK"
 
-class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactoring(
+class CreateVersionControlTable(
+    effectiveSettings: EffectiveSettings,
+) : Refactoring(
     executionOrder = EARLIEST_CHANGE,
-    forward = changes {
+    forward =
+    changes {
         createTable(effectiveSettings.versionControlTable) {
             column(ID_COLUMN, Varchar(120))
             column(APPLICATION_VERSION, Varchar(32))
@@ -56,7 +59,8 @@ class CreateVersionControlTable(effectiveSettings: EffectiveSettings) : Refactor
             column(ID_COLUMN)
         }
     },
-    rollback = changes {
+    rollback =
+    changes {
         dropTable(effectiveSettings.versionControlTable)
     },
 )

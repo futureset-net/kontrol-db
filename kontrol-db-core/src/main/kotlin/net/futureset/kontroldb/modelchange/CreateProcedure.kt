@@ -14,10 +14,7 @@ data class CreateProcedure(
     val wholeDefinition: Boolean,
     val language: String?,
 ) : ModelChange {
-
-    override fun checksum(resourceResolver: ResourceResolver): Int {
-        return super.checksum(resourceResolver) + if (path != null) resourceResolver.resourceHash(path) else 0
-    }
+    override fun checksum(resourceResolver: ResourceResolver): Int = super.checksum(resourceResolver) + if (path != null) resourceResolver.resourceHash(path) else 0
 
     class CreateProcedureBuilder : Builder<CreateProcedureBuilder, CreateProcedure> {
         private lateinit var procedure: SchemaObject
@@ -63,5 +60,12 @@ data class CreateProcedure(
  *
  * @sample net.futureset.kontroldb.samples.AllSamples.createProcedure
  */
-fun ModelChangesBuilder.createProcedure(name: String, lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit) =
-    CreateProcedure.CreateProcedureBuilder().procedure { name(name) }.apply(lambda).build().also(changes::add)
+fun ModelChangesBuilder.createProcedure(
+    name: String,
+    lambda: CreateProcedure.CreateProcedureBuilder.() -> Unit,
+) = CreateProcedure
+    .CreateProcedureBuilder()
+    .procedure { name(name) }
+    .apply(lambda)
+    .build()
+    .also(changes::add)

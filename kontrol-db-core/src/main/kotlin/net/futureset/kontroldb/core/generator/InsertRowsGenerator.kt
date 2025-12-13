@@ -6,12 +6,13 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.generator.SqlGeneratorFactory
 import net.futureset.kontroldb.modelchange.InsertRows
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class InsertRowsGenerator(es: EffectiveSettings, private val sqlGeneratorFactory: SqlGeneratorFactory) :
-    DbAwareGenerator<InsertRows>(es, InsertRows::class) {
-
+@Single(binds = [SqlGenerator::class])
+class InsertRowsGenerator(
+    es: EffectiveSettings,
+    private val sqlGeneratorFactory: SqlGeneratorFactory,
+) : DbAwareGenerator<InsertRows>(es, InsertRows::class) {
     override val priority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): InsertRows.() -> String? = {

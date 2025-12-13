@@ -19,10 +19,12 @@ import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 class FailedMigrationScenariosTest {
-
     @ParameterizedTest
     @MethodSource("scenarios")
-    fun expectedFailurePosition(expectedScenario: ExpectedScenario, @DialectName dialectName: String) {
+    fun expectedFailurePosition(
+        expectedScenario: ExpectedScenario,
+        @DialectName dialectName: String,
+    ) {
         Assumptions.assumeFalse(expectedScenario.transactionScope != TransactionScope.STATEMENT && dialectName == "oracle")
         dsl {
             loadConfig("test-config.yml")
@@ -40,17 +42,28 @@ class FailedMigrationScenariosTest {
             runCatching {
                 engine.applySql()
             }.onFailure {
-                val versionControlTableExists = 1 == engine.applySqlDirectly.withConnection {
-                    it.executeQuery("SELECT COUNT(*) FROM ${if (dialectName == "oracle") "ALL_TABLES" else "INFORMATION_SCHEMA.TABLES"} WHERE TABLE_NAME='KONTROL_DB_VERSIONING'") { rs ->
-                        rs.getInt(1)
-                    }.first()
-                }
+                val versionControlTableExists =
+                    1 ==
+                        engine.applySqlDirectly.withConnection {
+                            it
+                                .executeQuery(
+                                    "SELECT COUNT(*) FROM ${if (dialectName == "oracle") "ALL_TABLES" else "INFORMATION_SCHEMA.TABLES"} WHERE TABLE_NAME='KONTROL_DB_VERSIONING'",
+                                ) { rs ->
+                                    rs.getInt(1)
+                                }.first()
+                        }
                 if (versionControlTableExists) {
-                    val stage = engine.applySqlDirectly.withConnection {
-                        it.executeQuery("SELECT MAX(${engine.effectiveSettings.quote("STAGE_NUM")}) FROM ${engine.effectiveSettings.quote("TEST")}") { rs ->
-                            rs.getInt(1)
-                        }.first()
-                    }
+                    val stage =
+                        engine.applySqlDirectly.withConnection {
+                            it
+                                .executeQuery(
+                                    "SELECT MAX(${engine.effectiveSettings.quote(
+                                        "STAGE_NUM",
+                                    )}) FROM ${engine.effectiveSettings.quote("TEST")}",
+                                ) { rs ->
+                                    rs.getInt(1)
+                                }.first()
+                        }
                     assertThat(stage).isEqualTo(expectedScenario.expectedStage)
                 } else {
                     assertThat(0).isEqualTo(expectedScenario.expectedStage)
@@ -61,80 +74,87 @@ class FailedMigrationScenariosTest {
         }
     }
 
-    data class ExpectedScenario(val transactionScope: TransactionScope, val expectedStage: Int)
-    companion object {
+    data class ExpectedScenario(
+        val transactionScope: TransactionScope,
+        val expectedStage: Int,
+    )
 
+    companion object {
         @JvmStatic
-        fun scenarios(): List<ExpectedScenario> {
-            return listOf(
-                ExpectedScenario(TransactionScope.STATEMENT, 2),
-                ExpectedScenario(TransactionScope.MIGRATION, 0),
-                ExpectedScenario(TransactionScope.REFACTORING, 1),
-            )
-        }
+        fun scenarios(): List<ExpectedScenario> = listOf(
+            ExpectedScenario(TransactionScope.STATEMENT, 2),
+            ExpectedScenario(TransactionScope.MIGRATION, 0),
+            ExpectedScenario(TransactionScope.REFACTORING, 1),
+        )
     }
 
-    class FirstSuccessfulStep : Refactoring(
-        executionOrder {
-            ymd(2023, 10, 29)
-            author("ben")
-        },
-        forward = changes {
-            createTable("TEST") {
-                column("STAGE_NUM", INT32)
-                column("STAGE_NAME", Varchar(32))
-            }
-            insertRowsInto("TEST") {
-                row {
-                    value("STAGE_NUM", 1)
-                    value("STAGE_NAME", "FIRST")
+    class FirstSuccessfulStep :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 10, 29)
+                author("ben")
+            },
+            forward =
+            changes {
+                createTable("TEST") {
+                    column("STAGE_NUM", INT32)
+                    column("STAGE_NAME", Varchar(32))
                 }
-            }
-        },
-        rollback = emptyList(),
-    )
+                insertRowsInto("TEST") {
+                    row {
+                        value("STAGE_NUM", 1)
+                        value("STAGE_NAME", "FIRST")
+                    }
+                }
+            },
+            rollback = emptyList(),
+        )
 
-    class SecondFailureStep : Refactoring(
-        executionOrder {
-            ymd(2023, 10, 29)
-            author("ben")
-        },
-        forward = changes {
-            insertRowsInto("TEST") {
-                row {
-                    value("STAGE_NUM", 2)
-                    value("STAGE_NAME", "TWO")
+    class SecondFailureStep :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 10, 29)
+                author("ben")
+            },
+            forward =
+            changes {
+                insertRowsInto("TEST") {
+                    row {
+                        value("STAGE_NUM", 2)
+                        value("STAGE_NAME", "TWO")
+                    }
                 }
-            }
-            insertRowsInto("NO_SUCH_TABLE") {
-                row {
-                    value("STAGE_NUM", 3)
-                    value("STAGE_NAME", "TWO")
+                insertRowsInto("NO_SUCH_TABLE") {
+                    row {
+                        value("STAGE_NUM", 3)
+                        value("STAGE_NAME", "TWO")
+                    }
                 }
-            }
-            insertRowsInto("TEST") {
-                row {
-                    value("STAGE_NUM", 4)
-                    value("STAGE_NAME", "TWOANDABIT")
+                insertRowsInto("TEST") {
+                    row {
+                        value("STAGE_NUM", 4)
+                        value("STAGE_NAME", "TWOANDABIT")
+                    }
                 }
-            }
-        },
-        rollback = emptyList(),
-    )
+            },
+            rollback = emptyList(),
+        )
 
-    class ThirdSuccessfulStep : Refactoring(
-        executionOrder {
-            ymd(2023, 10, 29)
-            author("ben")
-        },
-        forward = changes {
-            insertRowsInto("TEST") {
-                row {
-                    value("STAGE_NUM", 5)
-                    value("STAGE_NAME", "THREE")
+    class ThirdSuccessfulStep :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 10, 29)
+                author("ben")
+            },
+            forward =
+            changes {
+                insertRowsInto("TEST") {
+                    row {
+                        value("STAGE_NUM", 5)
+                        value("STAGE_NAME", "THREE")
+                    }
                 }
-            }
-        },
-        rollback = emptyList(),
-    )
+            },
+            rollback = emptyList(),
+        )
 }

@@ -33,25 +33,32 @@ val createServer by tasks.registering(DockerCreateContainer::class) {
     hostConfig.portBindings.convention(
         dockerExtension.internalToExternalPortMap.map { f -> f.entries.map { "${it.value}:${it.key}" } },
     )
-    hostConfig.binds.put(project.layout.buildDirectory.get().toString(), "/var/outputdir")
+    hostConfig.binds.put(
+        project.layout.buildDirectory
+            .get()
+            .toString(),
+        "/var/outputdir",
+    )
     hostConfig.binds.putAll(dockerExtension.mountPoints)
     hostConfig.autoRemove = true
     exposedPorts.convention(
-        dockerExtension.internalToExternalPortMap.map {
-            DockerCreateContainer.ExposedPort(
-                "tcp",
-                it.keys.toList(),
-            )
-        }.flatMap { ports -> project.objects.listProperty(DockerCreateContainer.ExposedPort::class).also { it.addAll(ports) } },
+        dockerExtension.internalToExternalPortMap
+            .map {
+                DockerCreateContainer.ExposedPort(
+                    "tcp",
+                    it.keys.toList(),
+                )
+            }.flatMap { ports -> project.objects.listProperty(DockerCreateContainer.ExposedPort::class).also { it.addAll(ports) } },
     )
     dependsOn(downloadImage)
 }
 
-val removeServer = tasks.registering(DockerRemoveContainer::class) {
-    enabled = dockerExtension.dockerEnabled.get()
-    group = "docker"
-    targetContainerId(dockerExtension.containerName)
-}
+val removeServer =
+    tasks.registering(DockerRemoveContainer::class) {
+        enabled = dockerExtension.dockerEnabled.get()
+        group = "docker"
+        targetContainerId(dockerExtension.containerName)
+    }
 
 val startServer by tasks.registering(DockerStartContainer::class) {
     enabled = dockerExtension.dockerEnabled.get()
@@ -72,7 +79,9 @@ val logContainer by tasks.registering(DockerLogsContainer::class) {
     tailAll = true
     stdErr = false
     onNext {
-        if (dockerExtension.waitForStartupLogMessage.isPresent && this.toString()
+        if (dockerExtension.waitForStartupLogMessage.isPresent &&
+            this
+                .toString()
                 .contains(dockerExtension.waitForStartupLogMessage.get())
         ) {
             throw StopActionException("Started OK")
@@ -125,9 +134,13 @@ tasks.register("showdockercommandline") {
                     "-v",
                     "${project.layout.buildDirectory.get()}/:/var/outputdir",
                 ) +
-                    dockerExtension.internalToExternalPortMap.map { f -> f.entries.map { "-p ${it.value}:${it.key}" } }
+                    dockerExtension.internalToExternalPortMap
+                        .map { f -> f.entries.map { "-p ${it.value}:${it.key}" } }
                         .get() +
-                    dockerExtension.envProperties.get().entries.map { "-e ${it.key}=${it.value}" } +
+                    dockerExtension.envProperties
+                        .get()
+                        .entries
+                        .map { "-e ${it.key}=${it.value}" } +
                     listOf(dockerExtension.imageId.getOrElse("specify-image-id-here"))
                 ).joinToString(" "),
         )

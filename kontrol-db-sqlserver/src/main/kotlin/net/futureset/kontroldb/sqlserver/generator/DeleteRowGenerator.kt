@@ -4,11 +4,12 @@ import net.futureset.kontroldb.generator.DbAwareGenerator
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.DeleteRows
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class DeleteRowGenerator(es: EffectiveSettings) : DbAwareGenerator<DeleteRows>(es, DeleteRows::class) {
-
+@Single(binds = [SqlGenerator::class])
+class DeleteRowGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<DeleteRows>(es, DeleteRows::class) {
     override fun convertSingle(): DeleteRows.() -> String? = {
         """
 DELETE ${table.alias ?: "X"}   

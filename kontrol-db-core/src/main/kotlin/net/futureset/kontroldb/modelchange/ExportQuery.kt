@@ -13,14 +13,16 @@ data class ExportQuery(
     val selectQuery: SelectQuery,
     val path: String?,
     val separator: String,
-) : ModelChange, SupportsResultSetHandler {
+) : ModelChange,
+    SupportsResultSetHandler {
     override fun resultSetHandler(effectiveSettings: EffectiveSettings): ((ResultSet) -> Unit)? {
         if (path == null) {
             return null
         } else {
             return { rs ->
                 val headings = IntRange(1, rs.metaData.columnCount).map(rs.metaData::getColumnName)
-                Files.newBufferedWriter(effectiveSettings.outputDirectory.resolve(path))
+                Files
+                    .newBufferedWriter(effectiveSettings.outputDirectory.resolve(path))
                     .use { file ->
                         file.write(headings.joinToString(separator = separator))
                         file.newLine()
@@ -37,23 +39,31 @@ data class ExportQuery(
 
 @KontrolDbDslMarker
 class ExportQueryBuilder : Builder<ExportQueryBuilder, ExportQuery> {
-
     private lateinit var selectQuery: SelectQuery
     private var path: String? = null
     private var separator: String = "|"
 
-    fun selectFrom(from: String, lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
-        selectQuery = SelectQuery.SelectQueryBuilder().table(from).apply(lambda).build()
+    fun selectFrom(
+        from: String,
+        lambda: SelectQuery.SelectQueryBuilder.() -> Unit,
+    ) = apply {
+        selectQuery =
+            SelectQuery
+                .SelectQueryBuilder()
+                .table(from)
+                .apply(lambda)
+                .build()
     }
 
     fun outputFile(path: String) {
         this.path = resource(path).path
     }
+
     fun separator(separator: String) = apply {
         this.separator = separator
     }
-    override fun build(): ExportQuery =
-        ExportQuery(selectQuery, path, separator)
+
+    override fun build(): ExportQuery = ExportQuery(selectQuery, path, separator)
 }
 
 fun ModelChangesBuilder.exportData(lambda: ExportQueryBuilder.() -> Unit) = apply {

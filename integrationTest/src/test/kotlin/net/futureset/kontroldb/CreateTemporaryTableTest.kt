@@ -21,13 +21,15 @@ import java.nio.file.Path
 
 @ExtendWith(DatabaseProvision::class)
 internal class CreateTemporaryTableTest {
-
-    class CreateATemporaryTable(tableType: TablePersistence) : Refactoring(
+    class CreateATemporaryTable(
+        tableType: TablePersistence,
+    ) : Refactoring(
         executionOrder {
             ymd(2023, 9, 24)
             author("ben")
         },
-        forward = changes {
+        forward =
+        changes {
             createTable("fred") {
                 when (tableType) {
                     TablePersistence.GLOBAL_TEMPORARY -> asGlobalTemporaryTable()
@@ -63,7 +65,10 @@ internal class CreateTemporaryTableTest {
 
     @ParameterizedTest
     @EnumSource(value = TablePersistence::class, mode = EnumSource.Mode.EXCLUDE, names = ["NORMAL"])
-    fun `Can create a temporary table`(tableType: TablePersistence, @TempDir outputDir: Path) {
+    fun `Can create a temporary table`(
+        tableType: TablePersistence,
+        @TempDir outputDir: Path,
+    ) {
         dsl {
             loadConfig("test-config.yml")
             executionSettings {
@@ -83,40 +88,44 @@ internal class CreateTemporaryTableTest {
         }
     }
 
-    class CreateATemporaryTableFromAQuery : Refactoring(
-        executionOrder {
-            ymd(2023, 9, 24)
-            author("ben")
-        },
-        forward = changes {
-            createTable("fred") {
-                asGlobalTemporaryTable()
-                column("TEST_COLUMN", Varchar(256))
-                selectFrom("KONTROL_DB_VERSIONING") {
-                    column("TEST_COLUMN", "\"ID\"")
-                }
-            }
-            exportData {
-                selectFrom("fred") {
+    class CreateATemporaryTableFromAQuery :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 9, 24)
+                author("ben")
+            },
+            forward =
+            changes {
+                createTable("fred") {
                     asGlobalTemporaryTable()
-                    column("TEST_COLUMN")
+                    column("TEST_COLUMN", Varchar(256))
+                    selectFrom("KONTROL_DB_VERSIONING") {
+                        column("TEST_COLUMN", "\"ID\"")
+                    }
                 }
-                separator("|")
-                outputFile("text.dsv")
-            }
-            exportData {
-                selectFrom("fred") {
-                    asGlobalTemporaryTable()
-                    column("TEST_COLUMN")
+                exportData {
+                    selectFrom("fred") {
+                        asGlobalTemporaryTable()
+                        column("TEST_COLUMN")
+                    }
+                    separator("|")
+                    outputFile("text.dsv")
                 }
-                separator("|")
-            }
-        },
-        rollback = emptyList(),
-    )
+                exportData {
+                    selectFrom("fred") {
+                        asGlobalTemporaryTable()
+                        column("TEST_COLUMN")
+                    }
+                    separator("|")
+                }
+            },
+            rollback = emptyList(),
+        )
 
     @Test
-    fun `Create a temporary table from a query`(@TempDir outputDir: Path) {
+    fun `Create a temporary table from a query`(
+        @TempDir outputDir: Path,
+    ) {
         dsl {
             loadConfig("test-config.yml")
             executionSettings {

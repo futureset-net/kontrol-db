@@ -13,11 +13,11 @@ import kotlin.io.path.writeText
 class WriteChangesToFileMigrationHandler(
     private val effectiveSettings: EffectiveSettings,
 ) : MigrationHandler {
-
     private var allLines = mutableListOf<String>()
     private val transactionId = AtomicInteger()
     private var transactionDepth = 0
     lateinit var outputDirectory: Path
+
     override fun start() {
         require(outputDirectory.notExists() || outputDirectory.isDirectory())
         outputDirectory.createDirectories()
@@ -37,26 +37,30 @@ class WriteChangesToFileMigrationHandler(
         )
     }
 
-    override fun executeModelChange(change: ModelChange, rawChanges: List<String>) {
+    override fun executeModelChange(
+        change: ModelChange,
+        rawChanges: List<String>,
+    ) {
         allLines.addAll(rawChanges)
     }
 
     override fun executeRefactoring(refactoring: Refactoring) {
     }
 
-    override fun <T> wrapInTransactionOnWhen(predicate: Boolean, lambda: () -> T): T {
-        return if (predicate) {
-            val id = transactionId.incrementAndGet()
-            try {
-                transactionDepth++
-                allLines.add(effectiveSettings.startTransaction(id))
-                lambda()
-            } finally {
-                allLines.add(effectiveSettings.endTransaction(id) + effectiveSettings.batchSeparator)
-                transactionDepth--
-            }
-        } else {
+    override fun <T> wrapInTransactionOnWhen(
+        predicate: Boolean,
+        lambda: () -> T,
+    ): T = if (predicate) {
+        val id = transactionId.incrementAndGet()
+        try {
+            transactionDepth++
+            allLines.add(effectiveSettings.startTransaction(id))
             lambda()
+        } finally {
+            allLines.add(effectiveSettings.endTransaction(id) + effectiveSettings.batchSeparator)
+            transactionDepth--
         }
+    } else {
+        lambda()
     }
 }

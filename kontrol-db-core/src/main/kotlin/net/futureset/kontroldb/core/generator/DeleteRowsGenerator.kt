@@ -5,17 +5,18 @@ import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.DeleteRows
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class DeleteRowsGenerator(es: EffectiveSettings) : DbAwareGenerator<DeleteRows>(es, DeleteRows::class) {
-
+@Single(binds = [SqlGenerator::class])
+class DeleteRowsGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<DeleteRows>(es, DeleteRows::class) {
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): DeleteRows.() -> String? = {
         """
-    DELETE FROM ${table.toQuoted()}
-    ${predicate.toQuoted { "WHERE $it" }}
+            DELETE FROM ${table.toQuoted()}
+            ${predicate.toQuoted { "WHERE $it" }}
         """.trimIndent()
     }
 }

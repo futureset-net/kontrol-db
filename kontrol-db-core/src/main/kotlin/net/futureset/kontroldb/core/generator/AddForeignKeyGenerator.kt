@@ -5,11 +5,12 @@ import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.AddForeignKey
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class AddForeignKeyGenerator(es: EffectiveSettings) : DbAwareGenerator<AddForeignKey>(es, AddForeignKey::class) {
-
+@Single(binds = [SqlGenerator::class])
+class AddForeignKeyGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<AddForeignKey>(es, AddForeignKey::class) {
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): AddForeignKey.() -> String? = {

@@ -5,11 +5,12 @@ import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.DropIndex
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class DropIndexGenerator(es: EffectiveSettings) : DbAwareGenerator<DropIndex>(es, DropIndex::class) {
-
+@Single(binds = [SqlGenerator::class])
+class DropIndexGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<DropIndex>(es, DropIndex::class) {
     override val priority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): DropIndex.() -> String? = {

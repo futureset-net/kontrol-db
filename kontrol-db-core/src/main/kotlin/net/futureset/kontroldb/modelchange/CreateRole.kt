@@ -8,20 +8,17 @@ import net.futureset.kontroldb.model.DbIdentifier
 data class CreateRole(
     val roleName: DbIdentifier,
 ) : ModelChange {
-
     @KontrolDbDslMarker
     data class CreateRoleBuilder(
         private var roleName: DbIdentifier? = null,
     ) : Builder<CreateRoleBuilder, CreateRole> {
-
         fun roleName(name: String) = apply {
             this.roleName = DbIdentifier(name)
         }
-        override fun build(): CreateRole {
-            return CreateRole(
-                roleName = requireNotNull(roleName),
-            )
-        }
+
+        override fun build(): CreateRole = CreateRole(
+            roleName = requireNotNull(roleName),
+        )
     }
 }
 
@@ -35,5 +32,8 @@ data class CreateRole(
  *
  * @sample net.futureset.kontroldb.samples.AllSamples.createRole
  */
-fun ModelChangesBuilder.createRole(roleName: String): CreateRole =
-    CreateRole.CreateRoleBuilder().roleName(roleName).build().apply(changes::add)
+fun ModelChangesBuilder.createRole(roleName: String): CreateRole = CreateRole
+    .CreateRoleBuilder()
+    .roleName(roleName)
+    .build()
+    .apply(changes::add)

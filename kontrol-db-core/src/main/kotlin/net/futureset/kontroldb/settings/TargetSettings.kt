@@ -20,7 +20,6 @@ interface ITargetSettings {
 }
 
 data class TargetSettings(
-
     override val jdbcUrl: String?,
     override val username: String? = "sa",
     override val password: String? = null,
@@ -29,28 +28,29 @@ data class TargetSettings(
     override val defaultSchema: DbIdentifier? = null,
     override val defaultCatalog: DbIdentifier? = null,
     override val versionControlTable: Table,
-
 ) : ITargetSettings
 
 class TargetSettingsBuilder(
-
-    private var targetSettings: TargetSettings = TargetSettings(
-        jdbcUrl = "jdbc:hsqldb:mem:test",
-        username = "sa",
-        versionControlTable = Table(
-            schemaObject = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)),
-            tablePersistence = TablePersistence.NORMAL,
+    private var targetSettings: TargetSettings =
+        TargetSettings(
+            jdbcUrl = "jdbc:hsqldb:mem:test",
+            username = "sa",
+            versionControlTable =
+            Table(
+                schemaObject = SchemaObject(name = DbIdentifier(DEFAULT_VERSION_CONTROL_TABLE)),
+                tablePersistence = TablePersistence.NORMAL,
+            ),
         ),
-    ),
-
 ) : Builder<TargetSettingsBuilder, TargetSettings> {
     fun versionControlTable(block: SchemaObjectBuilder.() -> Unit) = apply {
-        targetSettings = targetSettings.copy(
-            versionControlTable = Table(
-                SchemaObjectBuilder(targetSettings.versionControlTable.schemaObject).apply(block).build(),
-                TablePersistence.NORMAL,
-            ),
-        )
+        targetSettings =
+            targetSettings.copy(
+                versionControlTable =
+                Table(
+                    SchemaObjectBuilder(targetSettings.versionControlTable.schemaObject).apply(block).build(),
+                    TablePersistence.NORMAL,
+                ),
+            )
     }
 
     fun jdbcUrl(jdbcUrl: String) = apply {
@@ -81,7 +81,5 @@ class TargetSettingsBuilder(
         targetSettings = targetSettings.copy(defaultCatalog = DbIdentifier(defaultCatalog))
     }
 
-    override fun build(): TargetSettings {
-        return targetSettings
-    }
+    override fun build(): TargetSettings = targetSettings
 }

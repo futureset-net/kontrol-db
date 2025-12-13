@@ -16,7 +16,6 @@ import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 internal class CreateViewTest {
-
     @Test
     fun `Can apply a view and select from it`() {
         dsl {
@@ -62,13 +61,25 @@ internal class CreateViewTest {
     }
 
     @Test
-    fun `Can apply a view from a file and select from it, not specifying CREATE or ALTER`(@DialectName dialectName: String) {
+    fun `Can apply a view from a file and select from it, not specifying CREATE or ALTER`(
+        @DialectName dialectName: String,
+    ) {
         dsl {
             loadConfig("test-config.yml")
             changeModules(
                 module {
                     singleOf(::CreateCustomerTable).bind(Refactoring::class)
-                    single { CreateAViewFromClasspathResourceWithoutWholeDefinition(if (dialectName == "sqlserver") "dbo" else "PUBLIC") }.bind(Refactoring::class)
+                    single {
+                        CreateAViewFromClasspathResourceWithoutWholeDefinition(
+                            if (dialectName ==
+                                "sqlserver"
+                            ) {
+                                "dbo"
+                            } else {
+                                "PUBLIC"
+                            },
+                        )
+                    }.bind(Refactoring::class)
                 },
             )
         }.use {
@@ -82,35 +93,48 @@ internal class CreateViewTest {
             }
         }
     }
-    class CreateAViewFromClasspathResource : Refactoring(
-        executionOrder {
-            ymd(2023, 11, 30)
-            author("ben")
-        },
-        forward = changes {
-            dropViewIfExists("NEW_CUSTOMER")
-            createView("NEW_CUSTOMER") {
-                resource("net/futureset/kontroldb/NewCustomerView.sql")
-                wholeDefinition(true)
-                language("SQL")
-            }
-        },
-        rollback = emptyList(),
-        executeMode = ExecuteMode.ON_CHANGE,
-    )
 
-    class CreateAViewFromClasspathResourceWithoutWholeDefinition(schemaName: String) : Refactoring(
+    class CreateAViewFromClasspathResource :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 11, 30)
+                author("ben")
+            },
+            forward =
+            changes {
+                dropViewIfExists("NEW_CUSTOMER")
+                createView("NEW_CUSTOMER") {
+                    resource("net/futureset/kontroldb/NewCustomerView.sql")
+                    wholeDefinition(true)
+                    language("SQL")
+                }
+            },
+            rollback = emptyList(),
+            executeMode = ExecuteMode.ON_CHANGE,
+        )
+
+    class CreateAViewFromClasspathResourceWithoutWholeDefinition(
+        schemaName: String,
+    ) : Refactoring(
         executionOrder {
             ymd(2023, 11, 30)
             author("ben")
         },
-        forward = changes {
+        forward =
+        changes {
             createView("NEW_CUSTOMER") {
                 view {
                     schema(schemaName)
                 }
                 body(
-                    Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerView.sql")!!.readText().replace("CREATE ", ""),
+                    Thread
+                        .currentThread()
+                        .contextClassLoader
+                        .getResource(
+                            "net/futureset/kontroldb/NewCustomerView.sql",
+                        )!!
+                        .readText()
+                        .replace("CREATE ", ""),
                 )
                 wholeDefinition(false)
                 language("SQL")
@@ -120,20 +144,25 @@ internal class CreateViewTest {
         executeMode = ExecuteMode.ON_CHANGE,
     )
 
-    class CreateAView : Refactoring(
-        executionOrder {
-            ymd(2023, 11, 30)
-            author("ben")
-        },
-        forward = changes {
-            createProcedure("NEW_CUSTOMER") {
-                body(
-                    Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerView.sql")!!.readText(),
-                )
-                wholeDefinition(true)
-            }
-        },
-        rollback = emptyList(),
-
-    )
+    class CreateAView :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 11, 30)
+                author("ben")
+            },
+            forward =
+            changes {
+                createProcedure("NEW_CUSTOMER") {
+                    body(
+                        Thread
+                            .currentThread()
+                            .contextClassLoader
+                            .getResource("net/futureset/kontroldb/NewCustomerView.sql")!!
+                            .readText(),
+                    )
+                    wholeDefinition(true)
+                }
+            },
+            rollback = emptyList(),
+        )
 }

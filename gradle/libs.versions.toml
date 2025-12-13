@@ -1,29 +1,28 @@
 [versions]
-assertj = "3.27.5"
+assertj = "3.27.6"
 docker-plugin = "9.3.7"
 dokka = "2.1.0"
 gradle = "9.1.0"
 hsqldb = "2.7.4"
-jackson = "2.20.0"
+jackson = "2.20.1"
 jacoco = "0.8.12"
 java = "21"
-junit = "5.13.4"
-kotlin = "2.2.20"
-ksp-plugin = "2.2.20-2.0.3"
-sqlserver = "13.2.0.jre11"
+junit = "6.0.1"
+kotlin = "2.2.21"
+ksp-plugin = "2.3.3"
+sqlserver = "13.3.0.jre11-preview"
 koin = "4.1.1"
-koin-compiler = "2.1.0"
-ktlint = "0.48.2"
-logback = "1.5.18"
-oracle = "23.9.0.25.07"
+koin-annotations = "2.3.1"
+koin-compiler = "2.3.1"
+logback = "1.5.22"
+oracle = "23.26.0.0.0"
 postgres = "42.7.8"
-spotless = "7.2.1"
+spotless = "8.1.0"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
 docker = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-plugin" }
-#dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [libraries]
 docker-remote-plugin = { group = "com.bmuschko.docker-remote-api", name = "com.bmuschko.docker-remote-api.gradle.plugin", version.ref = "docker-plugin" }
@@ -37,9 +36,10 @@ hsqldb = { group = "org.hsqldb", name = "hsqldb", version.ref = "hsqldb" }
 hsqldb-tool = { group = "org.hsqldb", name = "sqltool", version.ref = "hsqldb" }
 jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jackson-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-compiler" }
-koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref = "koin" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations" , version.ref = "koin-annotations" }
+koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j"}
 koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-compiler" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-jvm-plugin = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }

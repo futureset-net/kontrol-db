@@ -13,9 +13,10 @@ import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 class DifferentSchemaOrCatalogTest {
-
     @Test
-    fun `run in different default schema`(@DialectName dialect: String) {
+    fun `run in different default schema`(
+        @DialectName dialect: String,
+    ) {
         assumeTrue(dialect == "hsqldb")
         dsl {
             loadConfig("test-config.yml")
@@ -33,7 +34,9 @@ class DifferentSchemaOrCatalogTest {
     }
 
     @Test
-    fun `run in different default catalog`(@DialectName dialect: String) {
+    fun `run in different default catalog`(
+        @DialectName dialect: String,
+    ) {
         assumeTrue(dialect == "hsqldb")
         dsl {
             loadConfig("test-config.yml")
@@ -51,7 +54,9 @@ class DifferentSchemaOrCatalogTest {
     }
 
     @Test
-    fun `run in different default catalog and schema`(@DialectName dialect: String) {
+    fun `run in different default catalog and schema`(
+        @DialectName dialect: String,
+    ) {
         assumeTrue(dialect == "hsqldb")
         dsl {
             loadConfig("test-config.yml")

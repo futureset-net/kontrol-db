@@ -8,10 +8,8 @@ data class ColumnAndValue(
     private val separator: String = "AS",
     private val columnFirst: Boolean = separator == "=",
 ) : SqlString {
-    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
-        return listOfNotNull(
-            columnName.toQuoted(effectiveSettings),
-            value?.toQuoted(effectiveSettings),
-        ).let { it.takeIf { columnFirst } ?: it.reversed() }.joinToString(separator = " $separator ")
-    }
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String = listOfNotNull(
+        columnName.toQuoted(effectiveSettings),
+        value?.toQuoted(effectiveSettings),
+    ).let { it.takeIf { columnFirst } ?: it.reversed() }.joinToString(separator = " $separator ")
 }

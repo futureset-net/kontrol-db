@@ -9,10 +9,7 @@ import net.futureset.kontroldb.modelchange.ModelChange
 data class ModelChangesBuilder(
     val changes: MutableList<ModelChange> = mutableListOf(),
 ) : Builder<ModelChangesBuilder, List<ModelChange>> {
-
-    override fun build(): List<ModelChange> {
-        return changes.toList()
-    }
+    override fun build(): List<ModelChange> = changes.toList()
 
     /**
      * For onlyIfDatabase

@@ -5,12 +5,12 @@ import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.ExportQuery
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class ExportQueryGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<ExportQuery>(db, ExportQuery::class) {
-
+@Single(binds = [SqlGenerator::class])
+class ExportQueryGenerator(
+    db: EffectiveSettings,
+) : DbAwareGenerator<ExportQuery>(db, ExportQuery::class) {
     override val priority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): ExportQuery.() -> String? = {

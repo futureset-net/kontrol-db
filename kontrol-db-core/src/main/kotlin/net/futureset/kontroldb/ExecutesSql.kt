@@ -8,7 +8,11 @@ import java.sql.ResultSet
 import java.sql.Statement
 
 val sqlLogger: Logger = LoggerFactory.getLogger("SQL")
-fun Connection.executeSql(sql: String, resultSetHandler: ((ResultSet) -> Unit)? = null) {
+
+fun Connection.executeSql(
+    sql: String,
+    resultSetHandler: ((ResultSet) -> Unit)? = null,
+) {
     var success = false
     try {
         createStatementAndExecute(sql) { stmt, result ->
@@ -36,7 +40,10 @@ fun Connection.executeSql(sql: String, resultSetHandler: ((ResultSet) -> Unit)? 
     }
 }
 
-private fun Connection.createStatementAndExecute(sql: String, lambda: (Statement, Boolean) -> Unit) {
+private fun Connection.createStatementAndExecute(
+    sql: String,
+    lambda: (Statement, Boolean) -> Unit,
+) {
     if ("\\{[?= ]*call ".toRegex().containsMatchIn(sql)) {
         prepareCall(sql)
     } else {
@@ -57,24 +64,25 @@ private fun Connection.createStatementAndExecute(sql: String, lambda: (Statement
     }
 }
 
-inline fun <reified T> Connection.executeQuery(sql: String, block: (ResultSet) -> T): List<T> {
-    return createStatement().use {
-        sqlLogger.info("connection <$this> $sql")
-        var success = false
-        try {
-            it.executeQuery(sql)?.use { rs ->
-                val results = mutableListOf<T>()
-                while (rs.next()) {
-                    results.add(block(rs))
-                }
-                sqlLogger.info("connection <$this> returned ${results.size} rows")
-                success = true
-                results.toList()
-            } ?: emptyList<T>()
-        } finally {
-            if (!success) {
-                sqlLogger.error("connection <$this> Failed\n$sql")
+inline fun <reified T> Connection.executeQuery(
+    sql: String,
+    block: (ResultSet) -> T,
+): List<T> = createStatement().use {
+    sqlLogger.info("connection <$this> $sql")
+    var success = false
+    try {
+        it.executeQuery(sql)?.use { rs ->
+            val results = mutableListOf<T>()
+            while (rs.next()) {
+                results.add(block(rs))
             }
+            sqlLogger.info("connection <$this> returned ${results.size} rows")
+            success = true
+            results.toList()
+        } ?: emptyList<T>()
+    } finally {
+        if (!success) {
+            sqlLogger.error("connection <$this> Failed\n$sql")
         }
     }
 }

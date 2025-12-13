@@ -26,7 +26,10 @@ interface DbDialect : Comparable<DbDialect> {
     val literalFalse: String
     val order: Int
 
-    fun changeScript(scriptLines: MutableList<String>, targetTool: String) {
+    fun changeScript(
+        scriptLines: MutableList<String>,
+        targetTool: String,
+    ) {
         // Do nothing by default
     }
 
@@ -34,26 +37,26 @@ interface DbDialect : Comparable<DbDialect> {
 
     fun dbNowTimestamp(): String
 
-    fun literalDate(date: LocalDate): String {
-        return "'" + SQL_DATE_FORMAT.format(date) + "'"
-    }
+    fun literalDate(date: LocalDate): String = "'" + SQL_DATE_FORMAT.format(date) + "'"
 
     fun connectionProps(): Properties = Properties()
+
     fun quote(str: String) = openQuote + str + closeQuote
 
-    override fun compareTo(other: DbDialect): Int {
-        return compareBy(DbDialect::databaseName).thenBy(DbDialect::order).compare(other, this)
-    }
+    override fun compareTo(other: DbDialect): Int = compareBy(DbDialect::databaseName).thenBy(DbDialect::order).compare(other, this)
 
-    fun literalDatetime(date: LocalDateTime): String {
-        return "'" + SQL_TIMESTAMP_FORMAT.format(date) + "'"
-    }
+    fun literalDatetime(date: LocalDateTime): String = "'" + SQL_TIMESTAMP_FORMAT.format(date) + "'"
 
     fun tempTable(table: Table): Table = table
-    fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
+
+    fun runScriptAgainstDb(
+        emptyDb: Connection,
+        sqlScript: Path,
+    ) {
         TODO("Not yet implemented")
     }
 
     fun startTransaction(id: Int): String
+
     fun endTransaction(id: Int): String
 }

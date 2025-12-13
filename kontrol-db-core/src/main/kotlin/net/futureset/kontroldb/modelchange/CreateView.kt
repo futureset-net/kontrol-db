@@ -15,13 +15,19 @@ data class CreateView(
     val wholeDefinition: Boolean,
     val language: String?,
 ) : ModelChange {
+    override fun checksum(resourceResolver: ResourceResolver): Int = super.checksum(resourceResolver) + if (path != null) resourceResolver.resourceHash(path) else 0
 
-    override fun checksum(resourceResolver: ResourceResolver): Int {
-        return super.checksum(resourceResolver) + if (path != null) resourceResolver.resourceHash(path) else 0
-    }
-
-    class CreateViewBuilder(viewName: String) : Builder<CreateViewBuilder, CreateView> {
-        private var view: CreateView = CreateView(view = SchemaObject(name = DbIdentifier(viewName)), body = null, path = null, wholeDefinition = true, language = "SQL")
+    class CreateViewBuilder(
+        viewName: String,
+    ) : Builder<CreateViewBuilder, CreateView> {
+        private var view: CreateView =
+            CreateView(
+                view = SchemaObject(name = DbIdentifier(viewName)),
+                body = null,
+                path = null,
+                wholeDefinition = true,
+                language = "SQL",
+            )
 
         fun view(lambda: SchemaObjectBuilder.() -> Unit) = apply {
             view = view.copy(view = SchemaObjectBuilder(view.view).apply(lambda).build())
@@ -58,6 +64,13 @@ data class CreateView(
  * @receiver [ModelChangesBuilder] DSL container
  * @return [CreateView]
  */
-fun ModelChangesBuilder.createView(viewName: String, lambda: CreateView.CreateViewBuilder.() -> Unit) = apply {
-    CreateView.CreateViewBuilder(viewName).apply(lambda).build().also(changes::add)
+fun ModelChangesBuilder.createView(
+    viewName: String,
+    lambda: CreateView.CreateViewBuilder.() -> Unit,
+) = apply {
+    CreateView
+        .CreateViewBuilder(viewName)
+        .apply(lambda)
+        .build()
+        .also(changes::add)
 }

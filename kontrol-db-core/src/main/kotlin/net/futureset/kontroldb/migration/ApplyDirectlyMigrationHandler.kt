@@ -11,8 +11,9 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 
-class ApplyDirectlyMigrationHandler(private val effectiveSettings: EffectiveSettings) : MigrationHandler {
-
+class ApplyDirectlyMigrationHandler(
+    private val effectiveSettings: EffectiveSettings,
+) : MigrationHandler {
     private val connectionHolder = ConnectionHolder(this::makeConnection)
 
     private val consoleResultSetHandler: (ResultSet) -> Unit = { rs ->
@@ -26,13 +27,17 @@ class ApplyDirectlyMigrationHandler(private val effectiveSettings: EffectiveSett
         }
         println(
             results.dataTable(
-                *headings.map { heading -> heading to { m: Map<String, String> -> m[heading] } }
+                *headings
+                    .map { heading -> heading to { m: Map<String, String> -> m[heading] } }
                     .toTypedArray(),
             ) + "\n",
         )
     }
 
-    override fun executeModelChange(change: ModelChange, rawChanges: List<String>) {
+    override fun executeModelChange(
+        change: ModelChange,
+        rawChanges: List<String>,
+    ) {
         withConnection {
             rawChanges.forEach { sql ->
                 it.executeSql(
@@ -46,33 +51,30 @@ class ApplyDirectlyMigrationHandler(private val effectiveSettings: EffectiveSett
     override fun executeRefactoring(refactoring: Refactoring) {
     }
 
-    override fun <T> wrapInTransactionOnWhen(predicate: Boolean, lambda: () -> T): T {
-        return if (predicate) {
-            connectionHolder.wrapInTransaction(lambda)
-        } else {
-            lambda()
-        }
+    override fun <T> wrapInTransactionOnWhen(
+        predicate: Boolean,
+        lambda: () -> T,
+    ): T = if (predicate) {
+        connectionHolder.wrapInTransaction(lambda)
+    } else {
+        lambda()
     }
 
     fun close() {
         connectionHolder.close()
     }
 
-    private fun makeConnection(): Connection {
-        return DriverManager.getConnection(
-            effectiveSettings.jdbcUrl,
-            effectiveSettings.connectionProps().apply {
-                effectiveSettings.username?.let { put("user", it) }
-                effectiveSettings.password?.let { put("password", it) }
-            },
-        )
-    }
+    private fun makeConnection(): Connection = DriverManager.getConnection(
+        effectiveSettings.jdbcUrl,
+        effectiveSettings.connectionProps().apply {
+            effectiveSettings.username?.let { put("user", it) }
+            effectiveSettings.password?.let { put("password", it) }
+        },
+    )
 
     override fun end() {
         connectionHolder.close()
     }
 
-    fun <T> withConnection(block: (Connection) -> T): T {
-        return connectionHolder.withConnection(block)
-    }
+    fun <T> withConnection(block: (Connection) -> T): T = connectionHolder.withConnection(block)
 }

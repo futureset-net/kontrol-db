@@ -35,50 +35,56 @@ import kotlin.io.path.absolute
 
 data class KontrolDbEngineBuilder(
     private var dialect: String = "default",
-    private var targetSettings: TargetSettings = TargetSettings(
-        jdbcUrl = "jdbc:hsqldb:mem:testdb",
-        versionControlTable = Table(SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE))),
-    ),
-    private var executionSettings: ExecutionSettings = ExecutionSettings(
-        isOutputCatalog = true,
-        isOutputSchema = true,
-        isOutputTablespace = true,
-        externalFileRoot = Paths.get("").absolute(),
-    ),
+    private var targetSettings: TargetSettings =
+        TargetSettings(
+            jdbcUrl = "jdbc:hsqldb:mem:testdb",
+            versionControlTable = Table(SchemaObject(name = DbIdentifier(name = DEFAULT_VERSION_CONTROL_TABLE))),
+        ),
+    private var executionSettings: ExecutionSettings =
+        ExecutionSettings(
+            isOutputCatalog = true,
+            isOutputSchema = true,
+            isOutputTablespace = true,
+            externalFileRoot = Paths.get("").absolute(),
+        ),
     private var modules: MutableSet<Module> = mutableSetOf(),
 ) : Builder<KontrolDbEngineBuilder, KontrolDbEngine> {
-
     private val configFileControl: ConfigFileControl = ConfigFileControl()
 
     override fun build(): KontrolDbEngine {
-        val engineModule = module {
-            singleOf(::SqlGeneratorFactory)
-            singleOf(::CreateVersionControlTable).bind(Refactoring::class)
-            single {
-                EffectiveSettings(
-                    requireNotNull(
-                        getAll<DbDialect>().sorted().reversed().firstOrNull { it.databaseName == dialect }
-                            .also { logger.info("selected dialect $it") },
-                    ) { "Could not find dialect named '$dialect'" },
-                    get<IExecutionSettings>(),
-                    get<ITargetSettings>(),
-                    get<SqlGeneratorFactory>(),
-                )
+        val engineModule =
+            module {
+                singleOf(::SqlGeneratorFactory)
+                singleOf(::CreateVersionControlTable).bind(Refactoring::class)
+                single {
+                    EffectiveSettings(
+                        requireNotNull(
+                            getAll<DbDialect>()
+                                .sorted()
+                                .reversed()
+                                .firstOrNull { it.databaseName == dialect }
+                                .also { logger.info("selected dialect $it") },
+                        ) { "Could not find dialect named '$dialect'" },
+                        get<IExecutionSettings>(),
+                        get<ITargetSettings>(),
+                        get<SqlGeneratorFactory>(),
+                    )
+                }
+                single<TargetSettings> { targetSettings }.bind(ITargetSettings::class)
+                single { executionSettings }.bind(IExecutionSettings::class)
+                includes(CoreModule().module)
+                singleOf(::ApplyDirectlyMigrationHandler)
+                singleOf(::WriteChangesToFileMigrationHandler)
+                single { KontrolDbEngine(getAll(), get(), get(), get(), get()) }
             }
-            single<TargetSettings> { targetSettings }.bind(ITargetSettings::class)
-            single { executionSettings }.bind(IExecutionSettings::class)
-            includes(CoreModule().module)
-            singleOf(::ApplyDirectlyMigrationHandler)
-            singleOf(::WriteChangesToFileMigrationHandler)
-            single { KontrolDbEngine(getAll(), get(), get(), get(), get()) }
-        }
 
-        val buildEngine = startKoin {
+        val buildEngine =
+            startKoin {
 //            allowOverride(false)
-            logger(SLF4JLogger(level = Level.INFO))
-            modules(engineModule)
-            modules(modules.toList())
-        }
+                logger(SLF4JLogger(level = Level.INFO))
+                modules(engineModule)
+                modules(modules.toList())
+            }
         buildEngine.koin.get<SqlGeneratorFactory>().run {
             buildEngine.koin.getAll<SqlGenerator<ModelChange>>().forEach(::register)
         }
@@ -86,15 +92,16 @@ data class KontrolDbEngineBuilder(
     }
 
     fun loadConfig(path: String) = apply {
-        val config = configFileControl.configFile(
-            Paths.get(path),
-            KontrolDbConfig(
-                dialect = dialect,
-                modules = modules.mapNotNull { it::class.qualifiedName },
-                targetSettings = targetSettings,
-                executionSettings = executionSettings,
-            ),
-        )
+        val config =
+            configFileControl.configFile(
+                Paths.get(path),
+                KontrolDbConfig(
+                    dialect = dialect,
+                    modules = modules.mapNotNull { it::class.qualifiedName },
+                    targetSettings = targetSettings,
+                    executionSettings = executionSettings,
+                ),
+            )
         this.dialect = config.dialect ?: this.dialect
         this.targetSettings = config.targetSettings ?: this.targetSettings
         this.executionSettings = config.executionSettings ?: this.executionSettings
@@ -118,8 +125,6 @@ data class KontrolDbEngineBuilder(
     }
 
     companion object {
-        fun dsl(lambda: KontrolDbEngineBuilder.() -> Unit): KontrolDbEngine {
-            return KontrolDbEngineBuilder().apply(lambda).build()
-        }
+        fun dsl(lambda: KontrolDbEngineBuilder.() -> Unit): KontrolDbEngine = KontrolDbEngineBuilder().apply(lambda).build()
     }
 }

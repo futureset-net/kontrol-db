@@ -12,37 +12,29 @@ data class ExecutionOrder(
     val author: String,
     val seq: Short = 1,
 ) : Comparable<ExecutionOrder> {
-    override fun compareTo(other: ExecutionOrder): Int {
-        return Comparator.comparing(ExecutionOrder::dateOfChange)
-            .thenComparing(ExecutionOrder::seq)
-            .thenComparing(ExecutionOrder::author)
-            .compare(this, other)
-    }
+    override fun compareTo(other: ExecutionOrder): Int = Comparator
+        .comparing(ExecutionOrder::dateOfChange)
+        .thenComparing(ExecutionOrder::seq)
+        .thenComparing(ExecutionOrder::author)
+        .compare(this, other)
 
-    fun toSingleValue(): String {
-        return "${dateOfChange.year}-${dateOfChange.monthValue}-${dateOfChange.dayOfMonth}-$seq-$author"
-    }
+    fun toSingleValue(): String = "${dateOfChange.year}-${dateOfChange.monthValue}-${dateOfChange.dayOfMonth}-$seq-$author"
 
     companion object {
-        fun fromStringValue(s: String): ExecutionOrder {
-            return s.split("-")
-                .let { e ->
-                    ExecutionOrder(
-                        LocalDate.of(e[0].toInt(), e[1].toInt(), e[2].toInt()),
-                        e[4],
-                        e[3].toShort(),
-                    )
-                }
-        }
+        fun fromStringValue(s: String): ExecutionOrder = s
+            .split("-")
+            .let { e ->
+                ExecutionOrder(
+                    LocalDate.of(e[0].toInt(), e[1].toInt(), e[2].toInt()),
+                    e[4],
+                    e[3].toShort(),
+                )
+            }
     }
 
-    fun justBefore(): ExecutionOrder {
-        return copy(seq = (this.seq + 10).toShort())
-    }
+    fun justBefore(): ExecutionOrder = copy(seq = (this.seq + 10).toShort())
 
-    fun justAfter(): ExecutionOrder {
-        return copy(seq = (this.seq + 10).toShort())
-    }
+    fun justAfter(): ExecutionOrder = copy(seq = (this.seq + 10).toShort())
 
     @KontrolDbDslMarker
     class ExecutionOrderBuilder : Builder<ExecutionOrderBuilder, ExecutionOrder> {
@@ -58,20 +50,20 @@ data class ExecutionOrder(
             this.sequence = sequence
         }
 
-        fun ymd(year: Int, month: Int, day: Int) = apply {
+        fun ymd(
+            year: Int,
+            month: Int,
+            day: Int,
+        ) = apply {
             this.dateOfChange = LocalDate.of(year, month, day)
         }
 
-        fun executionOrder(lambda: ExecutionOrderBuilder.() -> Unit): ExecutionOrder {
-            return ExecutionOrderBuilder().apply(lambda).build()
-        }
+        fun executionOrder(lambda: ExecutionOrderBuilder.() -> Unit): ExecutionOrder = ExecutionOrderBuilder().apply(lambda).build()
 
-        override fun build(): ExecutionOrder {
-            return ExecutionOrder(
-                author = author,
-                seq = sequence,
-                dateOfChange = dateOfChange,
-            )
-        }
+        override fun build(): ExecutionOrder = ExecutionOrder(
+            author = author,
+            seq = sequence,
+            dateOfChange = dateOfChange,
+        )
     }
 }

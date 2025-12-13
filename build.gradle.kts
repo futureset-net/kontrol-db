@@ -23,7 +23,12 @@ extensions.configure<SpotlessExtension> {
     }
     kotlin {
         // version, userData and editorConfigOverride are all optional
-        ktlint(libs.versions.ktlint.get())
+        ktlint().editorConfigOverride(
+            mapOf(
+                "ktlint_standard_comment-wrapping" to "disabled",
+                "max_line_length" to 2147483647,
+            ),
+        )
         target("*/src/*/kotlin/**/*.kt", "*.gradle.kts", "*/*.kts", "buildSrc/src/**/*.kts")
     }
 }
@@ -85,7 +90,7 @@ subprojects {
 
     val unitTestCoverageLimit: String by project
 
-    tasks.withType<Test>() {
+    tasks.withType<Test> {
         testLogging {
             events("passed", "skipped", "failed")
         }
@@ -130,22 +135,32 @@ reporting {
     }
 }
 
-val integrationTestCodeCoverageReport = tasks.named<JacocoReport>("integrationTestCodeCoverageReport") {
-    classDirectories.setFrom(
-        classDirectories.files.map {
-            fileTree(it).matching {
-                exclude("**/generated/**")
-            }
-        },
-    )
-}
+val integrationTestCodeCoverageReport =
+    tasks.named<JacocoReport>("integrationTestCodeCoverageReport") {
+        classDirectories.setFrom(
+            classDirectories.files.map {
+                fileTree(it).matching {
+                    exclude("**/generated/**")
+                }
+            },
+        )
+    }
 
 val integrationTestCoverageLimit: String by project
 
 val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
     group = "verification"
     doFirst {
-        println("file:///" + integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().path + "index.html")
+        println(
+            "file:///" +
+                integrationTestCodeCoverageReport
+                    .get()
+                    .reports.html.outputLocation
+                    .get()
+                    .asFile
+                    .toURI()
+                    .path + "index.html",
+        )
     }
     violationRules {
         rule {
