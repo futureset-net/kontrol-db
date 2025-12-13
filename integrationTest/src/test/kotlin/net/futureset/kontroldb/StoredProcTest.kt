@@ -16,96 +16,106 @@ import org.koin.dsl.module
 import java.nio.file.Path
 import kotlin.io.path.writeText
 
-class CreateAProcedure : Refactoring(
-    executionOrder {
-        ymd(2023, 11, 30)
-        author("ben")
-    },
-    forward = changes {
-        createProcedure("NEW_CUSTOMER") {
-            body(
-                """
-                CREATE PROCEDURE NEW_CUSTOMER
-                    @firstname VARCHAR(50),
-                    @lastname VARCHAR(50),
-                    @address VARCHAR(100) AS
-                BEGIN
-                INSERT INTO CUSTOMER(CUST_ID,FIRSTNAME,LASTNAME,ADDRESS,CITY,STATE,ZIP)
-                                VALUES (1, @firstname, @lastname, @address, 'LDN', 'NY', '123');
-                END
-                """.trimIndent(),
-            )
-            wholeDefinition(true)
-        }.onlyIfDatabase { it == "sqlserver" }
-        createProcedure("NEW_CUSTOMER") {
-            body(
-                """
-                CREATE PROCEDURE NEW_CUSTOMER(IN firstname VARCHAR (50), IN lastname VARCHAR (50), IN address VARCHAR (100))
-                MODIFIES SQL DATA
-                BEGIN ATOMIC
-                INSERT INTO CUSTOMER(CUST_ID,FIRSTNAME,LASTNAME,ADDRESS,CITY,STATE,ZIP)
+class CreateAProcedure :
+    Refactoring(
+        executionOrder {
+            ymd(2023, 11, 30)
+            author("ben")
+        },
+        forward =
+        changes {
+            createProcedure("NEW_CUSTOMER") {
+                body(
+                    """
+                        CREATE PROCEDURE NEW_CUSTOMER
+                            @firstname VARCHAR(50),
+                            @lastname VARCHAR(50),
+                            @address VARCHAR(100) AS
+                        BEGIN
+                        INSERT INTO CUSTOMER(CUST_ID,FIRSTNAME,LASTNAME,ADDRESS,CITY,STATE,ZIP)
+                                        VALUES (1, @firstname, @lastname, @address, 'LDN', 'NY', '123');
+                        END
+                    """.trimIndent(),
+                )
+                wholeDefinition(true)
+            }.onlyIfDatabase { it == "sqlserver" }
+            createProcedure("NEW_CUSTOMER") {
+                body(
+                    """
+                        CREATE PROCEDURE NEW_CUSTOMER(IN firstname VARCHAR (50), IN lastname VARCHAR (50), IN address VARCHAR (100))
+                        MODIFIES SQL DATA
+                        BEGIN ATOMIC
+                        INSERT INTO CUSTOMER(CUST_ID,FIRSTNAME,LASTNAME,ADDRESS,CITY,STATE,ZIP)
+                                VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
+                        END
+                    """.trimIndent(),
+                )
+                wholeDefinition(true)
+            }.onlyIfDatabase { it == "hsqldb" }
+            createProcedure("NEW_CUSTOMER") {
+                body(
+                    """
+                        CREATE PROCEDURE "NEW_CUSTOMER"(
+                            firstname VARCHAR (50),
+                            lastname VARCHAR (50),
+                            address VARCHAR (100))
+                            LANGUAGE SQL AS $$
+                        INSERT INTO "CUSTOMER"("CUST_ID", "FIRSTNAME", "LASTNAME", "ADDRESS", "CITY", "STATE", "ZIP")
                         VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
-                END
-                """.trimIndent(),
-            )
-            wholeDefinition(true)
-        }.onlyIfDatabase { it == "hsqldb" }
-        createProcedure("NEW_CUSTOMER") {
-            body(
-                """
-                CREATE PROCEDURE "NEW_CUSTOMER"(
-                    firstname VARCHAR (50),
-                    lastname VARCHAR (50),
-                    address VARCHAR (100))
-                    LANGUAGE SQL AS $$
-                INSERT INTO "CUSTOMER"("CUST_ID", "FIRSTNAME", "LASTNAME", "ADDRESS", "CITY", "STATE", "ZIP")
-                VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
-                $$
-                """.trimIndent(),
-            )
-            wholeDefinition(true)
-        }.onlyIfDatabase { it == "postgres" }
-        createProcedure("NEW_CUSTOMER") {
-            body(
-                """
-                CREATE PROCEDURE "NEW_CUSTOMER"(
-                    firstname VARCHAR (50),
-                    lastname VARCHAR (50),
-                    address VARCHAR (100))
-                  BEGIN
-                INSERT INTO "CUSTOMER"("CUST_ID", "FIRSTNAME", "LASTNAME", "ADDRESS", "CITY", "STATE", "ZIP")
-                VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
-                END
-                """.trimIndent(),
-            )
-            wholeDefinition(true)
-        }.onlyIfDatabase { it == "oracle" }
-    },
-    rollback = changes {
-        dropProcedureIfExists("NEW_CUSTOMER")
-    },
-)
+                        $$
+                    """.trimIndent(),
+                )
+                wholeDefinition(true)
+            }.onlyIfDatabase { it == "postgres" }
+            createProcedure("NEW_CUSTOMER") {
+                body(
+                    """
+                        CREATE PROCEDURE "NEW_CUSTOMER"(
+                            firstname VARCHAR (50),
+                            lastname VARCHAR (50),
+                            address VARCHAR (100))
+                          BEGIN
+                        INSERT INTO "CUSTOMER"("CUST_ID", "FIRSTNAME", "LASTNAME", "ADDRESS", "CITY", "STATE", "ZIP")
+                        VALUES (1, firstname, lastname, address, 'LDN', 'NY', '123');
+                        END
+                    """.trimIndent(),
+                )
+                wholeDefinition(true)
+            }.onlyIfDatabase { it == "oracle" }
+        },
+        rollback =
+        changes {
+            dropProcedureIfExists("NEW_CUSTOMER")
+        },
+    )
 
-class CreateAProcedurePartialDefinition : Refactoring(
-    executionOrder {
-        ymd(2023, 11, 30)
-        author("ben")
-    },
-    forward = changes {
-        createProcedure("NEW_CUSTOMER") {
-            body(
-                Thread.currentThread().contextClassLoader.getResource("net/futureset/kontroldb/NewCustomerProc.sql")!!.readText().replace("CREATE ", ""),
-            )
-            wholeDefinition(false)
-        }
-    },
-    rollback = emptyList(),
-
-)
+class CreateAProcedurePartialDefinition :
+    Refactoring(
+        executionOrder {
+            ymd(2023, 11, 30)
+            author("ben")
+        },
+        forward =
+        changes {
+            createProcedure("NEW_CUSTOMER") {
+                body(
+                    Thread
+                        .currentThread()
+                        .contextClassLoader
+                        .getResource(
+                            "net/futureset/kontroldb/NewCustomerProc.sql",
+                        )!!
+                        .readText()
+                        .replace("CREATE ", ""),
+                )
+                wholeDefinition(false)
+            }
+        },
+        rollback = emptyList(),
+    )
 
 @ExtendWith(DatabaseProvision::class)
 internal class StoredProcTest {
-
     @Test
     fun `Can apply a stored proc and execute it`() {
         dsl {
@@ -142,39 +152,43 @@ internal class StoredProcTest {
         }
     }
 
-    class CreateAProcedureFromClasspathResource : Refactoring(
-        executionOrder {
-            ymd(2023, 11, 30)
-            author("ben")
-        },
-        forward = changes {
-            dropProcedureIfExists("NEW_CUSTOMER")
-            createProcedure("NEW_CUSTOMER") {
-                resource("net/futureset/kontroldb/NewCustomerProc.sql")
-                wholeDefinition(true)
-                language("SQL")
-            }
-        },
-        rollback = emptyList(),
-        executeMode = ExecuteMode.ON_CHANGE,
-    )
+    class CreateAProcedureFromClasspathResource :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 11, 30)
+                author("ben")
+            },
+            forward =
+            changes {
+                dropProcedureIfExists("NEW_CUSTOMER")
+                createProcedure("NEW_CUSTOMER") {
+                    resource("net/futureset/kontroldb/NewCustomerProc.sql")
+                    wholeDefinition(true)
+                    language("SQL")
+                }
+            },
+            rollback = emptyList(),
+            executeMode = ExecuteMode.ON_CHANGE,
+        )
 
-    class CreateAProcedureFromFile : Refactoring(
-        executionOrder {
-            ymd(2023, 11, 30)
-            author("ben")
-        },
-        forward = changes {
-            dropProcedureIfExists("NEW_CUSTOMER")
-            createProcedure("NEW_CUSTOMER") {
-                resource("NewCustomerProc.sql")
-                wholeDefinition(true)
-                language("SQL")
-            }
-        },
-        rollback = emptyList(),
-        executeMode = ExecuteMode.ON_CHANGE,
-    )
+    class CreateAProcedureFromFile :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 11, 30)
+                author("ben")
+            },
+            forward =
+            changes {
+                dropProcedureIfExists("NEW_CUSTOMER")
+                createProcedure("NEW_CUSTOMER") {
+                    resource("NewCustomerProc.sql")
+                    wholeDefinition(true)
+                    language("SQL")
+                }
+            },
+            rollback = emptyList(),
+            executeMode = ExecuteMode.ON_CHANGE,
+        )
 
     @Test
     fun `Can apply a stored proc from a file and execute it`() {
@@ -195,7 +209,9 @@ internal class StoredProcTest {
     }
 
     @Test
-    fun `Can apply a stored proc from a file and re-execute if it changes`(@TempDir workingDir: Path) {
+    fun `Can apply a stored proc from a file and re-execute if it changes`(
+        @TempDir workingDir: Path,
+    ) {
         val procFile = workingDir.resolve("NewCustomerProc.sql")
         procFile.writeText(javaClass.getResource("/net/futureset/kontroldb/NewCustomerProc.sql")!!.readText())
 

@@ -18,13 +18,15 @@ import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 internal class InsertRowsUpdateAndDeleteRowsTest {
-
-    class CreateATable(param: PredicateBuilder.() -> Unit) : Refactoring(
+    class CreateATable(
+        param: PredicateBuilder.() -> Unit,
+    ) : Refactoring(
         executionOrder {
             ymd(2023, 9, 24)
             author("ben")
         },
-        forward = changes {
+        forward =
+        changes {
             createTable("fred") {
                 column("TEST_COLUMN", INT32)
             }
@@ -67,9 +69,10 @@ internal class InsertRowsUpdateAndDeleteRowsTest {
 
             assertThat(
                 engine.applySqlDirectly.withConnection {
-                    it.executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
-                        rs.getInt(1)
-                    }.first()
+                    it
+                        .executeQuery("""SELECT COUNT(*) FROM "fred"""") { rs ->
+                            rs.getInt(1)
+                        }.first()
                 },
             ).isEqualTo(param.expectedResultCount)
         }

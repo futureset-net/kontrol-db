@@ -5,12 +5,12 @@ import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.SelectQuery
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class SelectQueryGenerator(db: EffectiveSettings) :
-    DbAwareGenerator<SelectQuery>(db, SelectQuery::class) {
-
+@Single(binds = [SqlGenerator::class])
+class SelectQueryGenerator(
+    db: EffectiveSettings,
+) : DbAwareGenerator<SelectQuery>(db, SelectQuery::class) {
     override val priority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): SelectQuery.() -> String? = {

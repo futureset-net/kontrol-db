@@ -14,56 +14,60 @@ import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 internal class CreateARoleAndGrantSomePermissionsTest {
-
-    class CreateARoleCalledFred : Refactoring(
-        executionOrder {
-            ymd(2023, 9, 13)
-            author("ben")
-        },
-        forward = changes {
-            createRole("FRED")
-            grantPermissions("INSERT", "UPDATE", "DELETE") {
-                on("KONTROL_DB_VERSIONING") {
+    class CreateARoleCalledFred :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 9, 13)
+                author("ben")
+            },
+            forward =
+            changes {
+                createRole("FRED")
+                grantPermissions("INSERT", "UPDATE", "DELETE") {
+                    on("KONTROL_DB_VERSIONING") {
+                    }
+                    objectType(DbObjectType.TABLE)
+                    to("FRED")
                 }
-                objectType(DbObjectType.TABLE)
-                to("FRED")
-            }
-            grantPermissions("SELECT") {
-                on(DEFAULT_VERSION_CONTROL_TABLE)
-                objectType("TABLE")
-                to("FRED")
-            }
-        },
-        rollback = emptyList(),
-    )
+                grantPermissions("SELECT") {
+                    on(DEFAULT_VERSION_CONTROL_TABLE)
+                    objectType("TABLE")
+                    to("FRED")
+                }
+            },
+            rollback = emptyList(),
+        )
 
-    class DropTheRoleAgain : Refactoring(
-        executionOrder {
-            ymd(2023, 9, 14)
-            author("ben")
-        },
-        forward = changes {
-            revokePermissions("INSERT", "UPDATE", "DELETE", "SELECT") {
-                on(DEFAULT_VERSION_CONTROL_TABLE)
-                objectType("TABLE")
-                to("FRED")
-            }
-            dropRole("FRED")
-        },
-        rollback = emptyList(),
-    )
+    class DropTheRoleAgain :
+        Refactoring(
+            executionOrder {
+                ymd(2023, 9, 14)
+                author("ben")
+            },
+            forward =
+            changes {
+                revokePermissions("INSERT", "UPDATE", "DELETE", "SELECT") {
+                    on(DEFAULT_VERSION_CONTROL_TABLE)
+                    objectType("TABLE")
+                    to("FRED")
+                }
+                dropRole("FRED")
+            },
+            rollback = emptyList(),
+        )
 
     @Test
     fun `can create a role and grant permissions to it`() {
-        val result = dsl {
-            loadConfig("test-config.yml")
-            changeModules(
-                module {
-                    refactoring(::CreateARoleCalledFred)
-                    refactoring(::DropTheRoleAgain)
-                },
-            )
-        }
+        val result =
+            dsl {
+                loadConfig("test-config.yml")
+                changeModules(
+                    module {
+                        refactoring(::CreateARoleCalledFred)
+                        refactoring(::DropTheRoleAgain)
+                    },
+                )
+            }
         result.use { it.applySql() }
     }
 }

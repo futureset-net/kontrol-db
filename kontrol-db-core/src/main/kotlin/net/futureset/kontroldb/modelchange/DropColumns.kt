@@ -11,13 +11,11 @@ data class DropColumns(
     val table: SchemaObject,
     val columns: List<DbIdentifier>,
 ) : ModelChange {
-
     @KontrolDbDslMarker
     class DropColumnsBuilder(
         tableName: String,
         private val columns: MutableList<DbIdentifier> = mutableListOf(),
     ) : Builder<DropColumnsBuilder, DropColumns> {
-
         private var table: SchemaObject = SchemaObject(DbIdentifier(tableName))
 
         fun table(lambda: SchemaObjectBuilder.() -> Unit) = apply {
@@ -28,11 +26,15 @@ data class DropColumns(
             this.columns.addAll(columns.map(::DbIdentifier))
         }
 
-        override fun build(): DropColumns {
-            return DropColumns(table = table, columns = columns)
-        }
+        override fun build(): DropColumns = DropColumns(table = table, columns = columns)
     }
 }
 
-fun ModelChangesBuilder.dropColumnsFrom(tableName: String, lambda: DropColumns.DropColumnsBuilder.() -> Unit): DropColumns =
-    DropColumns.DropColumnsBuilder(tableName).apply(lambda).build().apply(changes::add)
+fun ModelChangesBuilder.dropColumnsFrom(
+    tableName: String,
+    lambda: DropColumns.DropColumnsBuilder.() -> Unit,
+): DropColumns = DropColumns
+    .DropColumnsBuilder(tableName)
+    .apply(lambda)
+    .build()
+    .apply(changes::add)

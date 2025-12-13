@@ -6,11 +6,12 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.generator.trimBlankLines
 import net.futureset.kontroldb.modelchange.CreateSequence
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class CreateSequenceGenerator(es: EffectiveSettings) : DbAwareGenerator<CreateSequence>(es, CreateSequence::class) {
-
+@Single(binds = [SqlGenerator::class])
+class CreateSequenceGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<CreateSequence>(es, CreateSequence::class) {
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
     override fun convertSingle(): CreateSequence.() -> String? = {

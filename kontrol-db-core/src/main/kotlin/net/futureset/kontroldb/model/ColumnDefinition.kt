@@ -10,18 +10,16 @@ data class ColumnDefinition(
     val nullable: Boolean,
     val defaultValue: ColumnValue?,
 ) : SqlString {
-    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
-        return listOfNotNull(
-            columnName.toQuoted(effectiveSettings),
-            columnType.toQuoted(effectiveSettings),
-            defaultValue?.let { "DEFAULT " + it.toQuoted(effectiveSettings) },
-            when (nullable) {
-                effectiveSettings.nullableByDefault -> null
-                true -> "NULL"
-                false -> "NOT NULL"
-            },
-        ).joinToString(separator = " ")
-    }
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String = listOfNotNull(
+        columnName.toQuoted(effectiveSettings),
+        columnType.toQuoted(effectiveSettings),
+        defaultValue?.let { "DEFAULT " + it.toQuoted(effectiveSettings) },
+        when (nullable) {
+            effectiveSettings.nullableByDefault -> null
+            true -> "NULL"
+            false -> "NOT NULL"
+        },
+    ).joinToString(separator = " ")
 
     @KontrolDbDslMarker
     data class ColumnDefinitionBuilder(
@@ -30,7 +28,6 @@ data class ColumnDefinition(
         private var nullable: Boolean = false,
         private var defaultValue: ColumnValue? = null,
     ) : Builder<ColumnDefinitionBuilder, ColumnDefinition> {
-
         fun notNull() = apply {
             nullable = false
         }
@@ -47,8 +44,6 @@ data class ColumnDefinition(
             nullable = true
         }
 
-        override fun build(): ColumnDefinition {
-            return ColumnDefinition(DbIdentifier(name), type, nullable, defaultValue)
-        }
+        override fun build(): ColumnDefinition = ColumnDefinition(DbIdentifier(name), type, nullable, defaultValue)
     }
 }

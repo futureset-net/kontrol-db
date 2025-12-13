@@ -5,7 +5,6 @@ import java.util.SortedSet
 import kotlin.reflect.KClass
 
 class SqlGeneratorFactory {
-
     private val templatesByType = HashMap<KClass<out ModelChange>, SortedSet<SqlGenerator<ModelChange>>>()
 
     fun register(generator: SqlGenerator<ModelChange>) {
@@ -19,9 +18,7 @@ class SqlGeneratorFactory {
         }.firstOrNull(SqlGenerator<U>::canApply)
     }
 
-    fun generateSql(change: ModelChange): List<String> {
-        return resolveGenerator(change)?.convert(change)?.filterNotNull() ?: emptyList()
-    }
+    fun generateSql(change: ModelChange): List<String> = resolveGenerator(change)?.convert(change)?.filterNotNull() ?: emptyList()
 
     fun generateSqlSingle(change: ModelChange): String {
         val result = generateSql(change)

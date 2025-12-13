@@ -17,7 +17,6 @@ import kotlin.io.path.readText
 
 @ExtendWith(DatabaseProvision::class)
 internal class CreateVersionControlTableTest {
-
     @Test
     fun `Create a version control table`() {
         dsl {
@@ -37,7 +36,10 @@ internal class CreateVersionControlTableTest {
     }
 
     @Test
-    fun `Check has a version control table with custom name`(@TempDir tempDir: Path, currentConfig: KontrolDbConfig) {
+    fun `Check has a version control table with custom name`(
+        @TempDir tempDir: Path,
+        currentConfig: KontrolDbConfig,
+    ) {
         val customName = "HELLO"
         dsl {
             loadConfig("test-config.yml")

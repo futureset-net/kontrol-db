@@ -5,11 +5,12 @@ import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.generator.trimBlankLines
 import net.futureset.kontroldb.modelchange.UpdateRows
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class UpdateRowGenerator(es: EffectiveSettings) : DbAwareGenerator<UpdateRows>(es, UpdateRows::class) {
-
+@Single(binds = [SqlGenerator::class])
+class UpdateRowGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<UpdateRows>(es, UpdateRows::class) {
     override fun canApplyTo(es: EffectiveSettings): Boolean = es.databaseName == "sqlserver"
 
     override fun convertSingle(): UpdateRows.() -> String? = {

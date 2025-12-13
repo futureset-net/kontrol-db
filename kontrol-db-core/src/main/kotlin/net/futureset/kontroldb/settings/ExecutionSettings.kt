@@ -22,7 +22,6 @@ interface IExecutionSettings {
 }
 
 data class ExecutionSettings(
-
     override val isOutputSchema: Boolean = false,
     override val isOutputCatalog: Boolean = false,
     override val isOutputTablespace: Boolean = false,
@@ -32,16 +31,14 @@ data class ExecutionSettings(
     override val transactionScope: TransactionScope = TransactionScope.REFACTORING,
 ) : IExecutionSettings
 
-class ExecutionSettingsBuilder(private var executionSettings: ExecutionSettings = ExecutionSettings()) : Builder<ExecutionSettingsBuilder, ExecutionSettings> {
+class ExecutionSettingsBuilder(
+    private var executionSettings: ExecutionSettings = ExecutionSettings(),
+) : Builder<ExecutionSettingsBuilder, ExecutionSettings> {
+    fun isOutputSchema(isOutputSchema: Boolean) = apply { executionSettings = executionSettings.copy(isOutputSchema = isOutputSchema) }
 
-    fun isOutputSchema(isOutputSchema: Boolean) =
-        apply { executionSettings = executionSettings.copy(isOutputSchema = isOutputSchema) }
+    fun isOutputCatalog(isOutputCatalog: Boolean) = apply { executionSettings = executionSettings.copy(isOutputCatalog = isOutputCatalog) }
 
-    fun isOutputCatalog(isOutputCatalog: Boolean) =
-        apply { executionSettings = executionSettings.copy(isOutputCatalog = isOutputCatalog) }
-
-    fun isOutputTablespace(isOutputTablespace: Boolean) =
-        apply { executionSettings = executionSettings.copy(isOutputTablespace = isOutputTablespace) }
+    fun isOutputTablespace(isOutputTablespace: Boolean) = apply { executionSettings = executionSettings.copy(isOutputTablespace = isOutputTablespace) }
 
     fun externalFileRoot(path: Path) = apply {
         executionSettings = executionSettings.copy(externalFileRoot = path)
@@ -51,8 +48,7 @@ class ExecutionSettingsBuilder(private var executionSettings: ExecutionSettings 
         executionSettings = executionSettings.copy(transactionScope = transactionScope)
     }
 
-    fun outputDirectory(outputDirectory: Path) =
-        apply { executionSettings = executionSettings.copy(outputDirectory = outputDirectory) }
+    fun outputDirectory(outputDirectory: Path) = apply { executionSettings = executionSettings.copy(outputDirectory = outputDirectory) }
 
     override fun build(): ExecutionSettings = executionSettings
 }

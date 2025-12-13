@@ -7,16 +7,19 @@ import net.futureset.kontroldb.generator.trimBlankLines
 import net.futureset.kontroldb.modelchange.CreateTable
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class CreateTemporaryTableGenerator(es: EffectiveSettings, private val sqlGeneratorFactory: SqlGeneratorFactory) : DbAwareGenerator<CreateTable>(es, CreateTable::class) {
-
+@Single(binds = [SqlGenerator::class])
+class CreateTemporaryTableGenerator(
+    es: EffectiveSettings,
+    private val sqlGeneratorFactory: SqlGeneratorFactory,
+) : DbAwareGenerator<CreateTable>(es, CreateTable::class) {
     override fun canApplyTo(es: EffectiveSettings): Boolean = this.es.databaseName == "sqlserver"
 
     override fun convertSingle(): CreateTable.() -> String = {
-        val colNames = columnDefinitions.takeUnless { it.isEmpty() }
-            ?: fromSelect?.columns?.map { it.columnName }.orEmpty()
+        val colNames =
+            columnDefinitions.takeUnless { it.isEmpty() }
+                ?: fromSelect?.columns?.map { it.columnName }.orEmpty()
         val selectQuery = fromSelect
         if (selectQuery != null) {
             sqlGeneratorFactory.generateSqlSingle(selectQuery).replaceFirst("FROM", "INTO ${table.toQuoted()}\nFROM") +
@@ -29,13 +32,13 @@ class CreateTemporaryTableGenerator(es: EffectiveSettings, private val sqlGenera
                 }
         } else {
             """
-            CREATE TABLE ${table.toQuoted()} (
-                ${joinQuotableValues(colNames, separateBy = ",\n                ")}
-            ${
+                CREATE TABLE ${table.toQuoted()} (
+                    ${joinQuotableValues(colNames, separateBy = ",\n                ")}
+                ${
                 primaryKey?.takeIf { table.tablePersistence == TablePersistence.NORMAL }
                     ?.let { "," + sqlGeneratorFactory.generateSqlSingle(it) }.orEmpty()
             } 
-            )
+                )
             """.trimIndent().trimBlankLines()
         }
     }

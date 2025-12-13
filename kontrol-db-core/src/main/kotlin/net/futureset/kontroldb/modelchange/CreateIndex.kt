@@ -14,7 +14,6 @@ data class CreateIndex(
     val indexName: DbIdentifier?,
     val tablespace: Tablespace?,
 ) : ModelChange {
-
     @KontrolDbDslMarker
     class CreateIndexBuilder(
         private var indexName: DbIdentifier? = null,
@@ -37,16 +36,14 @@ data class CreateIndex(
             columns.add(DbIdentifier(name))
         }
 
-        override fun build(): CreateIndex {
-            return CreateIndex(
-                table = table,
-                indexName = indexName,
-                tablespace = tablespace?.let(::Tablespace),
-                clustered = clustered,
-                unique = unique,
-                columnReferences = columns,
-            )
-        }
+        override fun build(): CreateIndex = CreateIndex(
+            table = table,
+            indexName = indexName,
+            tablespace = tablespace?.let(::Tablespace),
+            clustered = clustered,
+            unique = unique,
+            columnReferences = columns,
+        )
     }
 }
 
@@ -61,5 +58,8 @@ data class CreateIndex(
 fun ModelChangesBuilder.createIndex(
     indexName: String,
     lambda: CreateIndex.CreateIndexBuilder.() -> Unit,
-): CreateIndex =
-    CreateIndex.CreateIndexBuilder(indexName = DbIdentifier(indexName)).apply(lambda).build().apply(changes::add)
+): CreateIndex = CreateIndex
+    .CreateIndexBuilder(indexName = DbIdentifier(indexName))
+    .apply(lambda)
+    .build()
+    .apply(changes::add)

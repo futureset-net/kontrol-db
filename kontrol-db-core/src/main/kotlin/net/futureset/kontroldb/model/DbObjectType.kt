@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.model
 
 enum class DbObjectType {
-
     TABLE,
     SEQUENCE,
     INDEX,
@@ -18,7 +17,5 @@ enum class DbObjectType {
     TABLESPACE,
     ;
 
-    fun identifier(): String {
-        return name.replace("_", " ")
-    }
+    fun identifier(): String = name.replace("_", " ")
 }

@@ -12,21 +12,23 @@ data class AddForeignKey(
     val columnMap: Map<DbIdentifier, DbIdentifier>,
     override val constraintName: DbIdentifier?,
 ) : ConstraintModelChange {
-
     class AddForeignKeyBuilder : TableBuilder<AddForeignKeyBuilder, AddForeignKey> {
-
         private var constraintName: DbIdentifier? = null
         private var foreignTable: SchemaObject? = null
         private var columnMap: MutableMap<DbIdentifier, DbIdentifier> = mutableMapOf()
         override lateinit var table: Table
 
-        fun foreignTable(name: String? = null, block: SchemaObjectBuilder.() -> Unit = {}) {
+        fun foreignTable(
+            name: String? = null,
+            block: SchemaObjectBuilder.() -> Unit = {},
+        ) {
             foreignTable(SchemaObjectBuilder().apply { name?.let(::name) }.apply(block).build())
         }
 
         fun foreignTable(table: SchemaObject) = apply {
             this.foreignTable = table
         }
+
         fun constraintName(constraintName: String) = apply {
             this.constraintName = DbIdentifier(constraintName)
         }
@@ -35,18 +37,23 @@ data class AddForeignKey(
             columnMap[DbIdentifier(fromAndTo.first)] = DbIdentifier(fromAndTo.second)
         }
 
-        override fun build(): AddForeignKey {
-            return AddForeignKey(
-                table = table,
-                foreignTable = requireNotNull(foreignTable) { "Table not specified for Foreign Key" },
-                constraintName = constraintName,
-                columnMap = columnMap,
-            )
-        }
+        override fun build(): AddForeignKey = AddForeignKey(
+            table = table,
+            foreignTable = requireNotNull(foreignTable) { "Table not specified for Foreign Key" },
+            constraintName = constraintName,
+            columnMap = columnMap,
+        )
     }
 }
 
 typealias ReferencingColumn = Pair<String, String>
 
-fun ModelChangesBuilder.addForeignKey(constraintName: String, lambda: AddForeignKey.AddForeignKeyBuilder.() -> Unit): AddForeignKey =
-    AddForeignKey.AddForeignKeyBuilder().apply(lambda).constraintName(constraintName).build().apply(changes::add)
+fun ModelChangesBuilder.addForeignKey(
+    constraintName: String,
+    lambda: AddForeignKey.AddForeignKeyBuilder.() -> Unit,
+): AddForeignKey = AddForeignKey
+    .AddForeignKeyBuilder()
+    .apply(lambda)
+    .constraintName(constraintName)
+    .build()
+    .apply(changes::add)

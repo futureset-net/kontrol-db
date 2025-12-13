@@ -2,7 +2,10 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.dsl.ModelChangesBuilder
 
-data class ScriptComment(val text: String) : ModelChange, CommentMarker
+data class ScriptComment(
+    val text: String,
+) : ModelChange,
+    CommentMarker
 
 /**
  * Generate a comment in SQL script

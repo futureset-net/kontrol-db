@@ -12,9 +12,7 @@ data class SelectQuery(
     val table: TableAlias?,
     val includeData: Boolean,
     val predicate: SqlPredicate? = null,
-
 ) : ModelChange {
-
     @KontrolDbDslMarker
     data class SelectQueryBuilder(
         private val columns: MutableList<ColumnAndValue> = mutableListOf(),
@@ -22,10 +20,12 @@ data class SelectQuery(
         private var predicate: SqlPredicate? = null,
         override var alias: String? = null,
     ) : TableAliasBuilder<SelectQueryBuilder, SelectQuery> {
-
         override lateinit var table: Table
 
-        fun column(columnName: String, expression: String? = null) = apply {
+        fun column(
+            columnName: String,
+            expression: String? = null,
+        ) = apply {
             columns.add(ColumnAndValue(DbIdentifier(columnName), expression?.let(ColumnValue::expression)))
         }
 
@@ -33,13 +33,12 @@ data class SelectQuery(
             predicate = PredicateBuilder().apply(lambda).build()
         }
 
-        override fun build(): SelectQuery =
-            SelectQuery(
-                columns = columns,
-                table = TableAlias(alias, table),
-                predicate = predicate,
-                includeData = this.includeData,
-            )
+        override fun build(): SelectQuery = SelectQuery(
+            columns = columns,
+            table = TableAlias(alias, table),
+            predicate = predicate,
+            includeData = this.includeData,
+        )
     }
 }
 

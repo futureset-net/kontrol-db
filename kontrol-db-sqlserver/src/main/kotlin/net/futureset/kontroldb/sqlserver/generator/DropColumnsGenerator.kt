@@ -4,11 +4,12 @@ import net.futureset.kontroldb.generator.DbAwareGenerator
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.DropColumns
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class DropColumnsGenerator(es: EffectiveSettings) : DbAwareGenerator<DropColumns>(es, DropColumns::class) {
-
+@Single(binds = [SqlGenerator::class])
+class DropColumnsGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<DropColumns>(es, DropColumns::class) {
     override fun canApplyTo(es: EffectiveSettings): Boolean = es.databaseName == "sqlserver"
 
     override fun convertSingle(): DropColumns.() -> String? = {

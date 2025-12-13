@@ -6,11 +6,10 @@ import net.futureset.kontroldb.model.Table
 import net.futureset.kontroldb.modelchange.TablePersistence
 import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [DbDialect::class])
+@Single(binds = [DbDialect::class])
 class SqlServerDialect : AnsiDialect {
-
     override val supportsTablespace: Boolean = false
     override val supportsCatalogs: Boolean = true
 
@@ -24,23 +23,40 @@ class SqlServerDialect : AnsiDialect {
     override val literalTrue: String = "1"
     override val literalFalse: String = "0"
     override val order: Int = 10
-    override fun dbNowTimestamp(): String {
-        return "CURRENT_TIMESTAMP"
-    }
 
-    override fun startTransaction(id: Int): String {
-        return "BEGIN TRAN"
-    }
+    override fun dbNowTimestamp(): String = "CURRENT_TIMESTAMP"
 
-    override fun endTransaction(id: Int): String {
-        return "COMMIT TRAN"
-    }
+    override fun startTransaction(id: Int): String = "BEGIN TRAN"
 
-    override fun tempTable(table: Table): Table {
-        return when (table.tablePersistence) {
-            TablePersistence.TEMPORARY -> table.copy(schemaObject = SchemaObject(name = DbIdentifier("#" + (table.schemaObject.name.name.trimStart('#')))))
-            TablePersistence.GLOBAL_TEMPORARY -> table.copy(schemaObject = SchemaObject(name = DbIdentifier("##" + (table.schemaObject.name.name.trimStart('#')))))
-            else -> table
-        }
+    override fun endTransaction(id: Int): String = "COMMIT TRAN"
+
+    override fun tempTable(table: Table): Table = when (table.tablePersistence) {
+        TablePersistence.TEMPORARY ->
+            table.copy(
+                schemaObject =
+                SchemaObject(
+                    name =
+                    DbIdentifier(
+                        "#" + (
+                            table.schemaObject.name.name
+                                .trimStart('#')
+                            ),
+                    ),
+                ),
+            )
+        TablePersistence.GLOBAL_TEMPORARY ->
+            table.copy(
+                schemaObject =
+                SchemaObject(
+                    name =
+                    DbIdentifier(
+                        "##" + (
+                            table.schemaObject.name.name
+                                .trimStart('#')
+                            ),
+                    ),
+                ),
+            )
+        else -> table
     }
 }

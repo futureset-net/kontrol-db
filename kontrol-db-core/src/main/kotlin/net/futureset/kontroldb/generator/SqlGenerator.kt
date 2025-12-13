@@ -6,7 +6,6 @@ import net.futureset.kontroldb.settings.EffectiveSettings
 import kotlin.reflect.KClass
 
 interface SqlGenerator<T : ModelChange> : Prioritised {
-
     val es: EffectiveSettings
     val type: KClass<T>
 

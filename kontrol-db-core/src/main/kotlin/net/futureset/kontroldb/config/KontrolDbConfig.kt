@@ -14,19 +14,22 @@ data class KontrolDbConfig(
     @JsonMerge
     val executionSettings: ExecutionSettings?,
 ) {
-    fun resolvedModules(): List<KontrolModule> {
-        return modules?.map(this::classNameToModule).orEmpty()
-    }
+    fun resolvedModules(): List<KontrolModule> = modules?.map(this::classNameToModule).orEmpty()
 
     private fun classNameToModule(className: String): KontrolModule {
         val clazz = Class.forName(className)
         if (KontrolModule::class.java.isAssignableFrom(clazz)) {
             return clazz.kotlin.createInstance() as KontrolModule
         }
-        val generatedClass = "org.koin.ksp.generated." + clazz.simpleName + "Gen" + (
-            clazz.`package`.name.lowercase().replace(".", "_")
-            ) + "Kt"
-        return Class.forName(generatedClass).getMethod("getModule", clazz)
+        val generatedClass =
+            "org.koin.ksp.generated." + clazz.simpleName + "Gen" + (
+                clazz.`package`.name
+                    .lowercase()
+                    .replace(".", "_")
+                ) + "Kt"
+        return Class
+            .forName(generatedClass)
+            .getMethod("getModule", clazz)
             .invoke(null, clazz.kotlin.createInstance()) as KontrolModule
     }
 }

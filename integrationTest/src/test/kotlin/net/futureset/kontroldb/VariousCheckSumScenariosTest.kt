@@ -23,7 +23,6 @@ import java.time.LocalDateTime
 
 @ExtendWith(DatabaseProvision::class)
 internal class VariousCheckSumScenariosTest {
-
     @Test
     fun `Refactorings can be re-run where indicated when the checksum changes`() {
         dsl {
@@ -34,7 +33,8 @@ internal class VariousCheckSumScenariosTest {
 
             assertThat(result.applySql()).describedAs("Migration is created").isGreaterThan(2)
 
-            assertThat(result.getAppliedRefactorings().simpleNames()).describedAs("changes applied")
+            assertThat(result.getAppliedRefactorings().simpleNames())
+                .describedAs("changes applied")
                 .containsExactly(
                     "CreateVersionControlTable",
                     "StartMigration",
@@ -52,19 +52,30 @@ internal class VariousCheckSumScenariosTest {
             result.applySqlDirectly.withConnection {
                 it.executeSql(
                     result.effectiveSettings
-                        .run { "UPDATE ${quote(DEFAULT_VERSION_CONTROL_TABLE)} SET ${quote("CHECK_SUM")}='INVALID' WHERE ${quote("ID")}='${IncrementCustomerId::class.qualifiedName}'" },
+                        .run {
+                            "UPDATE ${quote(
+                                DEFAULT_VERSION_CONTROL_TABLE,
+                            )} SET ${quote("CHECK_SUM")}='INVALID' WHERE ${quote("ID")}='${IncrementCustomerId::class.qualifiedName}'"
+                        },
                 )
             }
 
             assertThat(result.applySql()).isGreaterThan(1)
             assertThat(
                 result.applySqlDirectly.withConnection { conn ->
-                    conn.executeQuery(
-                        result.effectiveSettings
-                            .run { "SELECT ${quote("EXECUTION_COUNT")} FROM ${quote(DEFAULT_VERSION_CONTROL_TABLE)} WHERE ${quote("ID")}='${IncrementCustomerId::class.qualifiedName}'" },
-                    ) {
-                        it.getInt(1)
-                    }.first()
+                    conn
+                        .executeQuery(
+                            result.effectiveSettings
+                                .run {
+                                    "SELECT ${quote(
+                                        "EXECUTION_COUNT",
+                                    )} FROM ${quote(
+                                        DEFAULT_VERSION_CONTROL_TABLE,
+                                    )} WHERE ${quote("ID")}='${IncrementCustomerId::class.qualifiedName}'"
+                                },
+                        ) {
+                            it.getInt(1)
+                        }.first()
                 },
             ).isEqualTo(2)
         }
@@ -86,50 +97,59 @@ internal class VariousCheckSumScenariosTest {
             result.applySqlDirectly.withConnection {
                 it.executeSql(
                     result.effectiveSettings
-                        .run { "UPDATE ${quote(DEFAULT_VERSION_CONTROL_TABLE)} SET ${quote("CHECK_SUM")}='INVALID' WHERE ${quote("ID")}='${CreateProductTable::class.qualifiedName}'" },
+                        .run {
+                            "UPDATE ${quote(
+                                DEFAULT_VERSION_CONTROL_TABLE,
+                            )} SET ${quote("CHECK_SUM")}='INVALID' WHERE ${quote("ID")}='${CreateProductTable::class.qualifiedName}'"
+                        },
                 )
             }
 
-            assertThatThrownBy(result::applySql).isInstanceOf(IllegalStateException::class.java)
+            assertThatThrownBy(result::applySql)
+                .isInstanceOf(IllegalStateException::class.java)
                 .hasMessageContaining("Checksum mismatch for net.futureset.kontroldb.test.petstore.CreateProductTable ")
         }
     }
 
-    class InsertIntoProduct : Refactoring(
-        executionOrder { ymd(2023, 9, 10) author("ben") },
-        forward = changes {
-            insertRowsInto("PRODUCT") {
-                row {
-                    value("ID", 1)
-                    value("PRODUCT_NAME", "PRODUCT NAME")
-                    value("PACKAGE_ID", System.currentTimeMillis() % 1000)
-                    value("CURRENT_INVENTORY_COUNT", 1)
-                    value("STORE_COST", 1.50f)
-                    value("SALE_PRICE", 1.30f)
-                    value("LAST_UPDATE_DATE", LocalDateTime.now())
-                    value("UPDATED_BY_USER", "me")
-                    value("PET_FLAG", true)
+    class InsertIntoProduct :
+        Refactoring(
+            executionOrder { ymd(2023, 9, 10) author ("ben") },
+            forward =
+            changes {
+                insertRowsInto("PRODUCT") {
+                    row {
+                        value("ID", 1)
+                        value("PRODUCT_NAME", "PRODUCT NAME")
+                        value("PACKAGE_ID", System.currentTimeMillis() % 1000)
+                        value("CURRENT_INVENTORY_COUNT", 1)
+                        value("STORE_COST", 1.50f)
+                        value("SALE_PRICE", 1.30f)
+                        value("LAST_UPDATE_DATE", LocalDateTime.now())
+                        value("UPDATED_BY_USER", "me")
+                        value("PET_FLAG", true)
+                    }
+                    tableWithAlias("PRODUCT", "A")
                 }
-                tableWithAlias("PRODUCT", "A")
-            }
-        },
-        rollback = listOf(),
-    )
+            },
+            rollback = listOf(),
+        )
 
-    class IncrementInventory : Refactoring(
-        executionOrder { ymd(2023, 9, 10) author("ben") sequence(2) },
-        executeMode = ALWAYS,
-        forward = changes {
-            updateRowsOf("PRODUCT") {
-                set("CURRENT_INVENTORY_COUNT" to expression("\"CURRENT_INVENTORY_COUNT\"+1"))
-                tableWithAlias("PRODUCT", "B")
-                where {
-                    column("ID") eq 1
+    class IncrementInventory :
+        Refactoring(
+            executionOrder { ymd(2023, 9, 10) author ("ben") sequence (2) },
+            executeMode = ALWAYS,
+            forward =
+            changes {
+                updateRowsOf("PRODUCT") {
+                    set("CURRENT_INVENTORY_COUNT" to expression("\"CURRENT_INVENTORY_COUNT\"+1"))
+                    tableWithAlias("PRODUCT", "B")
+                    where {
+                        column("ID") eq 1
+                    }
                 }
-            }
-        },
-        rollback = listOf(),
-    )
+            },
+            rollback = listOf(),
+        )
 
     @Test
     fun `A run always refactoring always runs!`() {

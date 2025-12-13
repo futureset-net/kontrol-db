@@ -19,13 +19,15 @@ import org.koin.dsl.module
 
 @ExtendWith(DatabaseProvision::class)
 internal class DropIfExistsTest {
-
-    class CreateACustomerIndexAndDropEverything(schemaName: String) : Refactoring(
+    class CreateACustomerIndexAndDropEverything(
+        schemaName: String,
+    ) : Refactoring(
         executionOrder {
             author("ben")
             ymd(2023, 10, 1)
         },
-        forward = changes {
+        forward =
+        changes {
             createIndex("IX_LASTNAME") {
                 column("LASTNAME")
                 table("CUSTOMER")
@@ -61,7 +63,9 @@ internal class DropIfExistsTest {
     )
 
     @Test
-    fun `Can drop a table and index if they exist`(@DialectName dialectName: String) {
+    fun `Can drop a table and index if they exist`(
+        @DialectName dialectName: String,
+    ) {
         dsl {
             loadConfig("test-config.yml")
             changeModules(

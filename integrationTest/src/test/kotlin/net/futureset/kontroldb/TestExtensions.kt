@@ -24,46 +24,42 @@ import kotlin.io.path.writeText
 fun String.executeAsShell(): Int = run {
     println(this)
     ProcessBuilder()
-        .redirectErrorStream(true).apply {
+        .redirectErrorStream(true)
+        .apply {
             if (OperatingSystem.current() == OperatingSystem.WINDOWS) {
                 command("cmd.exe", "/c", this@executeAsShell)
             } else {
                 command("/usr/bin/env", "bash", "-c", this@executeAsShell)
             }
-        }
-        .start()
+        }.start()
         .also {
             thread(start = true, isDaemon = true) {
                 it.inputStream.reader().useLines { seq ->
                     seq.forEach(::println)
                 }
             }
-        }
-        .waitFor()
+        }.waitFor()
 }
 
-fun Path.toStringWithNumberedLines(): String =
-    this.readLines().mapIndexed { index, s -> "$index".padStart(4, '0') + " $s" }.joinToString(separator = "\n")
+fun Path.toStringWithNumberedLines(): String = this.readLines().mapIndexed { index, s -> "$index".padStart(4, '0') + " $s" }.joinToString(separator = "\n")
 
-fun Path.readDsvToMapList(delimiter: String = "|"): List<Map<String, String>> {
-    return Files.newBufferedReader(this).use {
-        val headers = it.readLine().split(delimiter)
-        it.lineSequence()
-            .map { line ->
-                line.split(delimiter).mapIndexed { index, column -> Pair(headers[index], column) }.associate { it }
-            }.toList()
-    }
+fun Path.readDsvToMapList(delimiter: String = "|"): List<Map<String, String>> = Files.newBufferedReader(this).use {
+    val headers = it.readLine().split(delimiter)
+    it
+        .lineSequence()
+        .map { line ->
+            line.split(delimiter).mapIndexed { index, column -> Pair(headers[index], column) }.associate { it }
+        }.toList()
 }
 
-fun List<Refactoring>.simpleNames(): List<String> {
-    return this.map { it.id().split(".").last() }
-}
+fun List<Refactoring>.simpleNames(): List<String> = this.map { it.id().split(".").last() }
 
-fun SortedSet<AppliedRefactoring>.simpleNames(): List<String> {
-    return this.map { it.id.split(".").last() }
-}
+fun SortedSet<AppliedRefactoring>.simpleNames(): List<String> = this.map { it.id.split(".").last() }
 
-fun Path.replaceText(search: String, replace: String) {
+fun Path.replaceText(
+    search: String,
+    replace: String,
+) {
     val def = this.readText()
     val newDef = def.replace(search, replace)
     this.writeText(newDef)

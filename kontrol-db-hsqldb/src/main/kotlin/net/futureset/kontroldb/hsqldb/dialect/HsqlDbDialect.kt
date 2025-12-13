@@ -3,13 +3,12 @@ package net.futureset.kontroldb.hsqldb.dialect
 import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
 import org.hsqldb.cmdline.SqlFile
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 import java.nio.file.Path
 import java.sql.Connection
 
-@Singleton(binds = [DbDialect::class])
+@Single(binds = [DbDialect::class])
 class HsqlDbDialect : AnsiDialect {
-
     override val supportsTablespace: Boolean = false
     override val supportsCatalogs: Boolean = true
 
@@ -24,19 +23,16 @@ class HsqlDbDialect : AnsiDialect {
     override val literalFalse: String = "false"
     override val order: Int = 10
 
-    override fun startTransaction(id: Int): String {
-        return "START TRANSACTION READ WRITE"
-    }
+    override fun startTransaction(id: Int): String = "START TRANSACTION READ WRITE"
 
-    override fun endTransaction(id: Int): String {
-        return "COMMIT"
-    }
+    override fun endTransaction(id: Int): String = "COMMIT"
 
-    override fun dbNowTimestamp(): String {
-        return "CURRENT_TIMESTAMP"
-    }
+    override fun dbNowTimestamp(): String = "CURRENT_TIMESTAMP"
 
-    override fun runScriptAgainstDb(emptyDb: Connection, sqlScript: Path) {
+    override fun runScriptAgainstDb(
+        emptyDb: Connection,
+        sqlScript: Path,
+    ) {
         val sf = SqlFile(sqlScript.toFile())
         sf.connection = emptyDb
         sf.execute()

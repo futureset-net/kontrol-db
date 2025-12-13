@@ -4,11 +4,12 @@ import net.futureset.kontroldb.generator.DbAwareGenerator
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.AddNotNull
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class AddNotNullSqlServerGenerator(es: EffectiveSettings) : DbAwareGenerator<AddNotNull>(es, AddNotNull::class) {
-
+@Single(binds = [SqlGenerator::class])
+class AddNotNullSqlServerGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<AddNotNull>(es, AddNotNull::class) {
     override fun canApplyTo(es: EffectiveSettings): Boolean = es.databaseName == "sqlserver"
 
     override fun convertSingle(): AddNotNull.() -> String? = {

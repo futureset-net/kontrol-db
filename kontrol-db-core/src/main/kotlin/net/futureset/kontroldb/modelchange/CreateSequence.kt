@@ -17,17 +17,20 @@ data class CreateSequence(
     val cache: Int,
     val columnType: ColumnType?,
 ) : ModelChange {
-    class CreateSequenceBuilder(name: String) : Builder<CreateSequenceBuilder, CreateSequence> {
-        private var createSequence = CreateSequence(
-            schemaObject = SchemaObject(name = DbIdentifier(name)),
-            startWith = 1,
-            incrementBy = 1,
-            minValue = null,
-            maxValue = null,
-            cycle = null,
-            cache = 0,
-            columnType = null,
-        )
+    class CreateSequenceBuilder(
+        name: String,
+    ) : Builder<CreateSequenceBuilder, CreateSequence> {
+        private var createSequence =
+            CreateSequence(
+                schemaObject = SchemaObject(name = DbIdentifier(name)),
+                startWith = 1,
+                incrementBy = 1,
+                minValue = null,
+                maxValue = null,
+                cycle = null,
+                cache = 0,
+                columnType = null,
+            )
 
         /**
          * Other schema
@@ -36,9 +39,10 @@ data class CreateSequence(
          * @receiver
          */
         fun otherSchema(lambda: SchemaObjectBuilder.() -> Unit) = apply {
-            createSequence = createSequence.copy(
-                schemaObject = SchemaObjectBuilder(createSequence.schemaObject).apply(lambda).build(),
-            )
+            createSequence =
+                createSequence.copy(
+                    schemaObject = SchemaObjectBuilder(createSequence.schemaObject).apply(lambda).build(),
+                )
         }
 
         fun startWith(startWith: Long) = apply {
@@ -81,5 +85,11 @@ data class CreateSequence(
  * @return [CreateSequence]
  * @sample net.futureset.kontroldb.samples.AllSamples.createSequence
  */
-fun ModelChangesBuilder.createSequence(name: String, lambda: CreateSequence.CreateSequenceBuilder.() -> Unit): CreateSequence =
-    CreateSequence.CreateSequenceBuilder(name).apply(lambda).build().also(changes::add)
+fun ModelChangesBuilder.createSequence(
+    name: String,
+    lambda: CreateSequence.CreateSequenceBuilder.() -> Unit,
+): CreateSequence = CreateSequence
+    .CreateSequenceBuilder(name)
+    .apply(lambda)
+    .build()
+    .also(changes::add)

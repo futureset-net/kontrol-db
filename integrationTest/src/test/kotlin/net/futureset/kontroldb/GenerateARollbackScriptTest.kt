@@ -12,9 +12,11 @@ import kotlin.io.path.readText
 
 @ExtendWith(DatabaseProvision::class)
 class GenerateARollbackScriptTest {
-
     @Test
-    fun `Can generate a rollback script`(@TempDir tempDir: Path, @DialectName dialectName: String) {
+    fun `Can generate a rollback script`(
+        @TempDir tempDir: Path,
+        @DialectName dialectName: String,
+    ) {
         dsl {
             dialect("default") // will be overridden by loadConfig, but included for coverage
             loadConfig("test-config.yml")
@@ -36,7 +38,9 @@ class GenerateARollbackScriptTest {
             assertThat(generatedFile).describedAs("script was generated").exists()
             val scriptContent = generatedFile.readText()
             println(scriptContent)
-            assertThat(scriptContent).contains("DROP TABLE ${result.effectiveSettings.openQuote}KONTROL_DB_VERSIONING${result.effectiveSettings.closeQuote}")
+            assertThat(
+                scriptContent,
+            ).contains("DROP TABLE ${result.effectiveSettings.openQuote}KONTROL_DB_VERSIONING${result.effectiveSettings.closeQuote}")
             assertThat(scriptContent)
                 .contains("DROP TABLE ${result.effectiveSettings.openQuote}CUSTOMER${result.effectiveSettings.closeQuote}")
         }

@@ -29,58 +29,69 @@ import net.futureset.kontroldb.modelchange.ValuesBuilder
 import net.futureset.kontroldb.settings.EffectiveSettings
 import net.futureset.kontroldb.settings.SQL_DATE_FORMAT
 import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Singleton(binds = [SqlGenerator::class])
-class ApplyDsvToTableGenerator(es: EffectiveSettings, private val sqlGeneratorFactory: SqlGeneratorFactory) : DbAwareGenerator<ApplyDsvToTable>(es, ApplyDsvToTable::class) {
+@Single(binds = [SqlGenerator::class])
+class ApplyDsvToTableGenerator(
+    es: EffectiveSettings,
+    private val sqlGeneratorFactory: SqlGeneratorFactory,
+) : DbAwareGenerator<ApplyDsvToTable>(es, ApplyDsvToTable::class) {
     override val priority: GeneratorPriority = GeneratorPriority.DEFAULT
 
     override fun convert(change: ApplyDsvToTable): List<String> {
         require(!change.useDbLoadingTool)
         return change.file.reader().use { reader ->
-            val headerNames = reader.readLine()
-                .split(change.separator)
-                .map(String::uppercase)
+            val headerNames =
+                reader
+                    .readLine()
+                    .split(change.separator)
+                    .map(String::uppercase)
             val invalidHeaderNames = change.headerMappings.keys.filterNot { headerNames.contains(it) }
             require(invalidHeaderNames.isEmpty()) { "No such headers '$invalidHeaderNames' CSV has $headerNames" }
-            val values = reader.lineSequence()
-                .mapIndexed { _, row ->
-                    val v = ValuesBuilder()
-                    row.split(change.separator).mapIndexed { columNumber, value ->
-                        requireNotNull(change.headerMappings[headerNames[columNumber]]).let {
-                            when (it.columnType) {
-                                is Decimal -> v.value(
-                                    it.columnName.name,
-                                    value.toBigDecimal().setScale(it.columnType.scale),
-                                )
+            val values =
+                reader
+                    .lineSequence()
+                    .mapIndexed { _, row ->
+                        val v = ValuesBuilder()
+                        row.split(change.separator).mapIndexed { columNumber, value ->
+                            requireNotNull(change.headerMappings[headerNames[columNumber]]).let {
+                                when (it.columnType) {
+                                    is Decimal ->
+                                        v.value(
+                                            it.columnName.name,
+                                            value.toBigDecimal().setScale(it.columnType.scale),
+                                        )
 
-                                BOOLEAN -> {
-                                    v.value(
-                                        it.columnName.name,
-                                        value.lowercase() in trueBooleanStrings,
-                                    )
+                                    BOOLEAN -> {
+                                        v.value(
+                                            it.columnName.name,
+                                            value.lowercase() in trueBooleanStrings,
+                                        )
+                                    }
+                                    DATE -> v.value(it.columnName.name, LocalDate.parse(value, SQL_DATE_FORMAT))
+                                    LOCALDATETIME -> v.value(it.columnName.name, LocalDateTime.parse(value, SQL_TIMESTAMP_FORMAT))
+                                    INT64, INT32, INT16 ->
+                                        v.value(
+                                            it.columnName.name,
+                                            value.toLong(),
+                                        )
+
+                                    else -> v.value(it.columnName.name, value)
                                 }
-                                DATE -> v.value(it.columnName.name, LocalDate.parse(value, SQL_DATE_FORMAT))
-                                LOCALDATETIME -> v.value(it.columnName.name, LocalDateTime.parse(value, SQL_TIMESTAMP_FORMAT))
-                                INT64, INT32, INT16 -> v.value(
-                                    it.columnName.name,
-                                    value.toLong(),
-                                )
-
-                                else -> v.value(it.columnName.name, value)
                             }
                         }
-                    }
-                    v.build()
-                }.toList()
+                        v.build()
+                    }.toList()
             val changes = mutableListOf<ModelChange>()
             if (change.updateRows || change.ignoreInsertViolations) {
                 changes.add(
-                    InsertOrUpdateRow.InsertOrUpdateRowBuilder(change.table.schemaObject.name.name)
+                    InsertOrUpdateRow
+                        .InsertOrUpdateRowBuilder(change.table.schemaObject.name.name)
                         .primaryKey(*change.primaryKeys.map(DbIdentifier::name).toTypedArray())
-                        .table(change.table).addRows(values)
+                        .table(change.table)
+                        .addRows(values)
                         .mode(
                             if (change.updateRows && change.insertRows) {
                                 UpdateMode.UPDATE_AND_INSERT
@@ -92,7 +103,13 @@ class ApplyDsvToTableGenerator(es: EffectiveSettings, private val sqlGeneratorFa
                         ).build(),
                 )
             } else {
-                changes.add(InsertRows.InsertRowsBuilder().table(change.table).addRows(values).build())
+                changes.add(
+                    InsertRows
+                        .InsertRowsBuilder()
+                        .table(change.table)
+                        .addRows(values)
+                        .build(),
+                )
             }
             if (change.deleteRows) {
                 val tempTable = Table(SchemaObject(name = DbIdentifier("PK_VALUES")), TablePersistence.TEMPORARY)
@@ -102,8 +119,15 @@ class ApplyDsvToTableGenerator(es: EffectiveSettings, private val sqlGeneratorFa
                         columnDefinitions = emptyList(),
                         tablespace = null,
                         preserveRowsOnCommit = true,
-                        primaryKey = AddPrimaryKey(table = tempTable, columnReferences = change.primaryKeys.toList(), clustered = true, inline = true),
-                        fromSelect = SelectQuery(
+                        primaryKey =
+                        AddPrimaryKey(
+                            table = tempTable,
+                            columnReferences = change.primaryKeys.toList(),
+                            clustered = true,
+                            inline = true,
+                        ),
+                        fromSelect =
+                        SelectQuery(
                             columns = change.primaryKeys.map { ColumnAndValue(it, null) },
                             table = change.table.alias(),
                             includeData = false,
@@ -111,11 +135,15 @@ class ApplyDsvToTableGenerator(es: EffectiveSettings, private val sqlGeneratorFa
                     ),
                 )
                 changes.add(
-                    InsertRows.InsertRowsBuilder().table(tempTable)
-                        .addRows(values.map { it.filter { it.key in change.primaryKeys } }).build(),
+                    InsertRows
+                        .InsertRowsBuilder()
+                        .table(tempTable)
+                        .addRows(values.map { it.filter { it.key in change.primaryKeys } })
+                        .build(),
                 )
                 changes.add(
-                    DeleteRows.DeleteRowsBuilder()
+                    DeleteRows
+                        .DeleteRowsBuilder()
                         .tableWithAlias(change.table, "A")
                         .where {
                             not {

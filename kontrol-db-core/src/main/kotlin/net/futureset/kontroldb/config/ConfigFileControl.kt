@@ -14,18 +14,21 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class ConfigFileControl {
+    val mapper =
+        ObjectMapper(YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES))
+            .enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
+            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .registerModule(
+                SimpleModule("pathToString")
+                    .addSerializer(Path::class.java, ToStringSerializer())
+                    .addDeserializer(Path::class.java, NioPathDeserializer()),
+            ).setSerializationInclusion(JsonInclude.Include.NON_NULL)
+            .registerKotlinModule()
 
-    val mapper = ObjectMapper(YAMLFactory().enable(YAMLGenerator.Feature.MINIMIZE_QUOTES))
-        .enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY)
-        .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        .registerModule(
-            SimpleModule("pathToString").addSerializer(Path::class.java, ToStringSerializer())
-                .addDeserializer(Path::class.java, NioPathDeserializer()),
-        )
-        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-        .registerKotlinModule()
-
-    fun configFile(file: Path, currentConfig: KontrolDbConfig): KontrolDbConfig {
+    fun configFile(
+        file: Path,
+        currentConfig: KontrolDbConfig,
+    ): KontrolDbConfig {
         val inputStream: InputStream =
             if (Files.exists(file)) {
                 Files.newInputStream(file)

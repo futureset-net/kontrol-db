@@ -5,7 +5,6 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 
 interface DbDockerExtension {
-
     val imageId: Property<String>
     val dockerEnabled: Property<Boolean>
     val containerName: Property<String>

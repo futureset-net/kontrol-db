@@ -8,40 +8,34 @@ import java.time.LocalDateTime
 data class ColumnValue(
     private val value: Any?,
     private val quoted: Boolean,
-
-) : SqlString, Operand {
-
+) : SqlString,
+    Operand {
     override fun isNull(): Boolean = value == null
 
     companion object {
-
         fun column(name: String) = DbIdentifier(name)
 
         fun expression(expr: String) = ColumnValue(expr, false)
 
-        fun value(value: Any?): ColumnValue {
-            return when (value) {
-                "NULL" -> ColumnValue(null, false)
-                null -> ColumnValue(null, false)
-                is Number -> ColumnValue(value, false)
-                is Boolean -> ColumnValue(value, false)
-                else -> ColumnValue(value, true)
-            }
+        fun value(value: Any?): ColumnValue = when (value) {
+            "NULL" -> ColumnValue(null, false)
+            null -> ColumnValue(null, false)
+            is Number -> ColumnValue(value, false)
+            is Boolean -> ColumnValue(value, false)
+            else -> ColumnValue(value, true)
         }
     }
 
-    override fun toQuoted(effectiveSettings: EffectiveSettings): String {
-        return when (value) {
-            is LocalDate -> {
-                effectiveSettings.literalDate(value)
-            }
-            is LocalDateTime -> {
-                effectiveSettings.literalDatetime(value)
-            }
-            is Boolean -> {
-                if (value) effectiveSettings.literalTrue else effectiveSettings.literalFalse
-            }
-            else -> (value?.toString() ?: "NULL").let { if (quoted) "'$it'" else it }
+    override fun toQuoted(effectiveSettings: EffectiveSettings): String = when (value) {
+        is LocalDate -> {
+            effectiveSettings.literalDate(value)
         }
+        is LocalDateTime -> {
+            effectiveSettings.literalDatetime(value)
+        }
+        is Boolean -> {
+            if (value) effectiveSettings.literalTrue else effectiveSettings.literalFalse
+        }
+        else -> (value?.toString() ?: "NULL").let { if (quoted) "'$it'" else it }
     }
 }

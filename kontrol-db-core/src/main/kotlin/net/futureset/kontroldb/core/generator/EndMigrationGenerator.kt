@@ -5,10 +5,11 @@ import net.futureset.kontroldb.generator.GeneratorPriority
 import net.futureset.kontroldb.generator.SqlGenerator
 import net.futureset.kontroldb.modelchange.EndBanner
 import net.futureset.kontroldb.settings.EffectiveSettings
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 
-@Singleton(binds = [SqlGenerator::class])
-class EndMigrationGenerator(es: EffectiveSettings) : DbAwareGenerator<EndBanner>(es, EndBanner::class) {
-
+@Single(binds = [SqlGenerator::class])
+class EndMigrationGenerator(
+    es: EffectiveSettings,
+) : DbAwareGenerator<EndBanner>(es, EndBanner::class) {
     override val priority = GeneratorPriority.DEFAULT
 }

@@ -6,9 +6,15 @@ import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.SchemaObjectBuilder
 import net.futureset.kontroldb.model.Table
 
-data class DropIndex(val index: SchemaObject, val table: Table, val ifExists: Boolean) : ModelChange
+data class DropIndex(
+    val index: SchemaObject,
+    val table: Table,
+    val ifExists: Boolean,
+) : ModelChange
 
-class DropIndexBuilder(indexName: String) : TableBuilder<DropIndexBuilder, DropIndex> {
+class DropIndexBuilder(
+    indexName: String,
+) : TableBuilder<DropIndexBuilder, DropIndex> {
     override lateinit var table: Table
     private var index: SchemaObject = SchemaObject(name = DbIdentifier(indexName))
     private var ifExists: Boolean = false
@@ -21,10 +27,12 @@ class DropIndexBuilder(indexName: String) : TableBuilder<DropIndexBuilder, DropI
         index = SchemaObjectBuilder(index).apply(block).build()
     }
 
-    override fun build(): DropIndex =
-        DropIndex(index, table, ifExists)
+    override fun build(): DropIndex = DropIndex(index, table, ifExists)
 }
 
-fun ModelChangesBuilder.dropIndexIfExists(name: String, lambda: DropIndexBuilder.() -> Unit) {
+fun ModelChangesBuilder.dropIndexIfExists(
+    name: String,
+    lambda: DropIndexBuilder.() -> Unit,
+) {
     changes.add(DropIndexBuilder(name).ifExists().apply(lambda).build())
 }

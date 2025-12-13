@@ -12,7 +12,6 @@ data class AddPrimaryKey(
     val inline: Boolean,
     override var constraintName: DbIdentifier? = null,
 ) : ConstraintModelChange {
-
     @KontrolDbDslMarker
     class AddPrimaryKeyBuilder(
         private var constraintName: DbIdentifier? = null,
@@ -20,7 +19,6 @@ data class AddPrimaryKey(
         private var clustered: Boolean? = null,
         private var inline: Boolean = false,
     ) : TableBuilder<AddPrimaryKeyBuilder, AddPrimaryKey> {
-
         override lateinit var table: Table
 
         fun constraintName(constraintName: String) = apply {
@@ -35,17 +33,22 @@ data class AddPrimaryKey(
             columns.add(DbIdentifier(name))
         }
 
-        override fun build(): AddPrimaryKey {
-            return AddPrimaryKey(
-                table = table,
-                constraintName = constraintName,
-                clustered = clustered,
-                columnReferences = columns,
-                inline = inline,
-            )
-        }
+        override fun build(): AddPrimaryKey = AddPrimaryKey(
+            table = table,
+            constraintName = constraintName,
+            clustered = clustered,
+            columnReferences = columns,
+            inline = inline,
+        )
     }
 }
 
-fun ModelChangesBuilder.addPrimaryKey(constraintName: String, lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit): AddPrimaryKey =
-    AddPrimaryKey.AddPrimaryKeyBuilder().apply(lambda).constraintName(constraintName).build().apply(changes::add)
+fun ModelChangesBuilder.addPrimaryKey(
+    constraintName: String,
+    lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit,
+): AddPrimaryKey = AddPrimaryKey
+    .AddPrimaryKeyBuilder()
+    .apply(lambda)
+    .constraintName(constraintName)
+    .build()
+    .apply(changes::add)

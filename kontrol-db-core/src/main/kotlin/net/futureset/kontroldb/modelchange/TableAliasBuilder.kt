@@ -10,12 +10,18 @@ interface TableAliasBuilder<B : TableBuilder<B, T>, T : ModelChange> : TableBuil
         this.alias = alias
     } as B
 
-    fun tableWithAlias(table: Table, alias: String): B {
+    fun tableWithAlias(
+        table: Table,
+        alias: String,
+    ): B {
         alias(alias)
         return super.table(table)
     }
 
-    fun tableWithAlias(table: String, alias: String): B {
+    fun tableWithAlias(
+        table: String,
+        alias: String,
+    ): B {
         alias(alias)
         return super.table(table) {}
     }

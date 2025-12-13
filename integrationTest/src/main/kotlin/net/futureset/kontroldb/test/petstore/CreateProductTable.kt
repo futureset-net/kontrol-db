@@ -15,14 +15,16 @@ import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Single
 
 @Single
-class CreateProductTable(private val dialect: DbDialect) : Refactoring(
-
+class CreateProductTable(
+    private val dialect: DbDialect,
+) : Refactoring(
     executionOrder {
         ymd(2023, 8, 27)
         author("ben")
         sequence(2)
     },
-    forward = changes {
+    forward =
+    changes {
         createTable("PRODUCT") {
             column("ID", INT32)
             column("PRODUCT_NAME", Varchar(30))
@@ -41,7 +43,8 @@ class CreateProductTable(private val dialect: DbDialect) : Refactoring(
             column("ID")
         }
     },
-    rollback = changes {
+    rollback =
+    changes {
         dropTable("PRODUCT")
     },
 )

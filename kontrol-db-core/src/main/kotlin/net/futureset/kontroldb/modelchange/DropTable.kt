@@ -6,14 +6,10 @@ import net.futureset.kontroldb.model.Table
 data class DropTable(
     val table: Table,
 ) : ModelChange {
-
     class DropTableBuilder : TableBuilder<DropTableBuilder, DropTable> {
-
         override lateinit var table: Table
 
-        override fun build(): DropTable {
-            return DropTable(table = table)
-        }
+        override fun build(): DropTable = DropTable(table = table)
     }
 }
 
@@ -30,9 +26,15 @@ data class DropTable(
 fun ModelChangesBuilder.dropTable(
     tableName: String,
     lambda: DropTable.DropTableBuilder.() -> Unit = {},
-): DropTable =
-    DropTable.DropTableBuilder().table(tableName).apply(lambda).build().apply(changes::add)
+): DropTable = DropTable
+    .DropTableBuilder()
+    .table(tableName)
+    .apply(lambda)
+    .build()
+    .apply(changes::add)
 
-fun ModelChangesBuilder.dropTable(
-    table: Table,
-): DropTable = DropTable.DropTableBuilder().table(table).build().apply(changes::add)
+fun ModelChangesBuilder.dropTable(table: Table): DropTable = DropTable
+    .DropTableBuilder()
+    .table(table)
+    .build()
+    .apply(changes::add)

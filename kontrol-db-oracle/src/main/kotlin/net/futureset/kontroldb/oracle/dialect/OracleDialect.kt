@@ -4,13 +4,12 @@ import net.futureset.kontroldb.model.ColumnType
 import net.futureset.kontroldb.model.StandardColumnTypes
 import net.futureset.kontroldb.settings.AnsiDialect
 import net.futureset.kontroldb.settings.DbDialect
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Singleton(binds = [DbDialect::class])
+@Single(binds = [DbDialect::class])
 class OracleDialect : AnsiDialect {
-
     override val supportsTablespace: Boolean = true
     override val supportsCatalogs: Boolean = false
 
@@ -25,23 +24,20 @@ class OracleDialect : AnsiDialect {
     override val literalFalse: String = "0"
     override val order: Int = 10
 
-    override fun changeScript(scriptLines: MutableList<String>, targetTool: String) {
+    override fun changeScript(
+        scriptLines: MutableList<String>,
+        targetTool: String,
+    ) {
         scriptLines.add(0, "SET ECHO ON")
         scriptLines.add(0, "WHENEVER SQLERROR EXIT SQL.SQLCODE")
         scriptLines.add("EXIT")
     }
 
-    override fun dbNowTimestamp(): String {
-        return "CURRENT_TIMESTAMP"
-    }
+    override fun dbNowTimestamp(): String = "CURRENT_TIMESTAMP"
 
-    override fun startTransaction(id: Int): String {
-        return "START TRANSACTION"
-    }
+    override fun startTransaction(id: Int): String = "START TRANSACTION"
 
-    override fun endTransaction(id: Int): String {
-        return "COMMIT"
-    }
+    override fun endTransaction(id: Int): String = "COMMIT"
 
     override fun getNativeType(columnType: ColumnType): String {
         return when (columnType) {
@@ -57,11 +53,7 @@ class OracleDialect : AnsiDialect {
         }
     }
 
-    override fun literalDatetime(date: LocalDateTime): String {
-        return "TIMESTAMP " + super.literalDatetime(date)
-    }
+    override fun literalDatetime(date: LocalDateTime): String = "TIMESTAMP " + super.literalDatetime(date)
 
-    override fun literalDate(date: LocalDate): String {
-        return "DATE " + super.literalDate(date)
-    }
+    override fun literalDate(date: LocalDate): String = "DATE " + super.literalDate(date)
 }
