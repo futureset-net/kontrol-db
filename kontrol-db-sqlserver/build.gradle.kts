@@ -1,10 +1,9 @@
-
 import net.futureset.kontroldb.DbDockerExtension
 
 plugins {
+    `dokka-convention`
     id("kontrol-db.database.setup")
     id("kontrol-db.docker")
-    id("org.jetbrains.dokka")
 }
 
 extensions.configure<DbDockerExtension> {

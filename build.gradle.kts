@@ -1,14 +1,12 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.diffplug.gradle.spotless.SpotlessExtension
-import org.jetbrains.dokka.DokkaConfiguration
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
-import java.net.URI
 
 plugins {
     kotlin("jvm").apply(false)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.dokka)
+    id("org.jetbrains.dokka")
+    base
     id("jacoco-report-aggregation")
 }
 
@@ -40,45 +38,13 @@ allprojects {
         }
     }
 }
-subprojects {
-    tasks.withType<DokkaTaskPartial>().configureEach {
-        dokkaSourceSets.configureEach {
-            failOnWarning.set(true)
-            samples = files(rootDir.resolve("integrationTest/src/main/kotlin/net/futureset/kontroldb/samples"))
-            includes.from(
-                *project.files("extra.md").filter {
-                    it.exists()
-                }.files.toTypedArray(),
-            )
-            sourceLink {
-                localDirectory.set(projectDir.resolve("src"))
-                remoteUrl.set(URI.create("https://github.com/futureset-net/kontrol-db/tree/main").toURL())
-                remoteLineSuffix.set("#L")
-            }
-            perPackageOption {
-                matchingRegex.set(".*(modelchange|dialect|dsl).*")
-                suppressObviousFunctions.set(true)
-                documentedVisibilities.set(setOf(DokkaConfiguration.Visibility.PUBLIC))
-                reportUndocumented.set(false)
-                skipEmptyPackages.set(true)
-                skipDeprecated.set(false)
-            }
-            perPackageOption {
-                matchingRegex.set(".*")
-                suppress.set(true)
-            }
-        }
-    }
-}
 
-tasks.dokkaJekyllMultiModule.configure {
+dokka {
     moduleName.set(project.name)
-    includes.from(file("extra.md"))
-    this.outputDirectory.set(project.layout.buildDirectory.dir("docs"))
-}
-
-tasks.assemble {
-    dependsOn(tasks.dokkaJekyllMultiModule)
+    dokkaSourceSets.configureEach {
+        includes.from("README.md", "extra.md")
+    }
+    this.basePublicationsDirectory = layout.buildDirectory.dir("docs")
 }
 
 subprojects {
@@ -103,7 +69,6 @@ subprojects {
         suites {
             val test by getting(JvmTestSuite::class) {
                 useJUnitJupiter(rootProject.libs.versions.junit)
-                testType = TestSuiteType.UNIT_TEST
                 dependencies {
                     implementation(rootProject.libs.assertj)
                 }
@@ -149,16 +114,18 @@ subprojects {
     }
 }
 
-val databasesubprojects = listOf(project(":kontrol-db-hsqldb"), project(":kontrol-db-sqlserver"), project(":kontrol-db-postgres"))
-
 dependencies {
-    databasesubprojects.forEach { jacocoAggregation(it) }
-    jacocoAggregation(project(":kontrol-db-core"))
+    dokka(project(":kontrol-db-core"))
+    dokka(project(":kontrol-db-hsqldb"))
+    dokka(project(":kontrol-db-sqlserver"))
+    dokka(project(":kontrol-db-oracle"))
+    dokka(project(":kontrol-db-postgres"))
 }
+
 reporting {
     reports {
         val integrationTestCodeCoverageReport by creating(JacocoCoverageReport::class) {
-            testType = TestSuiteType.INTEGRATION_TEST
+            this.testSuiteName = "integrationTest"
         }
     }
 }
@@ -178,7 +145,7 @@ val integrationTestCoverageLimit: String by project
 val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
     group = "verification"
     doFirst {
-        println("file://" + integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().path + "index.html")
+        println("file:///" + integrationTestCodeCoverageReport.get().reports.html.outputLocation.get().asFile.toURI().path + "index.html")
     }
     violationRules {
         rule {
@@ -192,6 +159,10 @@ val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverag
 
 tasks.check {
     dependsOn(integrationTestCodeCoverageReport, jacocoIntegrationTestCoverageVerification)
+}
+
+tasks.assemble {
+    dependsOn(tasks.named("dokkaGenerateHtml"))
 }
 
 tasks.wrapper {

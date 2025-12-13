@@ -5,8 +5,10 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositories {
         gradlePluginPortal()
+        mavenCentral()
     }
     versionCatalogs {
         create("libs") {

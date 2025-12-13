@@ -1,8 +1,8 @@
 [versions]
 assertj = "3.27.5"
 docker-plugin = "9.3.7"
-dokka = "2.0.0"
-gradle = "8.12.1"
+dokka = "2.1.0"
+gradle = "9.1.0"
 hsqldb = "2.7.4"
 jackson = "2.20.0"
 jacoco = "0.8.12"
@@ -23,7 +23,7 @@ spotless = "7.2.1"
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
 docker = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-plugin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+#dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 [libraries]
 docker-remote-plugin = { group = "com.bmuschko.docker-remote-api", name = "com.bmuschko.docker-remote-api.gradle.plugin", version.ref = "docker-plugin" }
@@ -47,6 +47,7 @@ ksp-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ks
 oracle = { group = "com.oracle.database.jdbc", name = "ojdbc11", version.ref = "oracle" }
 postgres = { group = "org.postgresql", name = "postgresql", version.ref = "postgres" }
 sqlserver = { group = "com.microsoft.sqlserver", name = "mssql-jdbc", version.ref = "sqlserver" }
+dokka-gradle-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 
 [bundles]
 junit5 = ["junit-jupiter", "junit-jupiter-api"]
