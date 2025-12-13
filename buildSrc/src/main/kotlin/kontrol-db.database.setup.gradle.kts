@@ -18,7 +18,6 @@ extensions.configure<TestingExtension> {
                 }
             }
             useJUnitJupiter(versionCatalog.findVersion("junit").get().requiredVersion)
-            testType = TestSuiteType.INTEGRATION_TEST
             dependencies {
                 versionCatalog.findLibrary("assertj").ifPresent {
                     implementation(it)

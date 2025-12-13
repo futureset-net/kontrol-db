@@ -2,9 +2,8 @@ plugins {
     application
     id("kontrol-db-maven-publish")
     id("kontrol-db-koin-codegen")
-    id("org.jetbrains.dokka")
+    `dokka-convention`
 }
-
 description = "core engine and default templates for kontrol-db"
 
 dependencies {

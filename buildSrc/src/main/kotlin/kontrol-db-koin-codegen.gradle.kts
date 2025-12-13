@@ -9,6 +9,10 @@ dependencies {
     add("ksp", versionCatalog.findLibrary("koin.compiler").get())
 }
 
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "true")
+}
+
 extensions.configure<JavaPluginExtension> {
     toolchain {
         languageVersion = JavaLanguageVersion.of(versionCatalog.findVersion("java").get().requiredVersion)
