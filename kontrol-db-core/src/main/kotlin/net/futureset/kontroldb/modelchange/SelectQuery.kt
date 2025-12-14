@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnAndValue
 import net.futureset.kontroldb.model.ColumnValue
 import net.futureset.kontroldb.model.DbIdentifier
@@ -40,8 +39,4 @@ data class SelectQuery(
             includeData = this.includeData,
         )
     }
-}
-
-fun ModelChangesBuilder.select(lambda: SelectQuery.SelectQueryBuilder.() -> Unit) = apply {
-    changes.add(SelectQuery.SelectQueryBuilder().apply(lambda).build())
 }

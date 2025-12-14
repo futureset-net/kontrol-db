@@ -1,9 +1,9 @@
 package net.futureset.kontroldb.test.petstore
 
+import net.futureset.kontroldb.dsl.updateRowsOf
 import net.futureset.kontroldb.model.ColumnValue.Companion.column
 import net.futureset.kontroldb.model.ColumnValue.Companion.expression
 import net.futureset.kontroldb.model.ColumnValue.Companion.value
-import net.futureset.kontroldb.modelchange.updateRowsOf
 import net.futureset.kontroldb.refactoring.ExecuteMode
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.koin.core.annotation.Single

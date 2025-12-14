@@ -1,14 +1,14 @@
 package net.futureset.kontroldb.refactoring
 
+import net.futureset.kontroldb.dsl.addPrimaryKey
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.dropTable
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.model.StandardColumnTypes.INT16
 import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
-import net.futureset.kontroldb.modelchange.addPrimaryKey
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.settings.EffectiveSettings
 
 const val DEFAULT_VERSION_CONTROL_TABLE = "KONTROL_DB_VERSIONING"

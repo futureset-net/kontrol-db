@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnValue
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.SchemaObject
@@ -47,12 +46,3 @@ data class InsertOrUpdateRow(
         override fun build(): InsertOrUpdateRow = InsertOrUpdateRow(table, columnValues = columnValues, primaryKeys = primaryKeys, updateMode)
     }
 }
-
-fun ModelChangesBuilder.insertOrUpdateRowsOf(
-    name: String,
-    block: InsertOrUpdateRow.InsertOrUpdateRowBuilder.() -> Unit,
-): InsertOrUpdateRow = InsertOrUpdateRow
-    .InsertOrUpdateRowBuilder(name)
-    .apply(block)
-    .build()
-    .apply(changes::add)

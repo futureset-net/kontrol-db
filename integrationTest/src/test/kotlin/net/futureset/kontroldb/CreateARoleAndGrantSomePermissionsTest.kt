@@ -1,11 +1,11 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.dsl.createRole
+import net.futureset.kontroldb.dsl.dropRole
+import net.futureset.kontroldb.dsl.grantPermissions
+import net.futureset.kontroldb.dsl.revokePermissions
 import net.futureset.kontroldb.model.DbObjectType
-import net.futureset.kontroldb.modelchange.createRole
-import net.futureset.kontroldb.modelchange.dropRole
-import net.futureset.kontroldb.modelchange.grantPermissions
-import net.futureset.kontroldb.modelchange.revokePermissions
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.junit.jupiter.api.Test

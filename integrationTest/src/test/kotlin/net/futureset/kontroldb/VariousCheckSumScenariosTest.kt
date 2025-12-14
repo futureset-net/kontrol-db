@@ -1,10 +1,10 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.dsl.insertRowsInto
+import net.futureset.kontroldb.dsl.updateRowsOf
 import net.futureset.kontroldb.model.ColumnValue.Companion.column
 import net.futureset.kontroldb.model.ColumnValue.Companion.expression
-import net.futureset.kontroldb.modelchange.insertRowsInto
-import net.futureset.kontroldb.modelchange.updateRowsOf
 import net.futureset.kontroldb.refactoring.DEFAULT_VERSION_CONTROL_TABLE
 import net.futureset.kontroldb.refactoring.ExecuteMode.ALWAYS
 import net.futureset.kontroldb.refactoring.Refactoring

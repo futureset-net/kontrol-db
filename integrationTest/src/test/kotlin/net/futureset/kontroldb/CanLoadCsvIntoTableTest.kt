@@ -1,6 +1,12 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.dsl.addNotNull
+import net.futureset.kontroldb.dsl.addPrimaryKey
+import net.futureset.kontroldb.dsl.applyDsvToTable
+import net.futureset.kontroldb.dsl.createIndex
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.dropTable
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.model.StandardColumnTypes.Char
 import net.futureset.kontroldb.model.StandardColumnTypes.DATE
@@ -10,12 +16,6 @@ import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
 import net.futureset.kontroldb.modelchange.ApplyDsvToTable
-import net.futureset.kontroldb.modelchange.addNotNull
-import net.futureset.kontroldb.modelchange.addPrimaryKey
-import net.futureset.kontroldb.modelchange.applyDsvToTable
-import net.futureset.kontroldb.modelchange.createIndex
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.settings.SQL_TIMESTAMP_FORMAT
 import org.assertj.core.api.Assertions.assertThat

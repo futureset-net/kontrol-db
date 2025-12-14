@@ -1,14 +1,14 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.dsl.createIndex
+import net.futureset.kontroldb.dsl.createSequence
+import net.futureset.kontroldb.dsl.createView
+import net.futureset.kontroldb.dsl.dropIndexIfExists
+import net.futureset.kontroldb.dsl.dropSequenceIfExists
+import net.futureset.kontroldb.dsl.dropTableIfExists
+import net.futureset.kontroldb.dsl.dropViewIfExists
 import net.futureset.kontroldb.model.StandardColumnTypes
-import net.futureset.kontroldb.modelchange.createIndex
-import net.futureset.kontroldb.modelchange.createSequence
-import net.futureset.kontroldb.modelchange.createView
-import net.futureset.kontroldb.modelchange.dropIndexIfExists
-import net.futureset.kontroldb.modelchange.dropSequenceIfExists
-import net.futureset.kontroldb.modelchange.dropTableIfExists
-import net.futureset.kontroldb.modelchange.dropViewIfExists
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable
 import org.assertj.core.api.Assertions.assertThat

@@ -1,6 +1,5 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.SchemaObject
 import net.futureset.kontroldb.model.SchemaObjectBuilder
@@ -28,11 +27,4 @@ class DropIndexBuilder(
     }
 
     override fun build(): DropIndex = DropIndex(index, table, ifExists)
-}
-
-fun ModelChangesBuilder.dropIndexIfExists(
-    name: String,
-    lambda: DropIndexBuilder.() -> Unit,
-) {
-    changes.add(DropIndexBuilder(name).ifExists().apply(lambda).build())
 }

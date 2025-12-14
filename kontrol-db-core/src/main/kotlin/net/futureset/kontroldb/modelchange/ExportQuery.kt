@@ -3,7 +3,6 @@ package net.futureset.kontroldb.modelchange
 import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.KontrolDbDslMarker
 import net.futureset.kontroldb.SupportsResultSetHandler
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.Resource.Companion.resource
 import net.futureset.kontroldb.settings.EffectiveSettings
 import java.nio.file.Files
@@ -64,8 +63,4 @@ class ExportQueryBuilder : Builder<ExportQueryBuilder, ExportQuery> {
     }
 
     override fun build(): ExportQuery = ExportQuery(selectQuery, path, separator)
-}
-
-fun ModelChangesBuilder.exportData(lambda: ExportQueryBuilder.() -> Unit) = apply {
-    changes.add(ExportQueryBuilder().apply(lambda).build())
 }

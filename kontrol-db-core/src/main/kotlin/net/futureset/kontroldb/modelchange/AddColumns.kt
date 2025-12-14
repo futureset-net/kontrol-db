@@ -42,21 +42,3 @@ data class AddColumns(
         )
     }
 }
-
-/**
- * Add columns to a table
- *
- * @sample net.futureset.kontroldb.samples.AllSamples.addColumn
- * @param tableName name of the table to add columns
- * @param lambda containing column definitions
- * @receiver a container for all the changes
- * @return the immutable [AddColumns] type
- */
-fun ModelChangesBuilder.addColumnsTo(
-    tableName: String,
-    lambda: AddColumns.AddColumnsBuilder.() -> Unit,
-): AddColumns = AddColumns
-    .AddColumnsBuilder(tableName)
-    .apply(lambda)
-    .build()
-    .apply(changes::add)

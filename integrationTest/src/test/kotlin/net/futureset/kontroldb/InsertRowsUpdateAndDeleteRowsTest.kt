@@ -1,12 +1,12 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.deleteRowsFrom
+import net.futureset.kontroldb.dsl.insertOrUpdateRowsOf
 import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.modelchange.PredicateBuilder
 import net.futureset.kontroldb.modelchange.UpdateMode
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.deleteRowsFrom
-import net.futureset.kontroldb.modelchange.insertOrUpdateRowsOf
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.extension.ExtendWith

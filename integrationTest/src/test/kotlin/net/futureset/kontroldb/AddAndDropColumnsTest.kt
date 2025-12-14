@@ -1,9 +1,9 @@
 package net.futureset.kontroldb
 
+import net.futureset.kontroldb.dsl.addColumnsTo
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.dropColumnsFrom
 import net.futureset.kontroldb.model.StandardColumnTypes.INT32
-import net.futureset.kontroldb.modelchange.addColumnsTo
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.dropColumnsFrom
 import net.futureset.kontroldb.refactoring.Refactoring
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

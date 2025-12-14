@@ -2,7 +2,6 @@ package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.Builder
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.DbObjectType
 import net.futureset.kontroldb.model.SchemaObject
@@ -64,23 +63,3 @@ data class ChangePermissions(
         override fun build(): ChangePermissions = changePermissions
     }
 }
-
-fun ModelChangesBuilder.grantPermissions(
-    permission: String,
-    vararg permissions: String,
-    lambda: ChangePermissions.ChangePermissionsBuilder.() -> Unit,
-): ChangePermissions = ChangePermissions
-    .ChangePermissionsBuilder(GrantOrRevoke.GRANT, arrayListOf(permission, *permissions).toSet())
-    .apply(lambda)
-    .build()
-    .apply(changes::add)
-
-fun ModelChangesBuilder.revokePermissions(
-    permission: String,
-    vararg permissions: String,
-    lambda: ChangePermissions.ChangePermissionsBuilder.() -> Unit,
-): ChangePermissions = ChangePermissions
-    .ChangePermissionsBuilder(GrantOrRevoke.REVOKE, arrayListOf(permission, *permissions).toSet())
-    .apply(lambda)
-    .build()
-    .apply(changes::add)
