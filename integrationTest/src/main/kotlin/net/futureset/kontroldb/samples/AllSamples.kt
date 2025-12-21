@@ -1,5 +1,19 @@
 package net.futureset.kontroldb.samples
 
+import net.futureset.kontroldb.dsl.addColumnsTo
+import net.futureset.kontroldb.dsl.applyDsvToTable
+import net.futureset.kontroldb.dsl.createProcedure
+import net.futureset.kontroldb.dsl.createRole
+import net.futureset.kontroldb.dsl.createSequence
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.dropColumnsFrom
+import net.futureset.kontroldb.dsl.dropIndexIfExists
+import net.futureset.kontroldb.dsl.dropProcedureIfExists
+import net.futureset.kontroldb.dsl.dropRole
+import net.futureset.kontroldb.dsl.dropSequenceIfExists
+import net.futureset.kontroldb.dsl.dropTable
+import net.futureset.kontroldb.dsl.dropTableIfExists
+import net.futureset.kontroldb.dsl.grantPermissions
 import net.futureset.kontroldb.model.DbObjectType
 import net.futureset.kontroldb.model.StandardColumnTypes
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
@@ -10,20 +24,6 @@ import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.LOCALDATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
-import net.futureset.kontroldb.modelchange.addColumnsTo
-import net.futureset.kontroldb.modelchange.applyDsvToTable
-import net.futureset.kontroldb.modelchange.createProcedure
-import net.futureset.kontroldb.modelchange.createRole
-import net.futureset.kontroldb.modelchange.createSequence
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.dropColumnsFrom
-import net.futureset.kontroldb.modelchange.dropIndexIfExists
-import net.futureset.kontroldb.modelchange.dropProcedureIfExists
-import net.futureset.kontroldb.modelchange.dropRole
-import net.futureset.kontroldb.modelchange.dropSequenceIfExists
-import net.futureset.kontroldb.modelchange.dropTable
-import net.futureset.kontroldb.modelchange.dropTableIfExists
-import net.futureset.kontroldb.modelchange.grantPermissions
 import net.futureset.kontroldb.refactoring.Refactoring
 
 @Suppress("unused")

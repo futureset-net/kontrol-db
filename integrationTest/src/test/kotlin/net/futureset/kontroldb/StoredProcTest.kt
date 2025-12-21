@@ -1,8 +1,8 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
-import net.futureset.kontroldb.modelchange.createProcedure
-import net.futureset.kontroldb.modelchange.dropProcedureIfExists
+import net.futureset.kontroldb.dsl.createProcedure
+import net.futureset.kontroldb.dsl.dropProcedureIfExists
 import net.futureset.kontroldb.refactoring.ExecuteMode
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.test.petstore.CreateCustomerTable

@@ -1,6 +1,5 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.Table
 
 data class DeleteRows(
@@ -23,13 +22,3 @@ data class DeleteRows(
         )
     }
 }
-
-fun ModelChangesBuilder.deleteRowsFrom(
-    tableName: String,
-    block: DeleteRows.DeleteRowsBuilder.() -> Unit,
-): DeleteRows = DeleteRows
-    .DeleteRowsBuilder()
-    .apply(block)
-    .table(tableName)
-    .build()
-    .apply(changes::add)

@@ -9,3 +9,9 @@ dependencies {
     api(libs.docker.remote.plugin)
     implementation(libs.dokka.gradle.plugin)
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get()))
+    }
+}

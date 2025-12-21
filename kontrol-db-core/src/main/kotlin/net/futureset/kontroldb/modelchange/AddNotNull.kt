@@ -1,6 +1,5 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnDefinition
 import net.futureset.kontroldb.model.ColumnDefinition.ColumnDefinitionBuilder
 import net.futureset.kontroldb.model.ColumnType
@@ -31,9 +30,3 @@ data class AddNotNull(
         )
     }
 }
-
-fun ModelChangesBuilder.addNotNull(lambda: AddNotNull.AddNotNullBuilder.() -> Unit): AddNotNull = AddNotNull
-    .AddNotNullBuilder()
-    .apply(lambda)
-    .build()
-    .apply(changes::add)

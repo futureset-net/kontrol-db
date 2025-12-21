@@ -1,7 +1,6 @@
 package net.futureset.kontroldb.modelchange
 
 import net.futureset.kontroldb.KontrolDbDslMarker
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.DbIdentifier
 import net.futureset.kontroldb.model.Table
 
@@ -42,13 +41,3 @@ data class AddPrimaryKey(
         )
     }
 }
-
-fun ModelChangesBuilder.addPrimaryKey(
-    constraintName: String,
-    lambda: AddPrimaryKey.AddPrimaryKeyBuilder.() -> Unit,
-): AddPrimaryKey = AddPrimaryKey
-    .AddPrimaryKeyBuilder()
-    .apply(lambda)
-    .constraintName(constraintName)
-    .build()
-    .apply(changes::add)

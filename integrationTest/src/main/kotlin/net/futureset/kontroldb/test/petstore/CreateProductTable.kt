@@ -1,5 +1,8 @@
 package net.futureset.kontroldb.test.petstore
 
+import net.futureset.kontroldb.dsl.addPrimaryKey
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.dropTable
 import net.futureset.kontroldb.model.StandardColumnTypes.BOOLEAN
 import net.futureset.kontroldb.model.StandardColumnTypes.DATETIME
 import net.futureset.kontroldb.model.StandardColumnTypes.Decimal
@@ -7,9 +10,6 @@ import net.futureset.kontroldb.model.StandardColumnTypes.INT16
 import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.INT64
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
-import net.futureset.kontroldb.modelchange.addPrimaryKey
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.dropTable
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.settings.DbDialect
 import org.koin.core.annotation.Single

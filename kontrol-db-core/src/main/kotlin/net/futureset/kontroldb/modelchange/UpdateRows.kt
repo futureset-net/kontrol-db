@@ -1,6 +1,5 @@
 package net.futureset.kontroldb.modelchange
 
-import net.futureset.kontroldb.dsl.ModelChangesBuilder
 import net.futureset.kontroldb.model.ColumnAndValue
 import net.futureset.kontroldb.model.ColumnValue
 import net.futureset.kontroldb.model.DbIdentifier
@@ -40,13 +39,3 @@ data class UpdateRows(
         }
     }
 }
-
-fun ModelChangesBuilder.updateRowsOf(
-    tableName: String,
-    block: UpdateRows.UpdateRowsBuilder.() -> Unit,
-): UpdateRows = UpdateRows
-    .UpdateRowsBuilder()
-    .apply(block)
-    .table(tableName)
-    .build()
-    .apply(changes::add)

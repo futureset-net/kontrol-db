@@ -31,6 +31,6 @@ configure<DokkaExtension> {
             matchingRegex.set(".*")
             suppress.set(true)
         }
-        includes.from("extra.md")
+        includes.from(file("extra.md"))
     }
 }

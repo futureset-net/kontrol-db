@@ -47,13 +47,3 @@ data class AddForeignKey(
 }
 
 typealias ReferencingColumn = Pair<String, String>
-
-fun ModelChangesBuilder.addForeignKey(
-    constraintName: String,
-    lambda: AddForeignKey.AddForeignKeyBuilder.() -> Unit,
-): AddForeignKey = AddForeignKey
-    .AddForeignKeyBuilder()
-    .apply(lambda)
-    .constraintName(constraintName)
-    .build()
-    .apply(changes::add)

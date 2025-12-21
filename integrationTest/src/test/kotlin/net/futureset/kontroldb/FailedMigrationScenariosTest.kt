@@ -1,10 +1,10 @@
 package net.futureset.kontroldb
 
 import net.futureset.kontroldb.KontrolDbEngineBuilder.Companion.dsl
+import net.futureset.kontroldb.dsl.createTable
+import net.futureset.kontroldb.dsl.insertRowsInto
 import net.futureset.kontroldb.model.StandardColumnTypes.INT32
 import net.futureset.kontroldb.model.StandardColumnTypes.Varchar
-import net.futureset.kontroldb.modelchange.createTable
-import net.futureset.kontroldb.modelchange.insertRowsInto
 import net.futureset.kontroldb.refactoring.Refactoring
 import net.futureset.kontroldb.settings.TransactionScope
 import org.assertj.core.api.Assertions.assertThat

@@ -47,7 +47,7 @@ allprojects {
 dokka {
     moduleName.set(project.name)
     dokkaSourceSets.configureEach {
-        includes.from("README.md", "extra.md")
+        includes.from(project.layout.projectDirectory.file("module.md"))
     }
     this.basePublicationsDirectory = layout.buildDirectory.dir("docs")
 }
