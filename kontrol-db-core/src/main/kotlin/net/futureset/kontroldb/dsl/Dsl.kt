@@ -26,6 +26,8 @@ import net.futureset.kontroldb.modelchange.ExportQueryBuilder
 import net.futureset.kontroldb.modelchange.GrantOrRevoke
 import net.futureset.kontroldb.modelchange.InsertOrUpdateRow
 import net.futureset.kontroldb.modelchange.InsertRows
+import net.futureset.kontroldb.modelchange.RenameColumn
+import net.futureset.kontroldb.modelchange.RenameTable
 import net.futureset.kontroldb.modelchange.ScriptComment
 import net.futureset.kontroldb.modelchange.SelectQuery
 import net.futureset.kontroldb.modelchange.UpdateRows
@@ -404,5 +406,24 @@ fun ModelChangesBuilder.updateRowsOf(
     .UpdateRowsBuilder()
     .apply(block)
     .table(tableName)
+    .build()
+    .apply(changes::add)
+
+fun ModelChangesBuilder.renameTable(
+    fromTableName: String,
+    toTableName: String,
+    lambda: RenameTable.RenameTableBuilder.() -> Unit = {},
+): RenameTable = RenameTable
+    .RenameTableBuilder(fromTableName, toTableName)
+    .apply(lambda)
+    .build()
+    .apply(changes::add)
+
+fun ModelChangesBuilder.renameColumn(
+    tableName: String,
+    lambda: RenameColumn.RenameColumnBuilder.() -> Unit = {},
+): RenameColumn = RenameColumn
+    .RenameColumnBuilder(tableName)
+    .apply(lambda)
     .build()
     .apply(changes::add)

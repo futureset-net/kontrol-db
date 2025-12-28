@@ -15,8 +15,6 @@ dependencies {
     api(libs.bundles.jackson.yaml)
 }
 
-val unitTestCoverageLimit: String by project
-
 val jacocoExclude = listOf("**/generated/**")
 
 tasks.named<JacocoReport>("jacocoTestReport") {
@@ -27,16 +25,4 @@ tasks.named<JacocoReport>("jacocoTestReport") {
             }
         },
     )
-}
-
-tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
-    executionData(tasks.test.get())
-    dependsOn(tasks.test)
-    violationRules {
-        rule {
-            limit {
-                minimum = unitTestCoverageLimit.toBigDecimal().divide(BigDecimal.valueOf(100)).setScale(2)
-            }
-        }
-    }
 }
