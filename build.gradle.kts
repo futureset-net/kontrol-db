@@ -6,8 +6,8 @@ plugins {
     kotlin("jvm").apply(false)
     alias(libs.plugins.spotless)
     id("org.jetbrains.dokka")
-    base
     id("jacoco-report-aggregation")
+    base
 }
 
 println("VERSION is $version")
@@ -47,7 +47,7 @@ allprojects {
 dokka {
     moduleName.set(project.name)
     dokkaSourceSets.configureEach {
-        includes.from(project.layout.projectDirectory.file("module.md"))
+        includes.from(file("$rootDir/module.md"))
     }
     this.basePublicationsDirectory = layout.buildDirectory.dir("docs")
 }
@@ -72,7 +72,7 @@ subprojects {
 
     configure<TestingExtension> {
         suites {
-            val test by getting(JvmTestSuite::class) {
+            named("test", JvmTestSuite::class) {
                 useJUnitJupiter(rootProject.libs.versions.junit)
                 dependencies {
                     implementation(rootProject.libs.assertj)
@@ -87,8 +87,6 @@ subprojects {
             }
         }
     }
-
-    val unitTestCoverageLimit: String by project
 
     tasks.withType<Test> {
         testLogging {
@@ -129,7 +127,7 @@ dependencies {
 
 reporting {
     reports {
-        val integrationTestCodeCoverageReport by creating(JacocoCoverageReport::class) {
+        create("integrationTestCodeCoverageReport", JacocoCoverageReport::class) {
             this.testSuiteName = "integrationTest"
         }
     }
