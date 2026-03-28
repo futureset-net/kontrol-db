@@ -31,7 +31,7 @@
   - `./gradlew :kontrol-db-core:test`
   - `./gradlew :kontrol-db-postgres:integrationTest`
   - `./gradlew :kontrol-db-sqlserver:integrationTest`
-- Dialect integration tests are Docker-backed in local development (via `kontrol-db.docker` convention plugin).
+- Postgres/SQL Server/Oracle dialect integration tests are Docker-backed in local development (via `kontrol-db.docker` convention plugin); HSQLDB runs without Docker.
 - CI runs full `build` and checks integration coverage; avoid changes that silently skip tests.
 
 ## Safe editing rules
