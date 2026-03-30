@@ -34,7 +34,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'        
       - name: Set up gradle
-        uses: gradle/actions/setup-gradle@v5.0.2
+        uses: gradle/actions/setup-gradle@v6.0.1
       - name: generate docs
         run: ./gradlew dokkaGenerateHtml --scan --no-daemon
       - name: Upload site
@@ -51,4 +51,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
