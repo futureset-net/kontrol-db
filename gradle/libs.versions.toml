@@ -1,7 +1,7 @@
 [versions]
 assertj = "3.27.7"
 docker-plugin = "9.3.7"
-dokka = "2.1.0"
+dokka = "2.2.0"
 gradle = "9.2.0"
 hsqldb = "2.7.4"
 jackson = "2.21.2"
