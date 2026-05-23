@@ -13,8 +13,7 @@ kotlin = "2.3.21"
 ksp-plugin = "2.3.8"
 sqlserver = "13.4.0.jre11"
 koin = "4.2.1"
-koin-annotations = "2.4.0"
-koin-compiler = "2.4.0"
+koin-annotations = "2.3.1"
 logback = "1.5.32"
 oracle = "23.26.2.0.0"
 postgres = "42.7.11"
@@ -42,7 +41,7 @@ koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations" , version.ref = "koin-annotations" }
 koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j"}
-koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-compiler" }
+koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-annotations" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-jvm-plugin = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
 ksp-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-plugin" }
