@@ -17,6 +17,9 @@ dependencies {
 
 val jacocoExclude = listOf("**/generated/**")
 
+ksp {
+    arg("KOIN_DEFAULT_MODULE", "true")
+}
 tasks.named<JacocoReport>("jacocoTestReport") {
     classDirectories.setFrom(
         classDirectories.files.map {

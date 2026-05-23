@@ -70,8 +70,11 @@ class ApplyDsvToTableGenerator(
                                             value.lowercase() in trueBooleanStrings,
                                         )
                                     }
+
                                     DATE -> v.value(it.columnName.name, LocalDate.parse(value, SQL_DATE_FORMAT))
+
                                     LOCALDATETIME -> v.value(it.columnName.name, LocalDateTime.parse(value, SQL_TIMESTAMP_FORMAT))
+
                                     INT64, INT32, INT16 ->
                                         v.value(
                                             it.columnName.name,
