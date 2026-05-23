@@ -111,6 +111,7 @@ subprojects {
         "testImplementation"(enforcedPlatform(rootProject.libs.junit.bom))
 
         project(":kontrol-db-core")
+        "testImplementation"(platform(rootProject.libs.junit.bom))
         "testImplementation"(rootProject.libs.bundles.junit5) {
             exclude(group = "org.hamcrest")
         }

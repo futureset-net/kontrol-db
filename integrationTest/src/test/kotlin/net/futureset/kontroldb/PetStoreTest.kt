@@ -36,6 +36,7 @@ internal class PetStoreTest {
                 "hsqldb" -> engine.applySqlDirectly.withConnection {
                     engine.effectiveSettings.runScriptAgainstDb(it, outputSqlFile)
                 }
+
                 "sqlserver" -> {
                     val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
                     println(destOutputSqlFile.absolutePathString())
@@ -51,6 +52,7 @@ internal class PetStoreTest {
                         ).describedAs("shell command failed").isZero()
                     }
                 }
+
                 "postgres" -> {
                     val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
                     println(destOutputSqlFile.absolutePathString())
@@ -66,6 +68,7 @@ internal class PetStoreTest {
                         ).describedAs("shell command failed").isZero()
                     }
                 }
+
                 "oracle" -> {
                     val destOutputSqlFile = Paths.get(System.getProperty("shareddir", "build"), "output.sql")
                     println(destOutputSqlFile.absolutePathString())
@@ -80,6 +83,7 @@ internal class PetStoreTest {
                         ).describedAs("shell command failed").isZero()
                     }
                 }
+
                 else -> throw UnsupportedOperationException("Unsupported dialect $dialect")
             }
         }

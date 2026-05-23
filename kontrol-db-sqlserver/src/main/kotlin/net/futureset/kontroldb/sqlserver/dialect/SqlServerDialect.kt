@@ -44,6 +44,7 @@ class SqlServerDialect : AnsiDialect {
                     ),
                 ),
             )
+
         TablePersistence.GLOBAL_TEMPORARY ->
             table.copy(
                 schemaObject =
@@ -57,6 +58,7 @@ class SqlServerDialect : AnsiDialect {
                     ),
                 ),
             )
+
         else -> table
     }
 }

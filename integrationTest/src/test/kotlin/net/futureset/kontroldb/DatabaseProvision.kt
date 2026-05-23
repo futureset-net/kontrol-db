@@ -42,8 +42,11 @@ class DatabaseProvision :
 
     private fun connection(): Connection = when (dialect) {
         "hsqldb" -> DriverManager.getConnection("jdbc:hsqldb:mem:testdb", "sa", "")
+
         "postgres" -> DriverManager.getConnection("jdbc:postgresql://localhost:5432/", "SA", "Th1sIsW0rking")
+
         "oracle" -> DriverManager.getConnection("jdbc:oracle:thin:@localhost:1526/FREEPDB1", "SYSTEM", "Th1sIsW0rking")
+
         "sqlserver" ->
             DriverManager.getConnection(
                 "jdbc:sqlserver://localhost:6283;trustServerCertificate=true",
@@ -68,14 +71,18 @@ class DatabaseProvision :
                         END
          """,
                 )
+
             "postgres" ->
                 executeSql(
                     "DROP DATABASE \"TEST_DB\"",
                     "DROP TABLESPACE \"MY_INDEX_TS\"",
                     "DROP USER \"deploymentUser\"",
                 )
+
             "hsqldb" -> executeSql("SHUTDOWN")
+
             "oracle" -> executeSql("DROP USER TEST_DB CASCADE")
+
             else -> println("No way to provision $dialect")
         }
         connectionHolder.close()
@@ -89,6 +96,7 @@ class DatabaseProvision :
                     "CREATE LOGIN [deploymentUser] WITH PASSWORD = 'APasswordForTesting123', DEFAULT_DATABASE=[TEST_DB]",
                     "ALTER AUTHORIZATION ON DATABASE::[TEST_DB] TO [deploymentUser]",
                 )
+
             "postgres" ->
                 executeSql(
                     """CREATE DATABASE "TEST_DB"""",
@@ -99,6 +107,7 @@ class DatabaseProvision :
                     """ALTER USER "deploymentUser" CREATEROLE""",
 //                """GRANT ALL ON SCHEMA "public" TO "deploymentUser"""",
                 )
+
             "oracle" ->
                 executeSql(
                     """CREATE USER TEST_DB IDENTIFIED BY "APasswordForTesting123" QUOTA UNLIMITED ON USERS""",
@@ -115,6 +124,7 @@ EXCEPTION
 END;
 """,
                 )
+
             else -> println("No DB provision log for $dialect")
         }
     }

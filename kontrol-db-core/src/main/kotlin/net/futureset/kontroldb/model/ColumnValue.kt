@@ -30,12 +30,15 @@ data class ColumnValue(
         is LocalDate -> {
             effectiveSettings.literalDate(value)
         }
+
         is LocalDateTime -> {
             effectiveSettings.literalDatetime(value)
         }
+
         is Boolean -> {
             if (value) effectiveSettings.literalTrue else effectiveSettings.literalFalse
         }
+
         else -> (value?.toString() ?: "NULL").let { if (quoted) "'$it'" else it }
     }
 }

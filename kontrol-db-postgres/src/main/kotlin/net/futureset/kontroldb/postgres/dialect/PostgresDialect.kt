@@ -66,6 +66,7 @@ class PostgresDialect : AnsiDialect {
                     ),
                 ),
             )
+
         TablePersistence.GLOBAL_TEMPORARY ->
             table.copy(
                 schemaObject =
@@ -79,6 +80,7 @@ class PostgresDialect : AnsiDialect {
                     ),
                 ),
             )
+
         else -> table
     }
 }

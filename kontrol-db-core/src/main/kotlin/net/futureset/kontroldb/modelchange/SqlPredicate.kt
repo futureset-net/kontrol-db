@@ -31,7 +31,9 @@ data class AllOf(
 
     override fun toQuoted(effectiveSettings: EffectiveSettings): String = when (predicates.size) {
         0 -> ""
+
         1 -> predicates.first().toQuoted(effectiveSettings)
+
         else ->
             predicates.joinToString(separator = " AND ", prefix = "(", postfix = ")") {
                 it.toQuoted(effectiveSettings)
@@ -54,7 +56,9 @@ data class AnyOf(
 
     override fun toQuoted(effectiveSettings: EffectiveSettings): String = when (predicates.size) {
         0 -> ""
+
         1 -> predicates.first().toQuoted(effectiveSettings)
+
         else ->
             predicates.joinToString(separator = " OR ", prefix = "(", postfix = ")") {
                 it.toQuoted(effectiveSettings)
