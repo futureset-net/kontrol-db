@@ -1,12 +1,30 @@
-# Module kontrol-db
+# Kontrol DB — Quickstart
 
 ## Overview
 
-A database migration tool.
+A Kotlin DSL-based database migration engine that builds migration scripts from typed refactorings and applies them to multiple SQL dialects.
 
-Use to gain version-controlled change to your database.
+Quickstart
 
-Other such tools are Flyway and Liquibase.
+```kotlin
+import net.futureset.kontroldb.KontrolDbEngineBuilder
+import java.nio.file.Paths
+
+fun main() {
+  val engine = KontrolDbEngineBuilder.dsl {
+    dialect("hsqldb")
+    dbSettings { jdbcUrl = "jdbc:hsqldb:mem:quickstart" }
+    executionSettings { externalFileRoot = Paths.get("build/docs") }
+  }
+
+  // Apply pending migrations directly to the target database
+  val applied = engine.applySql()
+  println("Applied $applied model changes")
+  engine.close()
+}
+```
+
+Use the links below to jump to examples and the API reference.
 
 This tool uses a Kotlin DSL to define the changes. If you want a tool that just applies raw SQL scripts, then Flyway would be the preferred solution.
 This solution deliberately avoids raw scripts to gain the advantages of a Kotlin DSL.
