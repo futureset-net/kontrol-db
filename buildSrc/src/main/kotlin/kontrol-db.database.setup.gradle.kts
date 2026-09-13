@@ -35,13 +35,15 @@ extensions.configure<JavaPluginExtension> {
     withSourcesJar()
 }
 
-val jacocoIntegrationTestReport by tasks.registering(JacocoReport::class) {
+val jacocoIntegrationTestReport = tasks.register<JacocoReport>("jacocoIntegrationTestReport") {
     group = "verification"
+    description = "Integration test coverage report"
     this.sourceSets(project.sourceSets["main"])
     executionData(tasks.getByPath("integrationTest"))
 }
 
-val copySharedTests by tasks.registering(Copy::class) {
+val copySharedTests = tasks.register<Copy>("copySharedTests") {
+    description = "Copies shared test code to the build directory for integration tests"
     from(project(":integrationTest").layout.projectDirectory.dir("src/test/kotlin"))
     into(project.layout.buildDirectory.dir("generated/integrationTest/kotlin"))
 }
@@ -61,5 +63,5 @@ dependencies {
 }
 
 rootProject.dependencies {
-    add("jacocoAggregation", project)
+    add("jacocoAggregation", project())
 }

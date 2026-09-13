@@ -15,13 +15,14 @@ val inCi = System.getenv()["CI"] == "true"
 dockerExtension.dockerEnabled = !inCi
 dockerExtension.containerName = project.name
 
-val downloadImage by tasks.registering(DockerPullImage::class) {
+val downloadImage = tasks.register<DockerPullImage>("downloadImage") {
+    description = "Downloads the docker image for the integration test"
     enabled = dockerExtension.dockerEnabled.get()
     group = "docker"
     image = dockerExtension.imageId
 }
 
-val createServer by tasks.registering(DockerCreateContainer::class) {
+val createServer = tasks.register<DockerCreateContainer>("createServer") {
     enabled = dockerExtension.dockerEnabled.get()
     group = "docker"
     containerName.convention(dockerExtension.containerName)
@@ -54,35 +55,39 @@ val createServer by tasks.registering(DockerCreateContainer::class) {
 }
 
 val removeServer =
-    tasks.registering(DockerRemoveContainer::class) {
+    tasks.register<DockerRemoveContainer>("removeServer") {
+        description = "Removes the docker image for the integration test"
         enabled = dockerExtension.dockerEnabled.get()
         group = "docker"
         targetContainerId(dockerExtension.containerName)
     }
 
-val startServer by tasks.registering(DockerStartContainer::class) {
+val startServer = tasks.register<DockerStartContainer>("startServer") {
     enabled = dockerExtension.dockerEnabled.get()
     group = "docker"
+    description = "Starts the docker image for the integration test"
     dependsOn(createServer)
     targetContainerId(dockerExtension.containerName)
     onNext {
     }
 }
 
-val logContainer by tasks.registering(DockerLogsContainer::class) {
+val logContainer = tasks.register<DockerLogsContainer>("logContainer") {
     enabled = dockerExtension.dockerEnabled.get()
     group = "docker"
+    description = "Logs the docker image for the integration test"
     outputs.upToDateWhen { false }
     dependsOn(startServer)
     targetContainerId(dockerExtension.containerName)
     follow = true
     tailAll = true
     stdErr = false
+    val logMessage = dockerExtension.waitForStartupLogMessage
     onNext {
-        if (dockerExtension.waitForStartupLogMessage.isPresent &&
+        if (logMessage.isPresent &&
             this
                 .toString()
-                .contains(dockerExtension.waitForStartupLogMessage.get())
+                .contains(logMessage.get())
         ) {
             throw StopActionException("Started OK")
         } else {
@@ -90,18 +95,19 @@ val logContainer by tasks.registering(DockerLogsContainer::class) {
         }
     }
     onError {
-        if (dockerExtension.waitForStartupLogMessage.isPresent && message != "Started OK") {
+        if (logMessage.isPresent && message != "Started OK") {
             throw this
         }
     }
 }
 
-val stopServer by tasks.registering(DockerStopContainer::class) {
+val stopServer = tasks.register<DockerStopContainer>("stopServer") {
     enabled = dockerExtension.dockerEnabled.get()
     group = "docker"
+    description = "Stops the docker image for the integration test"
     targetContainerId(dockerExtension.containerName)
     onError {
-        project.logger.info("Stopped already")
+        logger.info("Stopped already")
     }
 }
 
