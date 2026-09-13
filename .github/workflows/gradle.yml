@@ -24,7 +24,7 @@ jobs:
       CI: true
     services:
       kontrol-db-sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: mcr.microsoft.com/mssql/server@sha256:c1aa8afe9b06eab64c9774a4802dcd032205d1be785b1fd51e1c0151e7586b74
         volumes:
           - /home/runner/work:/var/outputdir
         options: >-
@@ -35,7 +35,7 @@ jobs:
           ACCEPT_EULA: 'Y'
           MSSQL_SA_PASSWORD: 'Th1sIsW0rking'
       kontrol-db-postgres:
-        image: postgres:latest
+        image: postgres@sha256:1090bc3a8ccfb0b55f78a494d76f8d603434f7e4553543d6e807bc7bd6bbd17f
         volumes:
           - /home/runner/work:/var/outputdir
         options: >-
@@ -46,7 +46,7 @@ jobs:
           POSTGRES_USER: 'SA'
           POSTGRES_PASSWORD: 'Th1sIsW0rking'
       kontrol-db-oracle:
-        image: gvenzl/oracle-free:latest
+        image: gvenzl/oracle-free@sha256:7ed34d0ade89c91a553c9cbe9d42457c758fa29a762aaaa3137541ff30a2d1cb
         volumes:
           - /home/runner/work:/var/outputdir
         options: >-
