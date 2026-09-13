@@ -7,8 +7,6 @@ plugins {
 description = "core engine and default templates for kontrol-db"
 
 dependencies {
-
-    api(platform(libs.koin.bom))
     api(libs.bundles.koin)
     api(libs.kotlin.reflect)
     api(libs.logback.classic)
