@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
 import com.diffplug.gradle.spotless.SpotlessExtension
+import com.google.devtools.ksp.gradle.KspExtension
 
 plugins {
     kotlin("jvm").apply(false)
@@ -47,7 +48,7 @@ allprojects {
 dokka {
     moduleName.set(project.name)
     dokkaSourceSets.configureEach {
-        includes.from(file("$rootDir/module.md"))
+        includes.from(file("$rootDir/module.md"), file("$rootDir/docs/examples.md"))
     }
     this.basePublicationsDirectory = layout.buildDirectory.dir("docs")
 }
@@ -118,6 +119,15 @@ subprojects {
     }
 }
 
+// Configure KSP argument to explicitly enable Koin default module generation and avoid deprecation warnings
+subprojects {
+    pluginManager.withPlugin("com.google.devtools.ksp") {
+        extensions.configure<KspExtension>("ksp") {
+            arg("KOIN_DEFAULT_MODULE", "true")
+        }
+    }
+}
+
 dependencies {
     dokka(project(":kontrol-db-core"))
     dokka(project(":kontrol-db-hsqldb"))
@@ -145,16 +155,15 @@ val integrationTestCodeCoverageReport =
         )
     }
 
-val integrationTestCoverageLimit: String by project
-
-val jacocoIntegrationTestCoverageVerification by tasks.registering(JacocoCoverageVerification::class) {
+val jacocoIntegrationTestCoverageVerification = tasks.register<JacocoCoverageVerification>("jacocoIntegrationTestCoverageVerification") {
     group = "verification"
+    description = "Coverage check"
+    val integrationTestCoverageLimit = providers.gradleProperty("integrationTestCoverageLimit").getOrElse("100")
+    val location = integrationTestCodeCoverageReport.get().reports.html.outputLocation
     doFirst {
         println(
             "file:///" +
-                integrationTestCodeCoverageReport
-                    .get()
-                    .reports.html.outputLocation
+                location
                     .get()
                     .asFile
                     .toURI()
