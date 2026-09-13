@@ -30,6 +30,7 @@ extensions.configure<SpotlessExtension> {
                 "max_line_length" to 2147483647,
             ),
         )
+        targetExclude("build", "**/build")
         target("*/src/*/kotlin/**/*.kt", "*.gradle.kts", "*/*.kts", "buildSrc/src/**/*.kts")
     }
 }
@@ -115,15 +116,6 @@ subprojects {
         "testImplementation"(platform(rootProject.libs.junit.bom))
         "testImplementation"(rootProject.libs.bundles.junit5) {
             exclude(group = "org.hamcrest")
-        }
-    }
-}
-
-// Configure KSP argument to explicitly enable Koin default module generation and avoid deprecation warnings
-subprojects {
-    pluginManager.withPlugin("com.google.devtools.ksp") {
-        extensions.configure<KspExtension>("ksp") {
-            arg("KOIN_DEFAULT_MODULE", "true")
         }
     }
 }
