@@ -5,8 +5,9 @@ plugins {
 
 val versionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-dependencies {
-    add("ksp", versionCatalog.findLibrary("koin.compiler").get())
+val koinCompiler = versionCatalog.findLibrary("koin.compiler").get().get()
+listOf("ksp", "kspTest", "kspIntegrationTest").forEach { configurationName ->
+    configurations.maybeCreate(configurationName).dependencies.add(project.dependencies.create(koinCompiler))
 }
 
 ksp {
@@ -17,9 +18,15 @@ extensions.configure<JavaPluginExtension> {
     toolchain {
         languageVersion = JavaLanguageVersion.of(versionCatalog.findVersion("java").get().requiredVersion)
     }
-    sourceSets {
-        getByName("main") {
-            kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/main/kotlin"))
+    sourceSets.configureEach {
+        kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/$name/kotlin"))
+    }
+}
+
+extensions.configure<TestingExtension> {
+    suites.withType<JvmTestSuite>().configureEach {
+        sources {
+            kotlin.srcDir(project.layout.buildDirectory.dir("generated/ksp/$name/kotlin"))
         }
     }
 }

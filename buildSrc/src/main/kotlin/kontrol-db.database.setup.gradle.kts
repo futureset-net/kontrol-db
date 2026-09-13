@@ -15,6 +15,7 @@ extensions.configure<TestingExtension> {
             sources {
                 kotlin {
                     srcDir(project.layout.buildDirectory.dir("generated/integrationTest/kotlin"))
+                    srcDir(project.layout.buildDirectory.dir("generated/ksp/integrationTest/kotlin"))
                 }
             }
             useJUnitJupiter(versionCatalog.findVersion("junit").get().requiredVersion)

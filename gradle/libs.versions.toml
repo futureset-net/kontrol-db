@@ -13,7 +13,7 @@ kotlin = "2.4.10"
 ksp-plugin = "2.3.11"
 sqlserver = "13.4.0.jre11"
 koin = "4.2.2"
-koin-annotations = "4.2.2"
+koin-annotations = "2.3.1"
 koin-compiler = "2.3.1"
 logback = "1.6.3"
 oracle = "23.26.3.0.0"
@@ -39,9 +39,9 @@ h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jackson-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
-koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-annotations" }
-koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j"}
+koin-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref = "koin" }
 koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-compiler"}
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-jvm-plugin = { group = "org.jetbrains.kotlin.jvm", name = "org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
