@@ -21,7 +21,6 @@ spotless = "8.10.4"
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-plugin" }
 docker = { id = "com.bmuschko.docker-remote-api", version.ref = "docker-plugin" }
 
 [libraries]
